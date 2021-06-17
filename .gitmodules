@@ -1,0 +1,4 @@
+[submodule "Packages/com.magicleap.sdk"]
+	path = Packages/com.magicleap.unitysdk
+	url = https://github.com/magicleap/MagicLeapUnitySDK.git
+	branch = release-sdk-0.26.0

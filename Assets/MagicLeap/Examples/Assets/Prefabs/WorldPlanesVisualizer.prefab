@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8985761100338009289
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8985761100338009288}
+  - component: {fileID: -3847303715028859337}
+  m_Layer: 0
+  m_Name: WorldPlanesVisualizer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8985761100338009288
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8985761100338009289}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3847303715028859337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8985761100338009289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6a132e951f5be9408ca8e98208de365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _planesBehavior: {fileID: 0}
+  planeVisualPrefab: {fileID: 1572420545925630, guid: d0351538d524663448f7c5b7db4a371b,
+    type: 3}
+  wallMaterial: {fileID: 2100000, guid: a9beea521267ba94a9017846aab52d89, type: 2}
+  floorMaterial: {fileID: 2100000, guid: 4f8b1fc68e26095488db3aa3e61e9a87, type: 2}
+  ceilingMaterial: {fileID: 2100000, guid: d05a06163b51ba34bb7211433cdcf454, type: 2}
+  defaultMaterial: {fileID: 2100000, guid: 06aa525e348f72349b49116b2180d07b, type: 2}
+  borderMaterial: {fileID: 2100000, guid: a31b9648f4fad5b4298fa74cf6a2ce5a, type: 2}

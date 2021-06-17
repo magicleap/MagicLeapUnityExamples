@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="description" content="ML WebRTC browser client">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+    <meta itemprop="description" content="Client-side WebRTC code samples">
+    <meta itemprop="name" content="WebRTC code samples">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta id="theme-color" name="theme-color" content="#ffffff">
+
+    <base target="_blank">
+
+    <title>ML WebRTC browser client</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="root.css"/>
+    <link rel="stylesheet" href="main.css"/>
+
+</head>
+
+<body>
+
+<div id="container">
+    <h1>ML WebRTC Test : Browser Client</h1>
+
+    <p>This sample can be used as a desktop peer for testing WebRTC on the Magic Leap Device.</p>
+
+    <video id="localVideo" playsinline autoplay muted></video>
+    <video id="remoteVideo" playsinline autoplay></video>
+
+    <div>
+        <input type="checkbox" id="localVideoEnabled" checked="true">Local video</input>
+        <input type="checkbox" id="localAudioEnabled" checked="true">Local audio</input>
+    </div>
+    <div>
+        <input type="checkbox" id="remoteVideoEnabled" checked="true">Remote video</input>
+        <input type="checkbox" id="remoteAudioEnabled" checked="true">Remote audio</input>
+    </div>
+
+    <div class="box">
+        Host:<input id="host" value="192.168.2.17"></input>
+        <button id="startButton">Connect</button>
+        <button id="hangupButton">Disconnect</button>
+    </div>
+
+    <div id="sendReceive">
+        <div id="dataChannel">
+            <textarea id="chat" disabled
+                      placeholder="Press Connect, enter some text, then press Send."></textarea>
+            <input id="sendMessage" value="Hello"></input>
+            <button id="sendButton">Send</button>
+            <button id="sendBinaryButton">Send Binary Data</button>
+        </div>
+    </div>
+
+    <h2 class="separator">Sample WebRTC STUN Server Setup</h2>
+    <ol>
+        <li>Ensure the computer running the server and the Magic Leap device are on the same wireless network.</li>
+        <li>Determine the IP address of the computer that will be used to run the server, on the command line use <code>ifconfig</code> on Mac or Linux or <code>ipconfig</code> on Windows to find it.</li>
+        <li>Start the signalling server by running <code>python server.py</code> (provided in the <code>server</code> folder with this sample).</li>
+        <li>Enter the server IP address and click on the <b>Connect</b> button.</li>
+        <li>Accept the request for the browser to access the camera and microphone.</li>
+        <li>A video feed from the computer's camera will be visible in video panel on the left.</li>
+        <li>Once a peer is connected, its video will be shown in the video panel on the right.</li>
+        <li>Once a peer is connected, the chat box will be activated. All incoming and outgoing messages will be displayed in this box. Use the input text field and <b>Send</b> button to send messages to the connected peer.</li>
+        <li>Use the "Send Random Binary Data" button to send a list of 5 randomly generated integers to the peer as binary data through the data channel.</li>
+        <li>This client is set to disconnect itself from the server and stop the local streams when the peer disconnects.</li>
+    </ol>
+
+    <p>For more information about WebRTC, see <a href="http://www.html5rocks.com/en/tutorials/webrtc/basics/"
+                                                            title="HTML5 Rocks article about WebRTC by Sam Dutton">Getting
+        Started With WebRTC</a>.</p>
+
+
+</div>
+
+<script src="main.js" async></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Beginner/Scenes/HelloWorld.unity
+    guid: bb62d4c1f57c2464c91843ac2fcd932f
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/AudioCapture.unity
+    guid: ff47925fa63e39e438c7db235b18fff9
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/Contacts.unity
+    guid: 887dc851cb60fae418a3ab8209f20e5e
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/Control.unity
+    guid: 62a07dca92e019646a2932bacb6d4387
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/HandMeshing.unity
+    guid: 973d66364d49a3d4e9aceb19ce1117cb
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/HandTracking.unity
+    guid: c027f118f9ccd4979b8795eb3900db70
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/ImageCapture.unity
+    guid: 3a2bb44574d2caa4881e3c3625139f9a
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/ImageTracker.unity
+    guid: c4cc7b27d61667f419c09727a517e1a8
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/LightTracking.unity
+    guid: 696907ee4e4234a45a1c11a2d9180422
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/Location.unity
+    guid: edb33b831f3d4e241bee2cfae156d7d4
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/Meshing.unity
+    guid: 867506c3cbb29bc42a71d236fbd415c2
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/MobileApp.unity
+    guid: ccb836e31dba83841bb2120712b3741a
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/PersistentCoordinateFrames.unity
+    guid: e79870b2eb36346328264d71a965cd0a
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/Planes.unity
+    guid: 5fca2d94f0384ff42b981955c16012ef
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/RawVideoCapturePreview.unity
+    guid: d0d2ac29dad0fd845aba141868f496b1
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/Raycast.unity
+    guid: 6c94c849b074e2c4883092293f337b1f
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/VideoCapture.unity
+    guid: 14c17404942524712996f803abef0537
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/VirtualKeyboard.unity
+    guid: 240a103fa6d33e24d9e1e9d577b0313b
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/WacomTablet.unity
+    guid: 858001671d830a34c8cb14f536bbdee1
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Intermediate/Scenes/WorldScale.unity
+    guid: 99154873a685f0942b87ffc646753456
+  - enabled: 1
+    path: Assets/MagicLeap/ArucoTracker/Scenes/ArucoTracker.unity
+    guid: beff13cb16bbf854fa101ba9069bd7ed
+  - enabled: 1
+    path: Assets/MagicLeap/FoundObjects/Scenes/FoundObjects.unity
+    guid: 9dccdc44f73b01d4288f6296d028b317
+  - enabled: 1
+    path: Assets/MagicLeap/MRCamera/Scenes/MRCamera.unity
+    guid: 8ca5656824b87994483494ea81f58a80
+  - enabled: 1
+    path: Assets/MagicLeap/WebRTC/Scenes/WebRTC.unity
+    guid: 045c1e8ebe1715949a4fa2b840283c7a
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Streaming/MediaPlayer/Scenes/MediaPlayer.unity
+    guid: b08c428ac5e0b41158b0d405bc436f75
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Streaming/MusicService/Scenes/MusicService.unity
+    guid: bc489255230dff5439c3a3fba5c66759
+  m_configObjects:
+    com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: e74d74253eeaaee41a6792c8d86712a8, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 59ceb475d0dbca0478340e450c5339b6, type: 2}
