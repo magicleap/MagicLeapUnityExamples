@@ -5,6 +5,11 @@ This project is meant to provide the Magic Leap Unity SDK and examples and has b
 
 The files in this project can change or even be removed from one release to another. If you're planning on depending or modifying these assets for your own project, we recommend that you duplicate the files, change the names and move them out of the Assets/MagicLeap folder. This will avoid issues like your changes being deleted when you upgrade to a new unitypackage.
 
+This project includes an embedded version of the Magic Leap Unity SDK package as a submodule. To clone this project and it's dependencies, use the --recurse-submodules argument when cloning:
+```
+git clone --recurse-submodules https://github.com/magicleap/MagicLeapUnityExamples.git
+```
+
 ## Compatible with
 - Unity Editor 2020.3
 - Magic Leap Unity SDK 0.26.0
