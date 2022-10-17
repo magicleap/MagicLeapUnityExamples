@@ -1,22 +1,17 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.XR.MagicLeap;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// This class demonstrates how to visualize information from the MLInput Tablet API.
@@ -30,26 +25,19 @@ namespace MagicLeap
         // The canvas drawing resolution.
         private const int RESOLUTION = 512;
 
-        // The degrees of the touch ring.
-        private const float TOUCHRING_DEGREES = 360;
-
-        // The retuned value for the touch ring is between (0 - 71).
-        // In order to reach 360, it must be multiplied by 5.
-        private const int TOUCHRING_MULTIPLIER = 5;
-
         // The default drawing size of the brush.
         private const float BRUSH_SIZE = 0.1f;
 
         [Header("Tablet")]
+
+        [SerializeField, Tooltip("The wacom tablet example to use for displaying pen and button data.")]
+        private WacomTabletFeedbackExample wacomTabletExample = null;
 
         [SerializeField, Tooltip("The default material to apply to the tablet.")]
         private Material _defaultMaterial = null;
 
         [SerializeField, Tooltip("The active material to apply to the tablet.")]
         private Material _activeMaterial = null;
-
-        [SerializeField, Tooltip("An array of tablet buttons linked to their appropriate GameObject.")]
-        private DeviceButton[] _buttonAssignment = null;
 
         [SerializeField, Tooltip("The transform of the touchpad arrow.")]
         private Transform _touchpadArrow = null;
@@ -79,9 +67,6 @@ namespace MagicLeap
         [SerializeField, Tooltip("An array of available colors.")]
         private Color[] _colors = null;
 
-        // A dictionary reference to the device buttons.
-        private Dictionary<MLInput.TabletDeviceButton, List<Renderer>> _deviceButtons;
-
         // The material applied to the touch ring indicator.
         private Material _touchpadArrowMaterial = null;
 
@@ -89,96 +74,8 @@ namespace MagicLeap
         private RaycastHit _pixelHit;
         private Vector2 _pixelPoint = Vector2.zero;
         private RenderTexture _canvas = null;
+        private int currentColorIndex;
 
-        // Information about the last known state of the device, pen, and buttons.
-        public Vector3 LastPositionAndForce
-        {
-            get;
-            private set;
-        }
-        public float LastDistance
-        {
-            get;
-            private set;
-        }
-        public Vector2 LastTilt
-        {
-            get;
-            private set;
-        }
-        public bool LastIsTouching
-        {
-            get;
-            private set;
-        }
-        public int LastTouchRing
-        {
-            get;
-            private set;
-        }
-
-        public MLInput.TabletDeviceToolType LastToolType
-        {
-            get;
-            private set;
-        }
-        public MLInput.TabletDeviceButton LastButton
-        {
-            get;
-            private set;
-        }
-
-        public bool LastButtonState
-        {
-            get;
-            private set;
-        }
-        public bool ButtonErase
-        {
-            get;
-            private set;
-        }
-        public bool Connected
-        {
-            get;
-            private set;
-        }
-
-        // Used to store a button references to a GameObject.
-        [System.Serializable]
-        private struct DeviceButton
-        {
-            [SerializeField, Tooltip("The MLInputDeviceButton being referenced.")]
-            private MLInput.TabletDeviceButton _button;
-
-            [SerializeField, Tooltip("A list of Renderers for the MLInputDeviceButton.")]
-            private List<Renderer> _renderers;
-
-            /// <summary>
-            /// The MLInputDeviceButton being referenced.
-            /// </summary>
-            public MLInput.TabletDeviceButton Button
-            {
-                get { return _button; }
-                private set { _button = value; }
-            }
-
-            /// <summary>
-            /// A list of Renderers for the MLInputDeviceButton.
-            /// </summary>
-            public List<Renderer> Renderers
-            {
-                get { return _renderers; }
-                private set { _renderers = value; }
-            }
-        }
-
-        private void Awake()
-        {
-            #if PLATFORM_LUMIN
-            MLInput.OnTabletConnected += HandleOnTabletConnect;
-            #endif
-        }
         /// <summary>
         /// Validates fields, sets up the canvas, and registers for the MLInput tablet callbacks.
         /// </summary>
@@ -193,31 +90,60 @@ namespace MagicLeap
 
             // Initialize the drawing canvas and on-screen information.
             SetupCanvas();
-            UpdateColor();
+            UpdateColor(currentColorIndex);
+            
+            wacomTabletExample.OnFirstBarrelButtonDown += HandleFirstBarrelButton;
+            wacomTabletExample.OnSecondBarrelButtonDown += HandleSecondBarrelButton;
+        }
 
-            #if PLATFORM_LUMIN
-            // Register for callbacks.
-            MLInput.OnTabletDisconnected += HandleOnTabletDisconnect;
-            MLInput.OnTabletButtonUp += HandleOnTabletButtonUp;
-            MLInput.OnTabletButtonDown += HandleOnTabletButtonDown;
-            MLInput.OnTabletPenTouch += HandleOnTabletPenTouch;
-            MLInput.OnTabletRingTouch += HandleOnTabletRingTouch;
-            #endif
+        void Update()
+        {
+            var isPenConnected = wacomTabletExample.PenConnected;
+            _pen.gameObject.SetActive(isPenConnected);
+            if (!isPenConnected)
+                return;
+
+            // Set the location of the pen.
+            _pen.localPosition = new Vector3(wacomTabletExample.Position.x / -7.75f, 
+                wacomTabletExample.Distance / 100, 
+                wacomTabletExample.Position.y / 13.25f);
+
+            // Set the rotation of the pen.
+            _pen.localRotation = Quaternion.Euler(-90, 0, 0) * 
+                                 Quaternion.Euler(wacomTabletExample.PenTilt.y, wacomTabletExample.PenTilt.x * -1, 0);
+            
+
+            // Only draw when the pen is touching.
+            if (wacomTabletExample.Tip)
+            {
+                var ray = new Ray(_pen.transform.position + (_pen.transform.forward * 0.0025f), _canvasRenderer.transform.up * -1);
+                    
+                // Determine the hit location on the canvas from the location of the pen.
+                if (Physics.Raycast(ray, out _pixelHit))
+                {
+                    // Confirm the correct object is being hit.
+                    if (_pixelHit.collider.gameObject == _canvasRenderer.gameObject)
+                    {
+                        // Only draw the pixel if it doesn't match what was detected.
+                        if (_pixelPoint != _pixelHit.lightmapCoord)
+                        {
+                            _pixelPoint = _pixelHit.lightmapCoord;
+
+                            _pixelPoint.y *= RESOLUTION;
+                            _pixelPoint.x *= RESOLUTION;
+
+                            var erasing = wacomTabletExample.Eraser;
+                            DrawTexture(_canvas, _pixelPoint.x, _pixelPoint.y, wacomTabletExample.Pressure, erasing);
+                        }
+                    }
+                }
+            }
         }
 
         void OnDestroy()
         {
-            #if PLATFORM_LUMIN
             // Un-register for callbacks.
-            MLInput.OnTabletConnected -= HandleOnTabletConnect;
-            MLInput.OnTabletDisconnected -= HandleOnTabletDisconnect;
-            MLInput.OnTabletButtonUp -= HandleOnTabletButtonUp;
-            MLInput.OnTabletButtonDown -= HandleOnTabletButtonDown;
-            MLInput.OnTabletPenTouch -= HandleOnTabletPenTouch;
-            MLInput.OnTabletRingTouch -= HandleOnTabletRingTouch;
-            // Stop the input service.
-            MLInput.Stop();
-            #endif
+            wacomTabletExample.OnFirstBarrelButtonDown -= HandleFirstBarrelButton;
         }
 
         /// <summary>
@@ -225,6 +151,13 @@ namespace MagicLeap
         /// </summary>
         private bool Initialization()
         {
+            if (wacomTabletExample == null)
+            {
+                Debug.LogError("Error: WacomTabletFeedbackExample._wacomTabletVisualizer is not set, disabling script.");
+                enabled = false;
+                return false;
+            }
+
             if (_defaultMaterial == null)
             {
                 Debug.LogError("Error: WacomTabletVisualizer._defaultMaterial is not set, disabling script.");
@@ -234,12 +167,6 @@ namespace MagicLeap
             if (_activeMaterial == null)
             {
                 Debug.LogError("Error: WacomTabletVisualizer._activeMaterial is not set, disabling script.");
-                return false;
-            }
-
-            if (_buttonAssignment == null || _buttonAssignment.Length == 0)
-            {
-                Debug.LogError("Error: WacomTabletVisualizer._buttonAssignment is not set, disabling script.");
                 return false;
             }
 
@@ -302,27 +229,6 @@ namespace MagicLeap
                 return false;
             }
 
-            #if PLATFORM_LUMIN
-            // Attempt to start the input service.
-            MLResult result = MLInput.Start(new MLInput.Configuration(false));
-            if (!result.IsOk)
-            {
-                Debug.LogErrorFormat("Error: WacomTabletVisualizer failed starting MLInput, disabling script. Reason: {0}", result);
-                return false;
-            }
-            #endif
-
-            // Initialize and create the button dictionary.
-            _deviceButtons = new Dictionary<MLInput.TabletDeviceButton, List<Renderer>>();
-            for (int i = 0; i < _buttonAssignment.Length; i++)
-            {
-                // Only allow adding a key to the dictionary, if it doesn't exist.
-                if (!_deviceButtons.ContainsKey(_buttonAssignment[i].Button))
-                {
-                    _deviceButtons.Add(_buttonAssignment[i].Button, _buttonAssignment[i].Renderers);
-                }
-            }
-
             return true;
         }
 
@@ -382,6 +288,12 @@ namespace MagicLeap
         }
 
         /// <summary>
+        /// Erases the texture to the canvas at the given location and applied pressure <seealso cref="DrawTexture"/>.
+        /// </summary>
+        private void EraseTexture(RenderTexture rt, float x, float y, float pressure)
+            => DrawTexture(rt, x, y, pressure, true);
+
+        /// <summary>
         /// Hides the color wheel after a few seconds, unless canceled.
         /// </summary>
         /// <returns></returns>
@@ -393,147 +305,37 @@ namespace MagicLeap
         }
 
         /// <summary>
+        /// Sets the current drawing color based on color index. 
+        /// </summary>
+        private void UpdateColor(int colorIndex)
+        {
+            UpdateColor(_colors[colorIndex]);
+        }
+        
+        /// <summary>
         /// Sets the current drawing color.
         /// </summary>
-        /// <param name="degree">The accepted range is between (0-355).</param>
-        private void UpdateColor(int degree = 0)
+        private void UpdateColor(Color color)
         {
-            // Calculate the selected color based on the provided touch pad degree.
-            int colorIndex = (int)(degree / (TOUCHRING_DEGREES / _colors.Length));
-            if (colorIndex >= 0 && colorIndex < _colors.Length)
-            {
-                _touchpadArrowMaterial.color = _colors[colorIndex];
-                _brushMaterial.SetColor("_Color", _colors[colorIndex]);
-            }
+            _touchpadArrowMaterial.color = color;
+            _brushMaterial.SetColor("_Color", color);
         }
-
-        private void HandleOnTabletConnect(byte tabletId)
+        
+        /// <summary>
+        /// If first barrel button is pressed, clear the canvas.
+        /// </summary>
+        private void HandleFirstBarrelButton()
         {
-            Connected = true;
+            ClearCanvas();
         }
-
-        private void HandleOnTabletDisconnect(byte tabletId)
+        
+        /// <summary>
+        /// If second barrel button is pressed, pick next color from palette.
+        /// </summary>
+        private void HandleSecondBarrelButton()
         {
-            Connected = false;
-        }
-
-        private void HandleOnTabletButtonUp(byte tabletId, MLInput.TabletDeviceButton tabletButton, ulong timestamp)
-        {
-            if (_deviceButtons.ContainsKey(tabletButton))
-            {
-                for (int i = 0; i < _deviceButtons[tabletButton].Count; i++)
-                {
-                    _deviceButtons[tabletButton][i].material = _defaultMaterial;
-                }
-            }
-
-            // Pen - Erase Mode
-            if (tabletButton == MLInput.TabletDeviceButton.Button11)
-            {
-                ButtonErase = false;
-            }
-
-            LastButton = tabletButton;
-            LastButtonState = false;
-        }
-
-        private void HandleOnTabletButtonDown(byte tabletId, MLInput.TabletDeviceButton tabletButton, ulong timestamp)
-        {
-            if (_deviceButtons.ContainsKey(tabletButton))
-            {
-                for (int i = 0; i < _deviceButtons[tabletButton].Count; i++)
-                {
-                    _deviceButtons[tabletButton][i].material = _activeMaterial;
-                }
-            }
-
-            // If center touch ring button is pressed, clear the canvas.
-            if (tabletButton == MLInput.TabletDeviceButton.Button9)
-            {
-                ClearCanvas();
-            }
-
-            // Pen - Erase Mode
-            if(tabletButton == MLInput.TabletDeviceButton.Button11)
-            {
-                ButtonErase = true;
-            }
-
-            LastButton = tabletButton;
-            LastButtonState = true;
-        }
-
-        #if PLATFORM_LUMIN
-        private void HandleOnTabletPenTouch(byte tabletId, MLInput.TabletState tabletState)
-        {
-            // Set the location of the pen.
-            _pen.localPosition = new Vector3(tabletState.PenTouchPosAndForce.x / -7.75f, tabletState.PenDistance / 100, tabletState.PenTouchPosAndForce.y / 13.25f);
-
-            // Set the rotation of the pen.
-            if (tabletState.ValidityCheck.HasFlag(MLInput.TabletDeviceStateMask.HasAdditionalPenTouchData))
-            {
-                _pen.localRotation = Quaternion.Euler(-90, 0, 0) * Quaternion.Euler(tabletState.AdditionalPenTouchData[1], tabletState.AdditionalPenTouchData[0] * -1, 0);
-            }
-
-            // Only draw when the pen is touching.
-            if (tabletState.IsPenTouchActive)
-            {
-                // Determine the hit location on the canvas from the location of the pen.
-                if (Physics.Raycast(new Ray(_pen.transform.position + (_pen.transform.forward * 0.0025f), _canvasRenderer.transform.up * -1), out _pixelHit))
-                {
-                    // Confirm the correct object is being hit.
-                    if (_pixelHit.collider.gameObject == _canvasRenderer.gameObject)
-                    {
-                        // Only draw the pixel if it doesn't match what was detected.
-                        if (_pixelPoint != _pixelHit.lightmapCoord)
-                        {
-                            _pixelPoint = _pixelHit.lightmapCoord;
-
-                            _pixelPoint.y *= RESOLUTION;
-                            _pixelPoint.x *= RESOLUTION;
-
-                            // Check if the tool type is set to erase, or if the user is pressing the erase button.
-                            bool erase = (tabletState.ToolType == MLInput.TabletDeviceToolType.Eraser || ButtonErase);
-
-                            DrawTexture(_canvas, _pixelPoint.x, _pixelPoint.y, tabletState.PenTouchPosAndForce.z, erase);
-                        }
-                    }
-                }
-            }
-
-            // Update our last state, used for on-screen information.
-            LastPositionAndForce = tabletState.PenTouchPosAndForce;
-            LastDistance = tabletState.PenDistance;
-
-            // Pen tilt information.
-            if (tabletState.ValidityCheck.HasFlag(MLInput.TabletDeviceStateMask.HasAdditionalPenTouchData))
-            {
-                LastTilt = new Vector2(tabletState.AdditionalPenTouchData[0], tabletState.AdditionalPenTouchData[1]);
-            }
-
-            LastIsTouching = tabletState.IsPenTouchActive;
-            LastToolType = tabletState.ToolType;
-        }
-        #endif
-
-        private void HandleOnTabletRingTouch(byte tabletId, int touchRingValue, ulong timestamp)
-        {
-            if (touchRingValue != 0)
-            {
-                // Cancel any coroutines to hide the colorwheel.
-                StopAllCoroutines();
-
-                _colorWheel.SetActive(true);
-                _touchpadArrow.localEulerAngles = new Vector3(0, touchRingValue * TOUCHRING_MULTIPLIER, 0);
-
-                UpdateColor(touchRingValue * TOUCHRING_MULTIPLIER);
-            }
-            else
-            {
-                StartCoroutine(HideColorWheel());
-            }
-
-            LastTouchRing = touchRingValue;
+            currentColorIndex = (currentColorIndex + 1) % _colors.Length;
+            UpdateColor(currentColorIndex);
         }
     }
 }

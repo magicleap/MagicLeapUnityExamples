@@ -1,11 +1,9 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
@@ -16,8 +14,9 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.XR.ARFoundation;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     [RequireComponent(typeof(PlaceFromCamera))]
     public class UserInterface : MonoBehaviour
@@ -38,9 +37,6 @@ namespace MagicLeap
         [SerializeField, Tooltip("The button that maintains the canvas lock for the interface.")]
         private UIButton _lockButton = null;
 
-        [SerializeField, Tooltip("When enabled, the interface text will be replaced with a localized version.")]
-        private bool _useLocalization = true;
-
         [Header("Interface")]
         [SerializeField, Tooltip("The transform of the side menu.")]
         private RectTransform _sideMenu = null;
@@ -53,11 +49,11 @@ namespace MagicLeap
         [SerializeField, Tooltip("The UIButton for the overview tab.")]
         private UIButton _overviewTab = null;
 
-        [SerializeField, Tooltip("The UIButton for the controls tab.")]
-        private UIButton _controlsTab = null;
-
         [SerializeField, Tooltip("The UIButton for the status tab.")]
         private UIButton _statusTab = null;
+
+        [SerializeField, Tooltip("The UIButton for the scene tab.")]
+        private UIButton _SceneTab = null;
 
         [SerializeField, Tooltip("The UIButton for the issues tab.")]
         private UIButton _issuesTab = null;
@@ -103,15 +99,18 @@ namespace MagicLeap
             _canvasDistance = _minDistance;
             _placeFromCamera.Distance = _canvasDistance;
 
-            if (_useLocalization)
-            {
-                // Title
-                _title.text = GetTitle();
-            }
+            _title.text = GetTitle();
 
             // Open the these two tabs by default.
             _overviewTab.Pressed();
-            _statusTab.Pressed();
+            if (_statusTab.gameObject.activeSelf)
+            {
+                _statusTab.Pressed();
+            }
+            else
+            {
+                _SceneTab.Pressed();
+            }
         }
 
         private void Start()
@@ -194,6 +193,7 @@ namespace MagicLeap
         /// </summary>
         public void OpenScene()
         {
+            LoaderUtility.Initialize();
             SceneManager.LoadScene(selectedScene);
         }
 
@@ -219,6 +219,8 @@ namespace MagicLeap
                 StartCoroutine(SendErrorNotifications());
             }
         }
+
+        public void QuitApplication() => Application.Quit();
 
         private string FormatText(string text)
         {

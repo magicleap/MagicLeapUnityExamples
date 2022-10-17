@@ -1,20 +1,18 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
+using System;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.XR.MagicLeap;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// This class represents an MLA-controlled 2D cursor.
@@ -22,19 +20,16 @@ namespace MagicLeap
     /// </summary>
     public class VirtualCursor : MonoBehaviour
     {
-        #pragma warning disable 414
+#pragma warning disable 414
         [SerializeField, Tooltip("Sensitivity"), Range(-1, 1)]
         private float _sensitivity = 1.0f;
 
         private bool _touchActiveBefore = false;
-        #pragma warning restore 414
+#pragma warning restore 414
 
         private Vector2 _prevTouchPos = Vector2.zero;
-
-        private ContactsButtonVisualizer _prevButton = null;
-
-        [SerializeField, Tooltip("MLControllerConnectionHandlerBehavior reference")]
-        private MLControllerConnectionHandlerBehavior _controllerHandler = null;
+        private MagicLeapInputs mlInputs;
+        private MagicLeapInputs.ControllerActions controllerActions;
 
         [SerializeField, Tooltip("Tooltip text")]
         private Text _tooltip = null;
@@ -44,13 +39,6 @@ namespace MagicLeap
         /// </summary>
         void Awake()
         {
-            if (_controllerHandler == null)
-            {
-                Debug.LogError("Error: VirtualCursor._controllerHandler is not set, disabling script.");
-                enabled = false;
-                return;
-            }
-
             if (_tooltip == null)
             {
                 Debug.LogError("Error: VirtualCursor._tooltip is not set, disabling script.");
@@ -60,20 +48,18 @@ namespace MagicLeap
 
             _tooltip.text = "";
             _tooltip.gameObject.SetActive(false);
-
-            #if PLATFORM_LUMIN
-            MLInput.OnControllerTouchpadGestureStart += HandleTouchpadGestureStart;
-            #endif
         }
 
-        /// <summary>
-        /// Clean up.
-        /// </summary>
-        void OnDestroy()
+        private void Start()
         {
-            #if PLATFORM_LUMIN
-            MLInput.OnControllerTouchpadGestureStart -= HandleTouchpadGestureStart;
-            #endif
+            mlInputs = new MagicLeapInputs();
+            mlInputs.Enable();
+            controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+        }
+
+        private void OnDestroy()
+        {
+            mlInputs.Dispose();
         }
 
         /// <summary>
@@ -81,104 +67,37 @@ namespace MagicLeap
         /// </summary>
         void LateUpdate()
         {
-            #if PLATFORM_LUMIN
-            var controller = _controllerHandler.ConnectedController;
-            if (controller != null)
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            if (controllerActions.IsTracked.IsPressed())
             {
-                UpdateTouchPosition(controller);
-                UpdateButtonState();
+                UpdateTouchPosition();
             }
-            #endif
+#endif
         }
 
-        #if PLATFORM_LUMIN
-        /// <summary>
-        /// Handler for Tap gesture.
-        /// </summary>
-        /// <param name="controllerId">Controller ID</param>
-        /// <param name="touchpadGesture">Touchpad Gesture</param>
-        private void HandleTouchpadGestureStart(byte controllerId, MLInput.Controller.TouchpadGesture touchpadGesture)
-        {
-            if (_controllerHandler.IsControllerValid() &&
-                _controllerHandler.ConnectedController.Id == controllerId &&
-                touchpadGesture.Type == MLInput.Controller.TouchpadGesture.GestureType.Tap &&
-                _prevButton != null)
-            {
-                _prevButton.Tap();
-            }
-        }
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+
 
         /// <summary>
         /// Update cursor position based on touch
         /// </summary>
         /// <param name="controller">Controller</param>
-        private void UpdateTouchPosition(MLInput.Controller controller)
+        private void UpdateTouchPosition()
         {
-            if (controller.Touch1Active)
+            if (_touchActiveBefore)
             {
-                if (_touchActiveBefore)
-                {
-                    Vector2 pos = transform.localPosition;
-                    Vector2 currTouchPos = controller.Touch1PosAndForce;
-                    pos += (currTouchPos - _prevTouchPos) * _sensitivity;
-                    transform.localPosition = pos;
-                }
-                else
-                {
-                    _prevTouchPos = controller.Touch1PosAndForce;
-                }
-                _touchActiveBefore = true;
+                Vector2 pos = transform.localPosition;
+                Vector2 currTouchPos = controllerActions.TouchpadPosition.ReadValue<Vector2>();
+                pos += (currTouchPos - _prevTouchPos) * _sensitivity;
+                transform.localPosition = pos;
             }
             else
             {
-                _touchActiveBefore = false;
+                _prevTouchPos = controllerActions.TouchpadPosition.ReadValue<Vector2>();
             }
-        }
-        #endif
 
-        /// <summary>
-        /// Update the state of buttons underneath.
-        /// </summary>
-        private void UpdateButtonState()
-        {
-            // we're only expecting a maximum of 1 button underneath
-            RaycastHit hitInfo;
-            if (Physics.Raycast(transform.position - transform.forward, transform.forward, out hitInfo))
-            {
-                Collider collider = hitInfo.collider;
-                var button = collider.GetComponent<ContactsButtonVisualizer>();
-                if (button != null)
-                {
-                    if (_prevButton == null)
-                    {
-                        button.CursorEnter();
-                        UpdateTooltip(button.TooltipText);
-                    }
-                    else if (_prevButton != button)
-                    {
-                        _prevButton.CursorLeave();
-                        button.CursorEnter();
-                        UpdateTooltip(button.TooltipText);
-                    }
-                }
-                _prevButton = button;
-            }
-            else if (_prevButton != null)
-            {
-                _prevButton.CursorLeave();
-                _prevButton = null;
-                UpdateTooltip("");
-            }
+            _touchActiveBefore = true;
         }
-
-        /// <summary>
-        /// Update the tooltip.
-        /// </summary>
-        /// <param name="text">Text to display</param>
-        private void UpdateTooltip(string text)
-        {
-            _tooltip.text = text;
-            _tooltip.gameObject.SetActive(!string.IsNullOrEmpty(text));
-        }
+#endif
     }
 }

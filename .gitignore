@@ -79,5 +79,8 @@ crashlytics-build.properties
 *.pyc
 *__pycache__.meta
 
+# Mac
+.DS_Store
+
 # ZI Libs
 Assets/Plugins/Lumin/Editor*

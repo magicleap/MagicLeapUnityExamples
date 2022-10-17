@@ -1,20 +1,18 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using UnityEngine.XR.MagicLeap;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// This represents the controller text connectivity status.
@@ -25,9 +23,8 @@ namespace MagicLeap
     [RequireComponent(typeof(Text))]
     public class ControllerStatusText : MonoBehaviour
     {
-        [SerializeField, Tooltip("MLControllerConnectionHandlerBehavior reference.")]
-        private MLControllerConnectionHandlerBehavior _controllerConnectionHandler = null;
-
+        private MagicLeapInputs mlInputs;
+        private MagicLeapInputs.ControllerActions controllerActions;
         private Text _controllerStatusText = null;
 
         /// <summary>
@@ -36,33 +33,31 @@ namespace MagicLeap
         void Awake()
         {
             _controllerStatusText = gameObject.GetComponent<Text>();
-
-            if (_controllerConnectionHandler == null)
-            {
-                Debug.LogError("Error: ControllerStatusText._controllerConnectionHandler is not set, disabling script.");
-                enabled = false;
-                return;
-            }
-
-            _controllerConnectionHandler.OnControllerConnected += HandleOnControllerChanged;
-            _controllerConnectionHandler.OnControllerDisconnected += HandleOnControllerChanged;
         }
 
         void Start()
         {
+            mlInputs = new MagicLeapInputs();
+            mlInputs.Enable();
+            controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+
+            controllerActions.IsTracked.performed += HandleOnControllerChanged;
+            controllerActions.IsTracked.canceled += HandleOnControllerChanged;
             // Wait until the next cycle to check the status.
             UpdateStatus();
         }
 
         void OnDestroy()
         {
-            _controllerConnectionHandler.OnControllerConnected -= HandleOnControllerChanged;
-            _controllerConnectionHandler.OnControllerDisconnected -= HandleOnControllerChanged;
+            controllerActions.IsTracked.performed -= HandleOnControllerChanged;
+            controllerActions.IsTracked.canceled -= HandleOnControllerChanged;
+
+            mlInputs.Dispose();
         }
 
         void OnApplicationPause(bool pause)
         {
-            if(!pause)
+            if (!pause)
             {
                 UpdateStatus();
             }
@@ -73,46 +68,24 @@ namespace MagicLeap
         /// </summary>
         private void UpdateStatus()
         {
-            if (_controllerConnectionHandler.enabled)
+            if (controllerActions.IsTracked.IsPressed())
             {
-                if (_controllerConnectionHandler.IsControllerValid())
-                {
-                    #if PLATFORM_LUMIN
-                    MLInput.Controller controller = _controllerConnectionHandler.ConnectedController;
-                    if (controller.Type == MLInput.Controller.ControlType.Control)
-                    {
-                        _controllerStatusText.text = "Controller Connected";
-                        _controllerStatusText.color = Color.green;
-                    }
-                    else if (controller.Type == MLInput.Controller.ControlType.MobileApp)
-                    {
-                        _controllerStatusText.text = "MLA Connected";
-                        _controllerStatusText.color = Color.green;
-                    }
-                    else
-                    {
-                        _controllerStatusText.text = "Unknown";
-                        _controllerStatusText.color = Color.red;
-                    }
-                    #else
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+                _controllerStatusText.text = "Controller Connected";
+                _controllerStatusText.color = Color.green;
+#else
                     _controllerStatusText.text = "Unknown";
                     _controllerStatusText.color = Color.red;
-                    #endif
-                }
-                else
-                {
-                    _controllerStatusText.text = "Disconnected";
-                    _controllerStatusText.color = Color.yellow;
-                }
+#endif
             }
             else
             {
-                _controllerStatusText.text = "Input Failed to Start";
-                _controllerStatusText.color = Color.red;
+                _controllerStatusText.text = "Disconnected";
+                _controllerStatusText.color = Color.yellow;
             }
         }
 
-        private void HandleOnControllerChanged(byte controllerId)
+        private void HandleOnControllerChanged(InputAction.CallbackContext callbackContext)
         {
             UpdateStatus();
         }

@@ -1,19 +1,17 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
 using UnityEngine;
-using UnityEngine.XR.MagicLeap;
+using UnityEngine.InputSystem;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// This represents the controller sprite icon connectivity status.
@@ -30,10 +28,9 @@ namespace MagicLeap
         [SerializeField, Tooltip("Mobile App Icon")]
         private Sprite _mobileAppIcon = null;
 
-        [SerializeField, Tooltip("MLControllerConnectionHandlerBehavior reference.")]
-        private MLControllerConnectionHandlerBehavior _controllerConnectionHandler = null;
-
         private SpriteRenderer _spriteRenderer;
+        private MagicLeapInputs mlInputs;
+        private MagicLeapInputs.ControllerActions controllerActions;
 
         /// <summary>
         /// Initializes component data and starts MLInput.
@@ -48,25 +45,24 @@ namespace MagicLeap
                 enabled = false;
                 return;
             }
+
             if (_mobileAppIcon == null)
             {
                 Debug.LogError("Error: ControllerStatusIndicator._mobileAppIcon is not set, disabling script.");
                 enabled = false;
                 return;
             }
-            if (_controllerConnectionHandler == null)
-            {
-                Debug.LogError("Error: ControllerStatusIndicator._controllerConnectionHandler is not set, disabling script.");
-                enabled = false;
-                return;
-            }
-
-            _controllerConnectionHandler.OnControllerConnected += HandleOnControllerChanged;
-            _controllerConnectionHandler.OnControllerDisconnected += HandleOnControllerChanged;
         }
 
         void Start()
         {
+            mlInputs = new MagicLeapInputs();
+            mlInputs.Enable();
+            controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+
+            controllerActions.IsTracked.performed += HandleOnControllerChanged;
+            controllerActions.IsTracked.canceled += HandleOnControllerChanged;
+
             SetDefaultIcon();
 
             UpdateColor();
@@ -75,8 +71,10 @@ namespace MagicLeap
 
         void OnDestroy()
         {
-            _controllerConnectionHandler.OnControllerConnected -= HandleOnControllerChanged;
-            _controllerConnectionHandler.OnControllerDisconnected -= HandleOnControllerChanged;
+            controllerActions.IsTracked.performed -= HandleOnControllerChanged;
+            controllerActions.IsTracked.canceled -= HandleOnControllerChanged;
+
+            mlInputs.Dispose();
         }
 
         void OnApplicationPause(bool pause)
@@ -93,16 +91,9 @@ namespace MagicLeap
         /// </summary>
         private void UpdateColor()
         {
-            if (_controllerConnectionHandler.enabled)
+            if (controllerActions.IsTracked.IsPressed())
             {
-                if (_controllerConnectionHandler.IsControllerValid())
-                {
-                    _spriteRenderer.color = Color.green;
-                }
-                else
-                {
-                    _spriteRenderer.color = Color.yellow;
-                }
+                _spriteRenderer.color = Color.green;
             }
             else
             {
@@ -115,25 +106,12 @@ namespace MagicLeap
         /// </summary>
         private void UpdateIcon()
         {
-            #if PLATFORM_LUMIN
-            if (_controllerConnectionHandler.enabled &&
-                _controllerConnectionHandler.IsControllerValid())
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            if (controllerActions.IsTracked.IsPressed())
             {
-                switch (_controllerConnectionHandler.ConnectedController.Type)
-                {
-                    case MLInput.Controller.ControlType.Control:
-                        {
-                            _spriteRenderer.sprite = _controllerIcon;
-                            break;
-                        }
-                    case MLInput.Controller.ControlType.MobileApp:
-                        {
-                            _spriteRenderer.sprite = _mobileAppIcon;
-                            break;
-                        }
-                }
+                _spriteRenderer.sprite = _controllerIcon;
             }
-            #endif
+#endif
         }
 
         /// <summary>
@@ -142,20 +120,12 @@ namespace MagicLeap
         /// </summary>
         private void SetDefaultIcon()
         {
-            #if PLATFORM_LUMIN
-            if ((_controllerConnectionHandler.DevicesAllowed & MLControllerConnectionHandlerBehavior.DeviceTypesAllowed.ControllerLeft) != 0 ||
-                (_controllerConnectionHandler.DevicesAllowed & MLControllerConnectionHandlerBehavior.DeviceTypesAllowed.ControllerRight) != 0)
-            {
-                _spriteRenderer.sprite = _controllerIcon;
-            }
-            else
-            {
-                _spriteRenderer.sprite = _mobileAppIcon;
-            }
-            #endif
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            _spriteRenderer.sprite = _controllerIcon;
+#endif
         }
 
-        private void HandleOnControllerChanged(byte controllerId)
+        private void HandleOnControllerChanged(InputAction.CallbackContext callbackContext)
         {
             UpdateColor();
             UpdateIcon();

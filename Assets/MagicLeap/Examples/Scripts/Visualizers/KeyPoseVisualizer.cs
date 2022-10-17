@@ -1,20 +1,19 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 using UnityEngine.XR.MagicLeap;
-using MagicLeap.Core.StarterKit;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// Class for tracking a specific Keypose and handling confidence value
@@ -26,18 +25,10 @@ namespace MagicLeap
         private const float ROTATION_SPEED = 100.0f;
         private const float CONFIDENCE_THRESHOLD = 0.95f;
 
-        #pragma warning disable 414
-        [SerializeField, Tooltip("KeyPose to track.")]
-        private MLHandTracking.HandKeyPose _keyPoseToTrack = MLHandTracking.HandKeyPose.NoPose;
-        #pragma warning restore 414
-
-        [Space, SerializeField, Tooltip("Flag to specify if left hand should be tracked.")]
-        private bool _trackLeftHand = true;
-
-        [SerializeField, Tooltip("Flag to specify id right hand should be tracked.")]
-        private bool _trackRightHand = true;
-
         private SpriteRenderer _spriteRenderer = null;
+
+        private static InputDevice leftHandDevice;
+        private static InputDevice rightHandDevice;
 
         /// <summary>
         /// Initializes variables.
@@ -52,22 +43,15 @@ namespace MagicLeap
         /// </summary>
         void Update()
         {
-            float confidenceLeft =  0.0f;
+            if (!leftHandDevice.isValid || !rightHandDevice.isValid)
+            {
+                leftHandDevice = InputSubsystem.Utils.FindMagicLeapDevice(InputDeviceCharacteristics.HandTracking | InputDeviceCharacteristics.Left);
+                rightHandDevice = InputSubsystem.Utils.FindMagicLeapDevice(InputDeviceCharacteristics.HandTracking | InputDeviceCharacteristics.Right);
+                return;
+            }
+
+            float confidenceLeft = 0.0f;
             float confidenceRight = 0.0f;
-
-            if (_trackLeftHand)
-            {
-                #if PLATFORM_LUMIN
-                confidenceLeft = GetKeyPoseConfidence(MLHandTracking.Left);
-                #endif
-            }
-
-            if (_trackRightHand)
-            {
-                #if PLATFORM_LUMIN
-                confidenceRight = GetKeyPoseConfidence(MLHandTracking.Right);
-                #endif
-            }
 
             float confidenceValue = Mathf.Max(confidenceLeft, confidenceRight);
 
@@ -85,7 +69,7 @@ namespace MagicLeap
             {
                 transform.Rotate(Vector3.up, ROTATION_SPEED * Time.deltaTime, Space.Self);
             }
-            else if(confidenceValue > 0.0f && confidenceRight > confidenceLeft)
+            else if (confidenceValue > 0.0f && confidenceRight > confidenceLeft)
             {
                 // Shows Right-Hand Orientation.
                 transform.localRotation = Quaternion.RotateTowards(transform.localRotation, Quaternion.Euler(0, 180, 0), ROTATION_SPEED * Time.deltaTime);
@@ -98,23 +82,5 @@ namespace MagicLeap
 
             _spriteRenderer.material.color = currentColor;
         }
-
-        #if PLATFORM_LUMIN
-        /// <summary>
-        /// Gets the confidence value for the hand being tracked.
-        /// </summary>
-        /// <param name="hand">Hand to check the confidence value on.</param>
-        private float GetKeyPoseConfidence(MLHandTracking.Hand hand)
-        {
-            if (hand != null)
-            {
-                if (hand.KeyPose == _keyPoseToTrack)
-                {
-                    return hand.HandKeyPoseConfidence;
-                }
-            }
-            return 0.0f;
-        }
-        #endif
     }
 }

@@ -1,21 +1,22 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 using UnityEngine.XR.MagicLeap;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
+    using HandTracking = InputSubsystem.Extensions.MLHandTracking;
+
     /// <summary>
     /// Component used to help visualize the keypoints on a hand by attaching
     /// primitive game objects to the detected keypoint positions.
@@ -24,7 +25,7 @@ namespace MagicLeap
     {
         #pragma warning disable 414
         [SerializeField, Tooltip("The hand to visualize.")]
-        private MLHandTracking.HandType _handType = MLHandTracking.HandType.Left;
+        private HandTracking.HandType _handType = HandTracking.HandType.Left;
         #pragma warning restore 414
 
         [SerializeField, Tooltip("The GameObject to use for the Hand Center.")]
@@ -50,6 +51,13 @@ namespace MagicLeap
         [SerializeField, Tooltip("The color assigned to the wrist keypoints.")]
         private Color _wristColor = Color.white;
 
+        [SerializeField]
+        private Material keypointMaterial = null;
+
+        [SerializeField, Tooltip("Value to hide the Visualizer if the confidence is below.")]
+        [Range(0.0f, 1.0f)]
+        private float confidenceThreshold = 0.6f;
+
         private List<Transform> _pinkyFinger = null;
         private List<Transform> _ringFinger = null;
         private List<Transform> _middleFinger = null;
@@ -57,25 +65,16 @@ namespace MagicLeap
         private List<Transform> _thumb = null;
         private List<Transform> _wrist = null;
 
-        #if PLATFORM_LUMIN
-        /// <summary>
-        /// Returns the hand based on the hand type.
-        /// </summary>
-        private MLHandTracking.Hand Hand
-        {
-            get
-            {
-                if (_handType == MLHandTracking.HandType.Left)
-                {
-                    return MLHandTracking.Left;
-                }
-                else
-                {
-                    return MLHandTracking.Right;
-                }
-            }
-        }
-        #endif
+
+        private List<Bone> _pinkyFingerBones = new List<Bone>();
+        private List<Bone> _ringFingerBones = new List<Bone>();
+        private List<Bone> _middleFingerBones = new List<Bone>();
+        private List<Bone> _indexFingerBones = new List<Bone>();
+        private List<Bone> _thumbBones = new List<Bone>();
+
+        private List<Vector3> _wristBonePositions = new List<Vector3>();
+
+        private InputDevice handDevice;
 
         /// <summary>
         /// Initializes the lists of hand transforms.
@@ -88,8 +87,6 @@ namespace MagicLeap
                 enabled = false;
                 return;
             }
-
-            Initialize();
         }
 
         /// <summary>
@@ -97,131 +94,174 @@ namespace MagicLeap
         /// </summary>
         void Update()
         {
-            #if PLATFORM_LUMIN
-            if (MLHandTracking.IsStarted)
+            if (!this.handDevice.isValid)
             {
-                // Pinky
-                for (int i = 0; i < Hand.Pinky.KeyPoints.Count; ++i)
-                {
-                    _pinkyFinger[i].localPosition = Hand.Pinky.KeyPoints[i].Position;
-                    _pinkyFinger[i].gameObject.SetActive(Hand.IsVisible);
-                }
-
-                // Ring
-                for (int i = 0; i < Hand.Ring.KeyPoints.Count; ++i)
-                {
-                    _ringFinger[i].localPosition = Hand.Ring.KeyPoints[i].Position;
-                    _ringFinger[i].gameObject.SetActive(Hand.IsVisible);
-                }
-
-                // Middle
-                for (int i = 0; i < Hand.Middle.KeyPoints.Count; ++i)
-                {
-                    _middleFinger[i].localPosition = Hand.Middle.KeyPoints[i].Position;
-                    _middleFinger[i].gameObject.SetActive(Hand.IsVisible);
-                }
-
-                // Index
-                for (int i = 0; i < Hand.Index.KeyPoints.Count; ++i)
-                {
-                    _indexFinger[i].localPosition = Hand.Index.KeyPoints[i].Position;
-                    _indexFinger[i].gameObject.SetActive(Hand.IsVisible);
-                }
-
-                // Thumb
-                for (int i = 0; i < Hand.Thumb.KeyPoints.Count; ++i)
-                {
-                    _thumb[i].localPosition = Hand.Thumb.KeyPoints[i].Position;
-                    _thumb[i].gameObject.SetActive(Hand.IsVisible);
-                }
-
-                // Wrist
-                for (int i = 0; i < Hand.Wrist.KeyPoints.Count; ++i)
-                {
-                    _wrist[i].localPosition = Hand.Wrist.KeyPoints[i].Position;
-                    _wrist[i].gameObject.SetActive(Hand.IsVisible);
-                }
-
-                // Hand Center
-                _center.localPosition = Hand.Center;
-                _center.gameObject.SetActive(Hand.IsVisible);
+                Initialize();
+                return;
             }
-            #endif
+
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            GetFingerBones();
+
+            this.handDevice.TryGetFeatureValue(InputSubsystem.Extensions.DeviceFeatureUsages.Hand.Confidence, out float handConfidence);
+
+            bool highConfidence = (handConfidence > confidenceThreshold);
+
+            // Pinky
+            for (int i = 0; i < this._pinkyFingerBones.Count; ++i)
+            {
+                 this._pinkyFingerBones[i].TryGetPosition(out Vector3 bonePosition);
+                 this._pinkyFinger[i].localPosition = bonePosition;
+                 this._pinkyFinger[i].gameObject.SetActive(highConfidence && HandTracking.GetKeyPointStatus(this.handDevice, HandTracking.KeyPointLocation.Pinky, i));
+            }
+
+            // Ring
+            for (int i = 0; i < this._ringFingerBones.Count; ++i)
+            {
+                this._ringFingerBones[i].TryGetPosition(out Vector3 bonePosition);
+                this._ringFinger[i].localPosition = bonePosition;
+                this._ringFinger[i].gameObject.SetActive(highConfidence && HandTracking.GetKeyPointStatus(this.handDevice, HandTracking.KeyPointLocation.Ring, i));
+            }
+
+            // Middle
+            for (int i = 0; i < this._middleFingerBones.Count; ++i)
+            {
+                this._middleFingerBones[i].TryGetPosition(out Vector3 bonePosition);
+                this._middleFinger[i].localPosition = bonePosition;
+                this._middleFinger[i].gameObject.SetActive(highConfidence && HandTracking.GetKeyPointStatus(this.handDevice, HandTracking.KeyPointLocation.Middle, i));
+            }
+
+            // Index
+            for (int i = 0; i < this._indexFingerBones.Count; ++i)
+            {
+                this._indexFingerBones[i].TryGetPosition(out Vector3 bonePosition);
+                this._indexFinger[i].localPosition = bonePosition;
+                this._indexFinger[i].gameObject.SetActive(highConfidence && HandTracking.GetKeyPointStatus(this.handDevice, HandTracking.KeyPointLocation.Index, i));
+            }
+
+            // Thumb
+            for (int i = 0; i < this._thumbBones.Count; ++i)
+            {
+                this._thumbBones[i].TryGetPosition(out Vector3 bonePosition);
+                this._thumb[i].localPosition = bonePosition;
+                this._thumb[i].gameObject.SetActive(highConfidence && HandTracking.GetKeyPointStatus(this.handDevice, HandTracking.KeyPointLocation.Thumb, i));
+            }
+
+            // Wrist
+            for (int i = 0; i < this._wristBonePositions.Count; ++i)
+            {
+                this._wrist[i].localPosition = this._wristBonePositions[i];
+                this._wrist[i].gameObject.SetActive(highConfidence && HandTracking.GetKeyPointStatus(this.handDevice, HandTracking.KeyPointLocation.Wrist, i));
+            }
+
+            handDevice.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 devicePosition);
+
+            // Hand Center
+            _center.localPosition = devicePosition;
+            // Hand Center only has one keypoint so its' index would be 0 for getting its' status.
+            _center.gameObject.SetActive(highConfidence && HandTracking.GetKeyPointStatus(this.handDevice, HandTracking.KeyPointLocation.Center, 0));
+#endif
         }
 
+        private void GetFingerBones()
+        {
+            // Hand Key Points
+            if (handDevice.TryGetFeatureValue(CommonUsages.handData, out UnityEngine.XR.Hand hand))
+            {
+                hand.TryGetFingerBones(UnityEngine.XR.HandFinger.Index, this._indexFingerBones);
+                hand.TryGetFingerBones(UnityEngine.XR.HandFinger.Middle, this._middleFingerBones);
+                hand.TryGetFingerBones(UnityEngine.XR.HandFinger.Ring, this._ringFingerBones);
+                hand.TryGetFingerBones(UnityEngine.XR.HandFinger.Pinky, this._pinkyFingerBones);
+                hand.TryGetFingerBones(UnityEngine.XR.HandFinger.Thumb, this._thumbBones);
+
+                this._wristBonePositions.Clear();
+                handDevice.TryGetFeatureValue(InputSubsystem.Extensions.DeviceFeatureUsages.Hand.WristCenter, out Vector3 position);
+                this._wristBonePositions.Add(position);
+                handDevice.TryGetFeatureValue(InputSubsystem.Extensions.DeviceFeatureUsages.Hand.WristRadial, out position);
+                this._wristBonePositions.Add(position);
+                handDevice.TryGetFeatureValue(InputSubsystem.Extensions.DeviceFeatureUsages.Hand.WristUlnar, out position);
+                this._wristBonePositions.Add(position);
+            }
+        }
         /// <summary>
         /// Initialize the available KeyPoints.
         /// </summary>
         private void Initialize()
         {
+            if (!this.handDevice.isValid)
+            {
+                this.handDevice = InputSubsystem.Utils.FindMagicLeapDevice(InputDeviceCharacteristics.HandTracking | (this._handType == HandTracking.HandType.Left ? InputDeviceCharacteristics.Left : InputDeviceCharacteristics.Right));
+            }
+
+            GetFingerBones();
+
             // Pinky
             _pinkyFinger = new List<Transform>();
 
-            #if PLATFORM_LUMIN
-            for (int i = 0; i < Hand.Pinky.KeyPoints.Count; ++i)
+            #if UNITY_MAGICLEAP || UNITY_ANDROID
+            for (int i = 0; i < this._pinkyFingerBones.Count; ++i)
             {
-                _pinkyFinger.Add(CreateKeyPoint(Hand.Pinky.KeyPoints[i], _pinkyColor).transform);
+                _pinkyFinger.Add(CreateKeyPoint(_pinkyColor).transform);
             }
             #endif
 
             // Ring
             _ringFinger = new List<Transform>();
 
-            #if PLATFORM_LUMIN
-            for (int i = 0; i < Hand.Ring.KeyPoints.Count; ++i)
+            #if UNITY_MAGICLEAP || UNITY_ANDROID
+            for (int i = 0; i < this._ringFingerBones.Count; ++i)
             {
-                _ringFinger.Add(CreateKeyPoint(Hand.Ring.KeyPoints[i], _ringColor).transform);
+                _ringFinger.Add(CreateKeyPoint(_ringColor).transform);
             }
             #endif
 
             // Middle
             _middleFinger = new List<Transform>();
 
-            #if PLATFORM_LUMIN
-            for (int i = 0; i < Hand.Middle.KeyPoints.Count; ++i)
+            #if UNITY_MAGICLEAP || UNITY_ANDROID
+            for (int i = 0; i < this._middleFingerBones.Count; ++i)
             {
-                _middleFinger.Add(CreateKeyPoint(Hand.Middle.KeyPoints[i], _middleColor).transform);
+                _middleFinger.Add(CreateKeyPoint(_middleColor).transform);
             }
             #endif
 
             // Index
             _indexFinger = new List<Transform>();
 
-            #if PLATFORM_LUMIN
-            for (int i = 0; i < Hand.Index.KeyPoints.Count; ++i)
+            #if UNITY_MAGICLEAP || UNITY_ANDROID
+            for (int i = 0; i < this._indexFingerBones.Count; ++i)
             {
-                _indexFinger.Add(CreateKeyPoint(Hand.Index.KeyPoints[i], _indexColor).transform);
+                _indexFinger.Add(CreateKeyPoint(_indexColor).transform);
             }
             #endif
 
             // Thumb
             _thumb = new List<Transform>();
 
-            #if PLATFORM_LUMIN
-            for (int i = 0; i < Hand.Thumb.KeyPoints.Count; ++i)
+            #if UNITY_MAGICLEAP || UNITY_ANDROID
+            for (int i = 0; i < this._thumbBones.Count; ++i)
             {
-                _thumb.Add(CreateKeyPoint(Hand.Thumb.KeyPoints[i], _thumbColor).transform);
+                _thumb.Add(CreateKeyPoint(_thumbColor).transform);
             }
             #endif
 
             // Wrist
             _wrist = new List<Transform>();
 
-            #if PLATFORM_LUMIN
-            for (int i = 0; i < Hand.Wrist.KeyPoints.Count; ++i)
+            #if UNITY_MAGICLEAP || UNITY_ANDROID
+            for (int i = 0; i < this._wristBonePositions.Count; ++i)
             {
-                _wrist.Add(CreateKeyPoint(Hand.Wrist.KeyPoints[i], _wristColor).transform);
+                _wrist.Add(CreateKeyPoint(_wristColor).transform);
             }
             #endif
         }
 
-        #if PLATFORM_LUMIN
+#if UNITY_MAGICLEAP || UNITY_ANDROID
         /// <summary>
         /// Create a GameObject for the desired KeyPoint.
         /// </summary>
-        /// <param name="keyPoint">The keypoint to reference.</param>
         /// <param name="color">The color to represent this keypoint</param>
-        private GameObject CreateKeyPoint(MLHandTracking.KeyPoint keyPoint, Color color)
+        private GameObject CreateKeyPoint(Color color)
         {
             GameObject newObject;
 
@@ -229,7 +269,10 @@ namespace MagicLeap
             newObject.SetActive(false);
             newObject.transform.SetParent(transform);
             newObject.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
-            newObject.name = keyPoint.ToString();
+            if (keypointMaterial != null)
+            {
+                newObject.GetComponent<Renderer>().material = new Material(keypointMaterial);
+            }
             newObject.GetComponent<Renderer>().material.color = color;
 
             return newObject;

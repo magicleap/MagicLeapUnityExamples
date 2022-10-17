@@ -1,0 +1,1122 @@
+fileFormatVersion: 2
+guid: 343539329eb77c24da7858a7ba801e37
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4624960292363194048
+    second: Spinner_Indeterminant_0
+  - first:
+      213: 1531429267379605875
+    second: Spinner_Indeterminant_1
+  - first:
+      213: -4653481239901544854
+    second: Spinner_Indeterminant_2
+  - first:
+      213: -1637890337344306876
+    second: Spinner_Indeterminant_3
+  - first:
+      213: 1395195274583344263
+    second: Spinner_Indeterminant_4
+  - first:
+      213: 8351413535702609592
+    second: Spinner_Indeterminant_5
+  - first:
+      213: 2305390390412191357
+    second: Spinner_Indeterminant_6
+  - first:
+      213: 4385572972951757500
+    second: Spinner_Indeterminant_7
+  - first:
+      213: 6015679715331695139
+    second: Spinner_Indeterminant_8
+  - first:
+      213: 2432202947445472546
+    second: Spinner_Indeterminant_9
+  - first:
+      213: 3325543575189632112
+    second: Spinner_Indeterminant_10
+  - first:
+      213: -504494249467285066
+    second: Spinner_Indeterminant_11
+  - first:
+      213: -5361951086608679711
+    second: Spinner_Indeterminant_12
+  - first:
+      213: -4421821274065882997
+    second: Spinner_Indeterminant_13
+  - first:
+      213: -8990149458025868426
+    second: Spinner_Indeterminant_14
+  - first:
+      213: -1816234299274120572
+    second: Spinner_Indeterminant_15
+  - first:
+      213: 6070050569591109858
+    second: Spinner_Indeterminant_16
+  - first:
+      213: -6167121861578199638
+    second: Spinner_Indeterminant_17
+  - first:
+      213: 369959306153681313
+    second: Spinner_Indeterminant_18
+  - first:
+      213: -482282580978137817
+    second: Spinner_Indeterminant_19
+  - first:
+      213: 6861274772596385013
+    second: Spinner_Indeterminant_20
+  - first:
+      213: 329786033143501767
+    second: Spinner_Indeterminant_21
+  - first:
+      213: 3327057339730441993
+    second: Spinner_Indeterminant_22
+  - first:
+      213: 92399207091570982
+    second: Spinner_Indeterminant_23
+  - first:
+      213: -8287493086863888225
+    second: Spinner_Indeterminant_24
+  - first:
+      213: 7391537325524317041
+    second: Spinner_Indeterminant_25
+  - first:
+      213: 4172492241015910869
+    second: Spinner_Indeterminant_26
+  - first:
+      213: 6460088255602805501
+    second: Spinner_Indeterminant_27
+  - first:
+      213: 7076955933649189445
+    second: Spinner_Indeterminant_28
+  - first:
+      213: 6763769665013760358
+    second: Spinner_Indeterminant_29
+  - first:
+      213: 489421325231164080
+    second: Spinner_Indeterminant_30
+  - first:
+      213: 1497512307120986705
+    second: Spinner_Indeterminant_31
+  - first:
+      213: 4123346321699817703
+    second: Spinner_Indeterminant_32
+  - first:
+      213: -1446522916213361199
+    second: Spinner_Indeterminant_33
+  - first:
+      213: 4897068040990193297
+    second: Spinner_Indeterminant_34
+  - first:
+      213: -2364212618385095495
+    second: Spinner_Indeterminant_35
+  - first:
+      213: 2522805021209362568
+    second: Spinner_Indeterminant_36
+  - first:
+      213: 539990833091271251
+    second: Spinner_Indeterminant_37
+  - first:
+      213: 4625716659102256228
+    second: Spinner_Indeterminant_38
+  - first:
+      213: 5534436711126251281
+    second: Spinner_Indeterminant_39
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 0
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 1
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Lumin
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 438.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a6820bb029ea1640bf75c1c03076648
+      internalID: 4624960292363194048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_1
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 438.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e03996271c458c24a87e8c760f2b8822
+      internalID: 1531429267379605875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_2
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 438.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7bb91e5021bc6c4d96977cb2807d9fe
+      internalID: -4653481239901544854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_3
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 438.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 914e34f540e231d4fb891aca29a8efab
+      internalID: -1637890337344306876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_4
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 438.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6669a9eb43b1dcb4997afeef48e15d76
+      internalID: 1395195274583344263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_5
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 438.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 950a13abe39b1e74da736630feb0e690
+      internalID: 8351413535702609592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 365.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 37536aad44beb0b4fa2e33061541308a
+      internalID: 2305390390412191357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_7
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 365.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 39333334d63efb3418a6690f81d5ab06
+      internalID: 4385572972951757500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_8
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 365.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b267e85ee12d1954eb41d4412cad24e5
+      internalID: 6015679715331695139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_9
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 365.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84ed2aa84ec005e448ae619a27b77270
+      internalID: 2432202947445472546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_10
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 365.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48a61532ca05d134eae29b33c1341443
+      internalID: 3325543575189632112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_11
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 365.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4931981acc372454399bc28c0d89838c
+      internalID: -504494249467285066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 292.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41b61644fe177684bbc4e079dbab2216
+      internalID: -5361951086608679711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_13
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 292.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c02de4f053eeb6c478529a28937b5a07
+      internalID: -4421821274065882997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_14
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 292.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ec3904dce9328c468de2620f9e7fdb1
+      internalID: -8990149458025868426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_15
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 292.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03a973b36bcba0d46b972d63b0c22fc0
+      internalID: -1816234299274120572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_16
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 292.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 024c4a2f4e94eba4a86760069615863e
+      internalID: 6070050569591109858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_17
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 292.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2bb1da5dfec0bda40b8fc82366892280
+      internalID: -6167121861578199638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 219.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7558ba985b0bc5d4c85b9dec549526be
+      internalID: 369959306153681313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_19
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 219.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65214acd397b72941a29eafc315c9a4c
+      internalID: -482282580978137817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_20
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 219.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 162e5914c10088045a518e53af9a40d9
+      internalID: 6861274772596385013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_21
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 219.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a41d962a0c07af84fb11d685bcb748ec
+      internalID: 329786033143501767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_22
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 219.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e13b684657f766d4bb92c60a7093ff52
+      internalID: 3327057339730441993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_23
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 219.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff27d978e8274c745983b8e36afbb374
+      internalID: 92399207091570982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 146.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a26e101b6ee09da449f058fe02406afb
+      internalID: -8287493086863888225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_25
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 146.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90cbc5c049a95e74aa8b53963395a551
+      internalID: 7391537325524317041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_26
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 146.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4971800f119ecdc44ba3fc5ea8b7a7ba
+      internalID: 4172492241015910869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_27
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 146.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5fe1e91e397dba94d8acda799b6ed669
+      internalID: 6460088255602805501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_28
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 146.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f06bd55459beb844b359d9a67dde927
+      internalID: 7076955933649189445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_29
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 146.85715
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9e86b81a9dbac44aa1862b326d68381
+      internalID: 6763769665013760358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 73.85714
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c36421a6f6563d459c00fa2304dc882
+      internalID: 489421325231164080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_31
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 73.85714
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e8479590eb417347856ff68b99454b2
+      internalID: 1497512307120986705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_32
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 73.85714
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08b7b019b8621c6488be6a483f391a07
+      internalID: 4123346321699817703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_33
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 73.85714
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6787ec799e38cb04c83076b93b64b735
+      internalID: -1446522916213361199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_34
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 73.85714
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b81179e99ce970045a59b6f8bef082aa
+      internalID: 4897068040990193297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_35
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0.8571396
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc1e6eac34509b840927db6c273e1372
+      internalID: -2364212618385095495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_36
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 0.8571396
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 330ed7b1420dd3245b446d1a6fbedcfe
+      internalID: 2522805021209362568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_37
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 0.8571396
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d19964e49997fb844833a402e128ba9f
+      internalID: 539990833091271251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_38
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 0.8571396
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2308d8db5210654489bc302204232838
+      internalID: 4625716659102256228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spinner_Indeterminant_39
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 0.8571396
+        width: 73.166664
+        height: 73.14286
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e879e50ac8802a74da9c4628b6a8d0a4
+      internalID: 5534436711126251281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 2fecba23892ea1e45bb4a847cde5ad07
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Spinner_Indeterminant_31: 1497512307120986705
+      Spinner_Indeterminant_5: 8351413535702609592
+      Spinner_Indeterminant_23: 92399207091570982
+      Spinner_Indeterminant_2: -4653481239901544854
+      Spinner_Indeterminant_24: -8287493086863888225
+      Spinner_Indeterminant_1: 1531429267379605875
+      Spinner_Indeterminant_3: -1637890337344306876
+      Spinner_Indeterminant_6: 2305390390412191357
+      Spinner_Indeterminant_9: 2432202947445472546
+      Spinner_Indeterminant_8: 6015679715331695139
+      Spinner_Indeterminant_10: 3325543575189632112
+      Spinner_Indeterminant_17: -6167121861578199638
+      Spinner_Indeterminant_16: 6070050569591109858
+      Spinner_Indeterminant_29: 6763769665013760358
+      Spinner_Indeterminant_38: 4625716659102256228
+      Spinner_Indeterminant_18: 369959306153681313
+      Spinner_Indeterminant_12: -5361951086608679711
+      Spinner_Indeterminant_20: 6861274772596385013
+      Spinner_Indeterminant_22: 3327057339730441993
+      Spinner_Indeterminant_33: -1446522916213361199
+      Spinner_Indeterminant_13: -4421821274065882997
+      Spinner_Indeterminant_21: 329786033143501767
+      Spinner_Indeterminant_14: -8990149458025868426
+      Spinner_Indeterminant_30: 489421325231164080
+      Spinner_Indeterminant_32: 4123346321699817703
+      Spinner_Indeterminant_35: -2364212618385095495
+      Spinner_Indeterminant_37: 539990833091271251
+      Spinner_Indeterminant_11: -504494249467285066
+      Spinner_Indeterminant_4: 1395195274583344263
+      Spinner_Indeterminant_27: 6460088255602805501
+      Spinner_Indeterminant_19: -482282580978137817
+      Spinner_Indeterminant_25: 7391537325524317041
+      Spinner_Indeterminant_39: 5534436711126251281
+      Spinner_Indeterminant_34: 4897068040990193297
+      Spinner_Indeterminant_28: 7076955933649189445
+      Spinner_Indeterminant_7: 4385572972951757500
+      Spinner_Indeterminant_0: 4624960292363194048
+      Spinner_Indeterminant_15: -1816234299274120572
+      Spinner_Indeterminant_36: 2522805021209362568
+      Spinner_Indeterminant_26: 4172492241015910869
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

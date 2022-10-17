@@ -1,84 +1,175 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.XR.MagicLeap;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// This provides visual feedback for the information about the wacom tablet's last known state of the device, pen, and buttons.
     /// </summary>
     public class WacomTabletFeedbackExample : MonoBehaviour
     {
-        [SerializeField, Tooltip("The wacom tablet visualizer to use for displaying pen and button data.")]
-        private WacomTabletVisualizer _wacomTabletVisualizer = null;
+        public event Action OnTipDown;
+        public event Action OnTipUp;
+        public event Action OnEraserDown;
+        public event Action OnEraserUp;
+        public event Action OnFirstBarrelButtonDown;
+        public event Action OnFirstBarrelButtonUp;
+        public event Action OnSecondBarrelButtonDown;
+        public event Action OnSecondBarrelButtonUp;
+        public event Action OnThirdBarrelButtonDown;
+        public event Action OnThirdBarrelButtonUp;
+        public event Action OnFourthBarrelButtonDown;
+        public event Action OnFourthBarrelButtonUp;
 
         [SerializeField, Tooltip("The component that adjusts the placement of the wacom tablet.")]
-        private PlaceFromCamera _wacomTabletPlacement = null;
-
-        [SerializeField, Tooltip("The controller reference to use.")]
-        private MLControllerConnectionHandlerBehavior _controllerConnectionHandler = null;
+        private PlaceFromCamera wacomTabletPlacement = null;
 
         [SerializeField, Tooltip("UI text for the MLInput tablet API values.")]
-        private Text _statusText = null;
+        private Text statusText = null;
+
+        // Used to get ml inputs.
+        private MagicLeapInputs mlInputs;
+
+        // Used to get controller action data.
+        private MagicLeapInputs.ControllerActions controllerActions;
+
+        /// <summary>
+        /// Control representing the current position of the pointer on screen.
+        /// Within player code, the coordinates are in the coordinate space of Unity's Display.
+        /// </summary>
+        public Vector2 Position { get; private set; }
+
+        /// <summary>
+        /// Rotation of the pen around its own axis. Only supported on a limited number of pens, such as the Wacom Art Pen.
+        /// </summary>
+        public float PenTwist { get; private set; }
+
+        /// <summary>
+        /// Tilt of the pen relative to the surface.
+        /// </summary>
+        public Vector2 PenTilt { get; private set; }
+
+        /// <summary>
+        /// Whether the pen is currently in detection range of the tablet.
+        /// </summary>
+        public bool InRange { get; private set; }
+
+        /// <summary>
+        /// Whether the forth button on the barrel of the pen is pressed.
+        /// </summary>
+        public bool ForthBarrel { get; private set; }
+
+        /// <summary>
+        /// 	Whether the third button on the barrel of the pen is pressed.
+        /// </summary>
+        public bool ThirdBarrel { get; private set; }
+
+        /// <summary>
+        /// 	Whether the second button on the barrel of the pen is pressed.
+        /// </summary>
+        public bool SecondBarrel { get; private set; }
+
+        /// <summary>
+        /// Whether the first button on the barrel of the pen is pressed.
+        /// </summary>
+        public bool FirstBarrel { get; private set; }
+
+        /// <summary>
+        /// Whether the eraser/back end of the pen touches the surface.
+        /// </summary>
+        public bool Eraser { get; private set; }
+
+        /// <summary>
+        /// Whether the tip of the pen touches the surface. Same as the inherited Pointer.press.
+        /// </summary>
+        public bool Tip { get; private set; }
+
+        /// <summary>
+        /// The size of the area where the finger touches the surface. This is only relevant for touch input.
+        /// </summary>
+        public Vector2 Radius { get; private set; }
+
+        public float Pressure { get; private set; }
+
+        /// <summary>
+        /// What this means exactly depends on the nature of the pointer. For pens (Pen), it means that the pen tip is touching the screen/tablet surface
+        /// </summary>
+        public bool Pressing { get; private set; }
+
+        /// <summary>
+        /// Every time a pointer is moved, it generates a motion delta. This control represents this motion.
+        /// </summary>
+        public Vector2 Delta { get; private set; }
+
+        /// <summary>
+        /// If pen is connected.
+        /// </summary>
+        public bool PenConnected => UnityEngine.InputSystem.Pen.current != null;
+
+        /// <summary>
+        /// The distance of the pen from the surface.
+        /// </summary>
+        public float Distance { get; private set; }
+
+        /// <summary>
+        /// The touch ring on tablet .
+        /// </summary>
+        public int TouchRing { get; private set; }
 
         /// <summary>
         /// Validates fields and subscribes to input event.
         /// </summary>
         void Start()
         {
-            if (_wacomTabletVisualizer == null)
-            {
-                Debug.LogError("Error: WacomTabletFeedbackExample._wacomTabletVisualizer is not set, disabling script.");
-                enabled = false;
-                return;
-            }
-
-            if (_wacomTabletPlacement == null)
+            if (wacomTabletPlacement == null)
             {
                 Debug.LogError("Error: WacomTabletFeedbackExample._wacomTabletPlacement is not set, disabling script.");
                 enabled = false;
                 return;
             }
 
-            if (_controllerConnectionHandler == null)
-            {
-                Debug.LogError("Error: WacomTabletFeedbackExample._controllerConnectionHandler is not set, disabling script.");
-                enabled = false;
-                return;
-            }
-
-            if (_statusText == null)
+            if (statusText == null)
             {
                 Debug.LogError("Error: WacomTabletFeedbackExample._statusText is not set, disabling script.");
                 enabled = false;
                 return;
             }
 
-            #if PLATFORM_LUMIN
-            MLInput.OnControllerButtonDown += HandleOnButtonDown;
-            #endif
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            mlInputs = new MagicLeapInputs();
+            mlInputs.Enable();
+            
+            controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+            controllerActions.Menu.performed += MenuOnPerformed;
+#endif
         }
+
 
         /// <summary>
         /// Unregisters from input event.
         /// </summary>
         void OnDestroy()
         {
-            #if PLATFORM_LUMIN
-            MLInput.OnControllerButtonDown -= HandleOnButtonDown;
-            #endif
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            controllerActions.Bumper.performed -= MenuOnPerformed;
+            
+            mlInputs.Disable();
+            mlInputs.Dispose();
+#endif
         }
 
         /// <summary>
@@ -86,67 +177,65 @@ namespace MagicLeap
         /// </summary>
         void Update()
         {
-            _statusText.text = string.Format("<color=#dbfb76><b>Tablet Data</b></color>\nStatus: {0}\n\n",
-            _wacomTabletVisualizer.Connected ? "Connected" : "Disconnected");
-
-            if (_wacomTabletVisualizer.Connected)
+            if (PenConnected)
             {
-                _statusText.text += string.Format(
-                "<b><color=#dbfb76>{0}</color></b>\n" +
-                "\t{1}:\t\t({2}, {3})\n" +
-                "\t{4}:\t\t{5}\n" +
-                "\t{6}:\t\t{7}\n" +
-                "\t{8}:\t\t\t\t\t({9}, {10})\n" +
-                "\t{11}:\t\t{12}\n" +
-                "\t{13}:\t{14}\n" +
-                "\n" +
-                "<b><color=#dbfb76>{15}</color></b>\n" +
-                "\t{16}: {17}\n" +
-                "\t{18}:\t\t\t{19} - {20}",
-                "Pen",
-                "Location",
-                _wacomTabletVisualizer.LastPositionAndForce.x,
-                _wacomTabletVisualizer.LastPositionAndForce.y,
-                "Pressure",
-                _wacomTabletVisualizer.LastPositionAndForce.z,
-                "Distance",
-                _wacomTabletVisualizer.LastDistance,
-                "Tilt",
-                _wacomTabletVisualizer.LastTilt.x,
-                _wacomTabletVisualizer.LastTilt.y,
-                "Touching",
-                _wacomTabletVisualizer.LastIsTouching,
-                "Tool Type",
-                #if PLATFORM_LUMIN
-                (_wacomTabletVisualizer.ButtonErase) ? "Button - Eraser" : _wacomTabletVisualizer.LastToolType.ToString(),
-                #else
-                string.Empty,
-                #endif
-                "Events",
-                "Touch Ring",
-                _wacomTabletVisualizer.LastTouchRing,
-                "Button",
-                #if PLATFORM_LUMIN
-                _wacomTabletVisualizer.LastButton,
-                #else
-                string.Empty,
-                #endif
-                _wacomTabletVisualizer.LastButtonState);
+                Position = new Vector2(Pen.current.position.x.ReadValue(), Pen.current.position.y.ReadValue());
+                Delta = new Vector2(Pen.current.delta.x.ReadValue(), Pen.current.delta.y.ReadValue());
+                Pressing = Pen.current.press.isPressed;
+                Pressure = Pen.current.pressure.ReadValue();
+                Radius = new Vector2(Pen.current.radius.x.ReadValue(), Pen.current.radius.y.ReadValue());
+                Tip = Pen.current.tip.isPressed;
+                if (Pen.current.tip.wasPressedThisFrame) OnTipDown?.Invoke();
+                if (Pen.current.tip.wasReleasedThisFrame) OnTipUp?.Invoke();
+                Eraser = Pen.current.eraser.isPressed;
+                if (Pen.current.eraser.wasPressedThisFrame) OnEraserDown?.Invoke();
+                if (Pen.current.eraser.wasReleasedThisFrame) OnEraserUp?.Invoke();
+                FirstBarrel = Pen.current.firstBarrelButton.isPressed;
+                if (Pen.current.firstBarrelButton.wasPressedThisFrame) OnFirstBarrelButtonDown?.Invoke();
+                if (Pen.current.firstBarrelButton.wasReleasedThisFrame) OnFirstBarrelButtonUp?.Invoke();
+                SecondBarrel = Pen.current.secondBarrelButton.isPressed;
+                if (Pen.current.secondBarrelButton.wasPressedThisFrame) OnSecondBarrelButtonDown?.Invoke();
+                if (Pen.current.secondBarrelButton.wasReleasedThisFrame) OnSecondBarrelButtonUp?.Invoke();
+                ThirdBarrel = Pen.current.thirdBarrelButton.isPressed;
+                if (Pen.current.thirdBarrelButton.wasPressedThisFrame) OnThirdBarrelButtonDown?.Invoke();
+                if (Pen.current.thirdBarrelButton.wasReleasedThisFrame) OnThirdBarrelButtonUp?.Invoke();
+                ForthBarrel = Pen.current.fourthBarrelButton.isPressed;
+                if (Pen.current.fourthBarrelButton.wasPressedThisFrame) OnFourthBarrelButtonDown?.Invoke();
+                if (Pen.current.fourthBarrelButton.wasReleasedThisFrame) OnFourthBarrelButtonUp?.Invoke();
+                InRange = Pen.current.inRange.isPressed;
+                PenTilt = new Vector2(Pen.current.tilt.x.ReadValue(), Pen.current.tilt.y.ReadValue());
+                PenTwist = Pen.current.twist.ReadValue();
+            }
+
+            statusText.text =
+                $"<color=#dbfb76><b>Tablet Data</b></color>\nStatus: {(PenConnected ? "Connected" : "Disconnected")}\n\n";
+
+            if (PenConnected)
+            {
+                statusText.text +=
+                    $"<b><color=#dbfb76>Pen</color></b>\n\tLocation:\t\t({Position.x}, {Position.y})\n" +
+                    $"\tDelta:\t\t\t\t\t({Delta.x}, {Delta.y})\n" +
+                    $"\tPressure:\t\t{Pressure}\n" +
+                    $"\tTilt:\t\t\t\t\t({PenTilt.x}, {PenTilt.y})\n" +
+                    $"\tTwist:\t\t\t\t\t({PenTwist}\n" +
+                    $"\tTouching:\t\t{Pressing}\n" +
+                    $"\tTool Type:\t{(Eraser ? "Eraser" : "Tip")}\n " +
+                    $"\tTouch Ring: {Radius}\n" +
+                    $"\n<b><color=#dbfb76>Events</color></b>\n" +
+                    $"\tFirstBarrel Button pressed:\t\t\t {(FirstBarrel ? "Yes" : "No")}" +
+                    $"\tSecondBarrel Button pressed:\t\t\t {(SecondBarrel ? "Yes" : "No")}" +
+                    $"\tThirdBarrel Button pressed:\t\t\t {(ThirdBarrel ? "Yes" : "No")}" +
+                    $"\tForthBarrel Button pressed:\t\t\t {(ForthBarrel ? "Yes" : "No")}";
             }
         }
 
         /// <summary>
-        /// Handles the event for button down.
+        /// Handles the event for menu button down.
         /// Toggles if the wacom tablet should update it's placement to the user position.
         /// </summary>
-        /// <param name="controllerId">The id of the controller.</param>
-        /// <param name="button">The button that is being pressed.</param>
-        private void HandleOnButtonDown(byte controllerId, MLInput.Controller.Button button)
+        private void MenuOnPerformed(InputAction.CallbackContext context)
         {
-            if (_controllerConnectionHandler.IsControllerValid(controllerId) && button == MLInput.Controller.Button.HomeTap)
-            {
-                _wacomTabletPlacement.PlaceOnUpdate = !_wacomTabletPlacement.PlaceOnUpdate;
-            }
+            wacomTabletPlacement.PlaceOnUpdate = !wacomTabletPlacement.PlaceOnUpdate;
         }
     }
 }

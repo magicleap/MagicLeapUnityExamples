@@ -1,28 +1,24 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
 using System;
 using UnityEngine;
-using UnityEngine.XR.MagicLeap;
+using UnityEngine.InputSystem;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// Utility class that relays controller trigger events to drag events
     /// </summary>
-    [RequireComponent(typeof(MLControllerConnectionHandlerBehavior))]
     public class ContentDragController : MonoBehaviour
     {
-        MLControllerConnectionHandlerBehavior _controllerConnectionHandler;
         bool _isDragging = false;
 
         /// <summary>
@@ -39,17 +35,22 @@ namespace MagicLeap
         /// Triggered when dragging ends
         /// </summary>
         public event Action OnEndDrag;
+        
+        private MagicLeapInputs mlInputs;
+        private MagicLeapInputs.ControllerActions controllerActions;
 
         /// <summary>
         /// Set Up
         /// </summary>
         void Start()
         {
-            _controllerConnectionHandler = GetComponent<MLControllerConnectionHandlerBehavior>();
-
-            #if PLATFORM_LUMIN
-            MLInput.OnTriggerDown += HandleTriggerDown;
-            MLInput.OnTriggerUp += HandleTriggerUp;
+            #if UNITY_MAGICLEAP || UNITY_ANDROID
+            mlInputs = new MagicLeapInputs();
+            mlInputs.Enable();
+            controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+            
+            controllerActions.Trigger.performed += HandleTriggerDown;
+            controllerActions.Trigger.canceled += HandleTriggerUp;
             #endif
         }
 
@@ -58,9 +59,11 @@ namespace MagicLeap
         /// </summary>
         private void OnDestroy()
         {
-            #if PLATFORM_LUMIN
-            MLInput.OnTriggerDown -= HandleTriggerDown;
-            MLInput.OnTriggerUp -= HandleTriggerUp;
+            #if UNITY_MAGICLEAP || UNITY_ANDROID
+            controllerActions.Trigger.performed -= HandleTriggerDown;
+            controllerActions.Trigger.canceled -= HandleTriggerUp;
+            
+            mlInputs.Dispose();
             #endif
         }
 
@@ -81,13 +84,10 @@ namespace MagicLeap
         /// </summary>
         /// <param name="controllerId">Controller ID</param>
         /// <param name="triggerValue">Trigger Value (unused)</param>
-        private void HandleTriggerDown(byte controllerId, float triggerValue)
+        private void HandleTriggerDown(InputAction.CallbackContext callbackContext)
         {
-            if (_controllerConnectionHandler.IsControllerValid(controllerId))
-            {
-                _isDragging = true;
-                OnBeginDrag?.Invoke();
-            }
+            _isDragging = true;
+            OnBeginDrag?.Invoke();
         }
 
         /// <summary>
@@ -95,13 +95,10 @@ namespace MagicLeap
         /// </summary>
         /// <param name="controllerId">Controller ID</param>
         /// <param name="triggerValue">Trigger Value (unused)</param>
-        private void HandleTriggerUp(byte controllerId, float triggerValue)
+        private void HandleTriggerUp(InputAction.CallbackContext callbackContext)
         {
-            if (_controllerConnectionHandler.IsControllerValid(controllerId))
-            {
-                _isDragging = false;
-                OnEndDrag?.Invoke();
-            }
+            _isDragging = false;
+            OnEndDrag?.Invoke();
         }
     }
 }

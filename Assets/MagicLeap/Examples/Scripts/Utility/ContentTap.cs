@@ -1,37 +1,32 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
 using System;
 using UnityEngine;
-using UnityEngine.XR.MagicLeap;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// ContentTap is responsible for relaying a custom controller event of
     /// tapping the touchpad at any speed.
     /// </summary>
     [RequireComponent(typeof(Collider))]
-    public class ContentTap: MonoBehaviour
+    public class ContentTap : MonoBehaviour
     {
         private class TouchpadCustomEvents
         {
             bool _pressed = false;
+
             public bool pressed
             {
-                get
-                {
-                    return _pressed;
-                }
+                get => _pressed;
 
                 set
                 {
@@ -46,8 +41,8 @@ namespace MagicLeap
                         {
                             TouchpadReleased?.Invoke();
                         }
-
                     }
+
                     _pressed = value;
                 }
             }
@@ -55,10 +50,10 @@ namespace MagicLeap
             public Action TouchpadPressed, TouchpadReleased;
         }
 
-        private MLControllerConnectionHandlerBehavior _controllerConnectionHandler;
         private bool _touchpadPressedOnObject = false;
         private TouchpadCustomEvents _touchpadEvents = new TouchpadCustomEvents();
-
+        private MagicLeapInputs mlInputs;
+        private MagicLeapInputs.ControllerActions controllerActions;
 
         /// <summary>
         /// Triggered when this content is tapped on.
@@ -70,12 +65,19 @@ namespace MagicLeap
         /// </summary>
         void Update()
         {
-            #if PLATFORM_LUMIN
-            if (_controllerConnectionHandler != null && _controllerConnectionHandler.IsControllerValid())
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            if (controllerActions.IsTracked.IsPressed())
             {
-                _touchpadEvents.pressed = _controllerConnectionHandler.ConnectedController.Touch1Active;
+                _touchpadEvents.pressed = controllerActions.TouchpadClick.IsPressed();
             }
-            #endif
+#endif
+        }
+
+        private void Start()
+        {
+            mlInputs = new MagicLeapInputs();
+            mlInputs.Enable();
+            controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
         }
 
         /// <summary>
@@ -83,13 +85,10 @@ namespace MagicLeap
         /// </summary>
         void OnDestroy()
         {
-            if (_controllerConnectionHandler != null)
-            {
-                _controllerConnectionHandler = null;
-                _touchpadEvents.TouchpadPressed -= OnTouchpadPressed;
-                _touchpadEvents.TouchpadReleased -= OnTouchpadRelease;
-                _touchpadPressedOnObject = false;
-            }
+            _touchpadEvents.TouchpadPressed -= OnTouchpadPressed;
+            _touchpadEvents.TouchpadReleased -= OnTouchpadRelease;
+            _touchpadPressedOnObject = false;
+            mlInputs.Dispose();
         }
 
         /// <summary>
@@ -98,13 +97,6 @@ namespace MagicLeap
         /// <param name="other">Collider of the Controller</param>
         void OnTriggerEnter(Collider other)
         {
-            MLControllerConnectionHandlerBehavior controllerConnectionHandler = other.GetComponent<MLControllerConnectionHandlerBehavior>();
-            if (controllerConnectionHandler == null)
-            {
-                return;
-            }
-
-            _controllerConnectionHandler = controllerConnectionHandler;
             // Setting being pressed to 'true' here will call the OnTouchpadPressed event before we subscribe to it, forcing the user to both tap and release on this object to destroy it.
             _touchpadEvents.pressed = true;
             _touchpadEvents.TouchpadPressed += OnTouchpadPressed;
@@ -117,14 +109,9 @@ namespace MagicLeap
         /// <param name="other">Collider of the Controller</param>
         void OnTriggerExit(Collider other)
         {
-            MLControllerConnectionHandlerBehavior controllerConnectionHandler = other.GetComponent<MLControllerConnectionHandlerBehavior>();
-            if (_controllerConnectionHandler == controllerConnectionHandler)
-            {
-                _controllerConnectionHandler = null;
-                _touchpadEvents.TouchpadPressed -= OnTouchpadPressed;
-                _touchpadEvents.TouchpadReleased -= OnTouchpadRelease;
-                _touchpadPressedOnObject = false;
-            }
+            _touchpadEvents.TouchpadPressed -= OnTouchpadPressed;
+            _touchpadEvents.TouchpadReleased -= OnTouchpadRelease;
+            _touchpadPressedOnObject = false;
         }
 
         /// <summary>

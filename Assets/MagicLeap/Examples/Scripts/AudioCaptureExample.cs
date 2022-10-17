@@ -1,11 +1,9 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
@@ -13,10 +11,11 @@
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR.MagicLeap;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// This class uses a controller to start/stop audio capture
@@ -32,26 +31,11 @@ namespace MagicLeap
             Delayed
         }
 
-        [SerializeField, Tooltip("The reference to the MLControllerConnectionHandlerBehavior in the scene.")]
-        private MLControllerConnectionHandlerBehavior _controllerConnectionHandler = null;
-
         [SerializeField, Tooltip("The reference to the place from camera script for the parrot.")]
         private PlaceFromCamera _placeFromCamera = null;
 
-        [SerializeField, Tooltip("The reference to the privilege requester in the scene.")]
-        private MLPrivilegeRequesterBehavior _privilegeRequester = null;
-
-        [SerializeField, Tooltip("The audio source that should capture the microphone input.")]
-        private AudioSource _inputAudioSource = null;
-
         [SerializeField, Tooltip("The audio source that should replay the captured audio.")]
         private AudioSource _playbackAudioSource = null;
-
-        [SerializeField, Tooltip("The main transform of the parrot.")]
-        private Transform _parrotTransform = null;
-
-        [SerializeField, Tooltip("The animator used on the parrot.")]
-        private Animator _parrotAnimator = null;
 
         [SerializeField, Tooltip("The text to display the recording status.")]
         private Text _statusLabel = null;
@@ -61,142 +45,124 @@ namespace MagicLeap
         [SerializeField, Range(1, 2), Tooltip("The pitch used for delayed audio playback.")]
         private float _pitch = 1.5f;
 
-        private bool _canCapture = false;
-        private bool _isCapturing = false;
-        private CaptureMode _captureMode = CaptureMode.Inactive;
-        private string _deviceMicrophone = string.Empty;
+        [SerializeField, Tooltip("Game object to use for visualizing the root mean square of the microphone audio")]
+        private GameObject _rmsVisualizer = null;
 
-        private float _audioMaxSample = 0;
-        private float[] _audioSamples = new float[128];
+        [SerializeField, Min(0), Tooltip("Scale value to set for AmplitudeVisualizer when rms is 0")]
+        private float _minScale = 0.1f;
 
-        private int _numSyncIterations = 30;
-        private int _numSamplesLatency = 1024;
-        private bool _playbackStarted = false;
+        [SerializeField, Min(0), Tooltip("Scale value to set for AmplitudeVisualizer when rms is 1")]
+        private float _maxScale = 1.0f;
 
-        private bool _isAudioDetected = false;
-        private float _audioLastDetectionTime = 0;
-        private float _audioDetectionStart = 0;
-        private float _audioDetectionEnd = 0;
+        private Material _rmsVisualizerMaterial;
+
+        private bool hasPermission = false;
+        private bool isCapturing = false;
+        private CaptureMode captureMode = CaptureMode.Inactive;
+        private string deviceMicrophone = string.Empty;
+
+        private int detectionAudioPosition = 0;
+        private readonly float[] detectionAudioSamples = new float[128];
+
+        private bool isAudioDetected = false;
+        private float audioLastDetectionTime = 0;
+        private float audioDetectionStart = 0;
+
+        private float[] playbackSamples = null;
 
         private const int AUDIO_CLIP_LENGTH_SECONDS = 60;
         private const int AUDIO_CLIP_FREQUENCY_HERTZ = 48000;
-        private const float AUDIO_SENSITVITY_DECIBEL = 0.00015f;
+        private const float AUDIO_SENSITVITY = 0.02f;
         private const float AUDIO_CLIP_TIMEOUT_SECONDS = 2;
         private const float AUDIO_CLIP_FALLOFF_SECONDS = 0.5f;
-        private const float ROTATION_DAMPING = 100;
 
         private const int NUM_SYNC_ITERATIONS = 30;
         private const int NUM_SAMPLES_LATENCY = 1024;
 
-        private Quaternion CameraDirection
-        {
-            get
-            {
-                Vector3 direction = Camera.main.transform.position - _parrotTransform.position;
-                direction.y = 0;
+        private MagicLeapInputs mlInputs;
+        private MagicLeapInputs.ControllerActions controllerActions;
 
-                if (direction != Vector3.zero)
-                {
-                    return Quaternion.LookRotation(direction);
-                }
-                else
-                {
-                    return Quaternion.identity;
-                }
-            }
-        }
+        private readonly MLPermissions.Callbacks permissionCallbacks = new MLPermissions.Callbacks();
+        private MLAudioInput.StreamingClip mlAudioStreamingClip;
+        private MLAudioInput.BufferClip mlAudioBufferClip;
 
         void Awake()
         {
-            if (_inputAudioSource == null)
-            {
-                Debug.LogError("Error: AudioCaptureExample._inputAudioSource is not set, disabling script.");
-                enabled = false;
-                return;
-            }
-
             if (_playbackAudioSource == null)
             {
-                Debug.LogError("Error: AudioCaptureExample._playbackAudioSource is not set, disabling script.");
-                enabled = false;
-                return;
-            }
-
-            if (_parrotTransform == null)
-            {
-                Debug.LogError("Error: AudioCaptureExample._parrotTransform is not set, disabling script.");
-                enabled = false;
-                return;
-            }
-
-            if (_parrotAnimator == null)
-            {
-                Debug.LogError("Error: AudioCaptureExample._parrotAnimator is not set, disabling script.");
+                Debug.LogError("AudioCaptureExample._playbackAudioSource is not set, disabling script.");
                 enabled = false;
                 return;
             }
 
             if (_statusLabel == null)
             {
-                Debug.LogError("Error: AudioCaptureExample._statusLabel is not set, disabling script.");
-                enabled = false;
-                return;
-            }
-
-            if (_controllerConnectionHandler == null)
-            {
-                Debug.LogError("Error: AudioCaptureExample._controllerConnectionHandler is not set, disabling script.");
+                Debug.LogError("AudioCaptureExample._statusLabel is not set, disabling script.");
                 enabled = false;
                 return;
             }
 
             if (_placeFromCamera == null)
             {
-                Debug.LogError("Error: AudioCaptureExample._placeFromCamera is not set, disabling script.");
+                Debug.LogError("AudioCaptureExample._placeFromCamera is not set, disabling script.");
                 enabled = false;
                 return;
             }
 
-            UpdateStatus();
+            if (_rmsVisualizer == null)
+            {
+                Debug.LogError("AudioCaptureExample._rmsVisualizer is not set, disabling script.");
+                enabled = false;
+                return;
+            }
 
-            #if PLATFORM_LUMIN
-            // Before enabling the microphone, the scene must wait until the privileges have been granted.
-            _privilegeRequester.OnPrivilegesDone += HandleOnPrivilegesDone;
-            MLInput.OnControllerButtonDown += HandleOnButtonDown;
-            MLInput.OnTriggerDown += HandleOnTriggerDown;
-            #endif
+            permissionCallbacks.OnPermissionGranted += OnPermissionGranted;
+            permissionCallbacks.OnPermissionDenied += OnPermissionDenied;
+            permissionCallbacks.OnPermissionDeniedAndDontAskAgain += OnPermissionDenied;
+
+            MLPermissions.RequestPermission(MLPermission.RecordAudio, permissionCallbacks);
+
+            _rmsVisualizerMaterial = _rmsVisualizer.GetComponent<Renderer>().material;
+
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            mlInputs = new MagicLeapInputs();
+            mlInputs.Enable();
+            controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+
+            controllerActions.Bumper.performed += HandleOnBumperDown;
+            controllerActions.Trigger.performed += HandleOnTriggerDown;
+#endif
+            // Frequency = number of samples per second
+            // 1000ms => AUDIO_CLIP_FREQUENCY_HERTZ
+            // 1ms => AUDIO_CLIP_FREQUENCY_HERTZ / 1000
+            // 16ms => AUDIO_CLIP_FREQUENCY_HERTZ * 16 / 1000
+            playbackSamples = new float[AUDIO_CLIP_FREQUENCY_HERTZ * 16 / 1000];
         }
 
         void OnDestroy()
         {
-            #if PLATFORM_LUMIN
-            _privilegeRequester.OnPrivilegesDone -= HandleOnPrivilegesDone;
-            MLInput.OnControllerButtonDown -= HandleOnButtonDown;
-            MLInput.OnTriggerDown -= HandleOnTriggerDown;
-            #endif
-
             StopCapture();
+
+            permissionCallbacks.OnPermissionGranted -= OnPermissionGranted;
+            permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
+            permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
+
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            controllerActions.Bumper.performed -= HandleOnBumperDown;
+            controllerActions.Trigger.performed -= HandleOnTriggerDown;
+
+            mlInputs.Dispose();
+#endif
         }
 
         private void Update()
         {
-            // Adjust the parrot to always face the camera.
-            _parrotTransform.rotation = Quaternion.Slerp(
-                _parrotTransform.rotation, CameraDirection, Time.deltaTime * ROTATION_DAMPING);
+            VisualizeRecording();
+            VisualizePlayback();
 
-            if (_isCapturing)
+            if (captureMode == CaptureMode.Delayed)
             {
-                ProcessAudioPlayback();
-            }
-
-            if (_playbackStarted)
-            {
-                if (_captureMode == CaptureMode.Delayed)
-                {
-                    DetectAudio();
-                }
-
-                AnimateParrot((_captureMode == CaptureMode.Realtime) ? _inputAudioSource : _playbackAudioSource);
+                DetectAudio();
             }
 
             UpdateStatus();
@@ -206,105 +172,93 @@ namespace MagicLeap
         {
             if (pause)
             {
-                // require privledges to be checked again.
-                _canCapture = false;
-                _captureMode = CaptureMode.Inactive;
-
-                if (_playbackStarted)
-                {
-                    StopCapture();
-                }
+                captureMode = CaptureMode.Inactive;
+                StopCapture();
             }
         }
 
         private void StartMicrophone()
         {
-            if (_captureMode == CaptureMode.Inactive)
+            if (!MLPermissions.CheckPermission(MLPermission.RecordAudio).IsOk)
             {
-                Debug.LogError("Error: AudioCaptureExample.StartMicrophone() cannot start with CaptureMode.Inactive.");
+                Debug.LogError($"AudioCaptureExample.StartMicrophone() cannot start, {MLPermission.RecordAudio} not granted.");
                 return;
             }
 
-            // Use the first detected Microphone device.
-            if (Microphone.devices.Length > 0)
+            if (captureMode == CaptureMode.Inactive)
             {
-                _deviceMicrophone = Microphone.devices[0];
-            }
-
-            // If no microphone is detected, exit early and log the error.
-            if (string.IsNullOrEmpty(_deviceMicrophone))
-            {
-                Debug.LogError("Error: AudioCaptureExample._deviceMicrophone could not find a microphone device, disabling script.");
-                enabled = false;
+                Debug.LogError("AudioCaptureExample.StartMicrophone() cannot start with CaptureMode.Inactive.");
                 return;
             }
 
             _playbackAudioSource.Stop();
-            _inputAudioSource.loop = true;
-            _inputAudioSource.clip = Microphone.Start(_deviceMicrophone, true, AUDIO_CLIP_LENGTH_SECONDS, AUDIO_CLIP_FREQUENCY_HERTZ);
+            var captureType = MLAudioInput.MicCaptureType.VoiceCapture;
+            isCapturing = true;
 
-            _isCapturing = true;
-            _numSamplesLatency = NUM_SAMPLES_LATENCY;
-            _numSyncIterations = NUM_SYNC_ITERATIONS;
+            switch (captureMode)
+            {
+                case CaptureMode.Realtime:
+                    mlAudioStreamingClip = new MLAudioInput.StreamingClip(MLAudioInput.MicCaptureType.VoiceCapture, 3, MLAudioInput.GetSampleRate(captureType));
+
+                    _playbackAudioSource.pitch = 1;
+                    _playbackAudioSource.clip = mlAudioStreamingClip.UnityAudioClip;
+                    _playbackAudioSource.loop = true;
+                    _playbackAudioSource.Play();
+                    break;
+                case CaptureMode.Delayed:
+                    mlAudioBufferClip = new MLAudioInput.BufferClip(MLAudioInput.MicCaptureType.VoiceCapture, AUDIO_CLIP_LENGTH_SECONDS, MLAudioInput.GetSampleRate(captureType));
+
+                    _playbackAudioSource.pitch = _pitch;
+                    _playbackAudioSource.clip = null;
+                    _playbackAudioSource.loop = false;
+                    isAudioDetected = false;
+                    audioDetectionStart = 0;
+                    detectionAudioPosition = 0;
+                    audioLastDetectionTime = 0;
+                    break;
+            }
         }
 
-        private void ProcessAudioPlayback()
+        private void VisualizeRecording()
         {
-            if (_numSyncIterations > 0)
-            {
-                --_numSyncIterations;
-            }
+            _rmsVisualizerMaterial.color = (Time.time - audioLastDetectionTime < 0.05f) ? Color.green : Color.white;
+        }
 
-            if (!_playbackStarted && (_numSyncIterations == 0) && (Microphone.GetPosition(_deviceMicrophone) > _numSamplesLatency))
+        private void VisualizePlayback()
+        {
+            if (_playbackAudioSource.isPlaying)
             {
-                _inputAudioSource.Play();
-                _inputAudioSource.timeSamples = Microphone.GetPosition(_deviceMicrophone) - _numSamplesLatency;
-                _playbackStarted = true;
+                _playbackAudioSource.GetOutputData(playbackSamples, 0);
 
-                switch (_captureMode)
+                float squaredSum = 0;
+                for (int i = 0; i < playbackSamples.Length; ++i)
                 {
-                    case CaptureMode.Realtime:
-                        {
-                            _playbackAudioSource.pitch = 1;
-                            _playbackAudioSource.clip = _inputAudioSource.clip;
-                            _playbackAudioSource.loop = true;
-                            _playbackAudioSource.Play();
-
-                            break;
-                        }
-
-                    case CaptureMode.Delayed:
-                        {
-                            _playbackAudioSource.pitch = _pitch;
-                            _playbackAudioSource.loop = false;
-                            break;
-                        }
+                    squaredSum += playbackSamples[i] * playbackSamples[i];
                 }
-            }
 
-            // Increasing latency
-            if ((_inputAudioSource.timeSamples > Microphone.GetPosition(_deviceMicrophone)) && (Microphone.GetPosition(_deviceMicrophone) > _numSamplesLatency * 4))
+                float rootMeanSq = Mathf.Sqrt(squaredSum / playbackSamples.Length);
+                float scaleFactor = rootMeanSq * (_maxScale - _minScale) + _minScale;
+                _rmsVisualizer.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+            }
+            else
             {
-                _numSamplesLatency = _numSamplesLatency * 2;
-                _inputAudioSource.timeSamples = Microphone.GetPosition(_deviceMicrophone) - _numSamplesLatency;
+                _rmsVisualizer.transform.localScale = new Vector3(_minScale, _minScale, _minScale);
             }
         }
 
         private void StopCapture()
         {
-            _isCapturing = false;
-            _playbackStarted = false;
+            isCapturing = false;
 
-            // Stop microphone and input audio source.
-            _inputAudioSource.Stop();
-
-            if (!string.IsNullOrEmpty(_deviceMicrophone))
-            {
-                Microphone.End(_deviceMicrophone);
-            }
+            mlAudioStreamingClip?.Dispose();
+            mlAudioStreamingClip = null;
+            mlAudioBufferClip?.Dispose();
+            mlAudioBufferClip = null;
 
             // Stop audio playback source and reset settings.
             _playbackAudioSource.Stop();
+            _playbackAudioSource.time = 0;
+            _playbackAudioSource.pitch = 1;
             _playbackAudioSource.loop = false;
             _playbackAudioSource.clip = null;
         }
@@ -315,155 +269,101 @@ namespace MagicLeap
         private void UpdateStatus()
         {
             _statusLabel.text = string.Format("<color=#dbfb76><b>Controller Data</b></color>\nStatus: {0}\n", ControllerStatus.Text);
-
             _statusLabel.text += "\n<color=#dbfb76><b>AudioCapture Data</b></color>\n";
-            if (!_canCapture)
-            {
-                _statusLabel.text += (_privilegeRequester.State != MLPrivilegeRequesterBehavior.PrivilegeState.Failed) ? "Status: Requesting Privileges" : "Status: Privileges Denied";
-            }
-            else
-            {
-                _statusLabel.text += string.Format("Status: {0}", _captureMode.ToString());
-            }
+            _statusLabel.text += string.Format("Status: {0}\n", captureMode.ToString());
         }
 
         private void DetectAudio()
         {
             // Analyze the input spectrum data, to determine when someone is speaking.
-            _inputAudioSource.GetSpectrumData(_audioSamples, 0, FFTWindow.Rectangular);
-            _audioMaxSample = _audioSamples.Max();
+            float maxAudioSample = 0f;
 
-            if (_audioMaxSample > AUDIO_SENSITVITY_DECIBEL)
+            while (true)
             {
-                // Note the first moment speech was detected.
-                _audioLastDetectionTime = Time.time;
-
-                if (_isAudioDetected == false)
+                int readSampleCount = mlAudioBufferClip.GetData(detectionAudioSamples, detectionAudioPosition, out int nextPosition);
+                if (readSampleCount == 0)
                 {
-                    _isAudioDetected = true;
-                    _audioDetectionStart = _inputAudioSource.time;
+                    break;
+                }
+                detectionAudioPosition = nextPosition;
+                maxAudioSample = detectionAudioSamples.Take(readSampleCount).Append(maxAudioSample).Max();
+            }
+
+            if (maxAudioSample > AUDIO_SENSITVITY)
+            {
+                audioLastDetectionTime = Time.time;
+
+                if (isAudioDetected == false)
+                {
+                    isAudioDetected = true;
+                    audioDetectionStart = Time.time;
                 }
             }
-            else if (_isAudioDetected && Time.time > _audioLastDetectionTime + AUDIO_CLIP_TIMEOUT_SECONDS)
+            else if (isAudioDetected && (Time.time > audioLastDetectionTime + AUDIO_CLIP_TIMEOUT_SECONDS))
             {
-                // Note the last moment speach was detected.
-                _audioDetectionEnd = _inputAudioSource.time - (AUDIO_CLIP_TIMEOUT_SECONDS - AUDIO_CLIP_FALLOFF_SECONDS);
+                var audioDetectionDuration = Time.time - audioDetectionStart;
 
-                // Create the playback clip.
-                _playbackAudioSource.clip = CreateAudioClip(_inputAudioSource.clip, _audioDetectionStart, _audioDetectionEnd);
-                if (_playbackAudioSource.clip != null)
-                {
-                    _playbackAudioSource.Play();
-                }
+                _playbackAudioSource.clip = mlAudioBufferClip.FlushToClip();
+                _playbackAudioSource.time = _playbackAudioSource.clip.length - audioDetectionDuration;
+                _playbackAudioSource.Play();
 
                 // Reset and allow for new captured speech.
-                _isAudioDetected = false;
-                _audioDetectionStart = 0;
-                _audioDetectionEnd = 0;
-            }
-        }
-
-        private void AnimateParrot(AudioSource audioSource)
-        {
-            if (audioSource.isPlaying)
-            {
-                // Analyze the playback spectrum data to detect spikes in volume.
-                audioSource.GetSpectrumData(_audioSamples, 0, FFTWindow.Rectangular);
-                _audioMaxSample = _audioSamples.Max();
-
-                // Toggle the talking animation.
-                if (_audioMaxSample > AUDIO_SENSITVITY_DECIBEL)
-                {
-                    EnableTalkingAnimation(true, 1);
-                }
-                else
-                {
-                    EnableTalkingAnimation(false);
-                }
-            }
-            else
-            {
-                EnableTalkingAnimation(false);
+                isAudioDetected = false;
+                audioDetectionStart = 0;
+                detectionAudioPosition = 0;
+                audioLastDetectionTime = 0;
             }
         }
 
         /// <summary>
-        /// Creates a new audio clip within the start and stop range.
-        /// </summary>
-        /// <param name="clip"></param>
-        /// <param name="start"></param>
-        /// <param name="stop"></param>
-        /// <returns></returns>
-        private AudioClip CreateAudioClip(AudioClip clip, float start, float stop)
-        {
-            int length = (int)(clip.frequency * (stop - start));
-            if (length <= 0)
-            {
-                return null;
-            }
-
-            AudioClip audioClip = AudioClip.Create("Parrot_Voice", length, 1, clip.frequency, false);
-
-            float[] data = new float[length];
-            clip.GetData(data, (int)(clip.frequency * start));
-            audioClip.SetData(data, 0);
-
-            return audioClip;
-        }
-
-        private void EnableTalkingAnimation(bool enabled, float rate = 1)
-        {
-            // Set the properties for the parrot animator.
-            _parrotAnimator.SetBool("IsTalking", enabled);
-            _parrotAnimator.SetFloat("TalkingRate", rate);
-        }
-
-        /// <summary>
-        /// Responds to privilege requester result.
+        /// Responds to permission requester result.
         /// </summary>
         /// <param name="result"/>
-        private void HandleOnPrivilegesDone(MLResult result)
+        private void OnPermissionDenied(string permission)
         {
-            #if PLATFORM_LUMIN
-            if (!result.IsOk)
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            Debug.LogError($"AudioCaptureExample failed to get requested permission {permission}, disabling script.");
+            UpdateStatus();
+            enabled = false;
+            return;
+#endif
+        }
+
+        private void OnPermissionGranted(string permission)
+        {
+            hasPermission = true;
+            Debug.Log($"Succeeded in requesting {permission}.");
+        }
+
+        private void HandleOnTriggerDown(InputAction.CallbackContext inputCallback)
+        {
+            if (!hasPermission)
             {
-                Debug.LogErrorFormat("Error: AudioCaptureExample failed to get all requested privileges, disabling script. Reason: {0}", result);
-                UpdateStatus();
-                enabled = false;
                 return;
             }
-            #endif
 
-            _canCapture = true;
-            Debug.Log("Succeeded in requesting all privileges");
-
-        }
-
-        private void HandleOnTriggerDown(byte controllerId, float triggerValue)
-        {
-            if (_canCapture)
+            if (!controllerActions.Trigger.WasPressedThisFrame())
             {
-                _captureMode = (_captureMode == CaptureMode.Delayed) ? CaptureMode.Inactive : _captureMode + 1;
+                return;
+            }
 
-                // Stop & Start to clear the previous mode.
-                if (_isCapturing)
-                {
-                    StopCapture();
-                }
+            captureMode = (captureMode == CaptureMode.Delayed) ? CaptureMode.Inactive : captureMode + 1;
 
-                if (_captureMode != CaptureMode.Inactive)
-                {
-                    StartMicrophone();
-                }
+            // Stop & Start to clear the previous mode.
+            if (isCapturing)
+            {
+                StopCapture();
+            }
+
+            if (captureMode != CaptureMode.Inactive)
+            {
+                StartMicrophone();
             }
         }
 
-        private void HandleOnButtonDown(byte controllerId, MLInput.Controller.Button button)
+        private void HandleOnBumperDown(InputAction.CallbackContext inputCallback)
         {
-            if(button == MLInput.Controller.Button.Bumper)
-            {
-                StartCoroutine("SingleFrameUpdate");
-            }
+            StartCoroutine(nameof(SingleFrameUpdate));
         }
 
         private IEnumerator SingleFrameUpdate()

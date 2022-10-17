@@ -1,26 +1,23 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
-#if UNITY_EDITOR || PLATFORM_LUMIN
+#if UNITY_EDITOR || UNITY_MAGICLEAP || UNITY_ANDROID
 
 using UnityEngine;
-using UnityEngine.Experimental.XR;
 using UnityEngine.XR.MagicLeap;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// This class allows you to change meshing properties at runtime, including the rendering mode.
-    /// Manages the MLSpatialMapper behaviour and tracks the meshes.
+    /// Manages the MeshingSubsystemComponent behaviour and tracks the meshes.
     /// </summary>
     public class MeshingVisualizer : MonoBehaviour
     {
@@ -28,12 +25,13 @@ namespace MagicLeap
         {
             None,
             Wireframe,
+            Colored,
             PointCloud,
             Occlusion
         }
 
-        [SerializeField, Tooltip("The MLSpatialMapper from which to get update on mesh types.")]
-        private MLSpatialMapper _mlSpatialMapper = null;
+        [SerializeField, Tooltip("The MeshingSubsystemComponent from which to get update on mesh types.")]
+        private MeshingSubsystemComponent _meshingSubsystemComponent = null;
 
         [SerializeField, Tooltip("The material to apply for occlusion.")]
         private Material _occlusionMaterial = null;
@@ -41,20 +39,26 @@ namespace MagicLeap
         [SerializeField, Tooltip("The material to apply for wireframe rendering.")]
         private Material _wireframeMaterial = null;
 
+        [SerializeField, Tooltip("The material to apply for colored rendering.")]
+        private Material _coloredMaterial = null;
+
         [SerializeField, Tooltip("The material to apply for point cloud rendering.")]
         private Material _pointCloudMaterial = null;
 
-        private RenderMode _renderMode = RenderMode.Wireframe;
+        public RenderMode renderMode 
+        {
+            get; private set;
+        } = RenderMode.Wireframe;
 
         /// <summary>
-        /// Start listening for MLSpatialMapper events.
+        /// Start listening for MeshingSubsystemComponent events.
         /// </summary>
         void Awake()
         {
             // Validate all required game objects.
-            if (_mlSpatialMapper == null)
+            if (_meshingSubsystemComponent == null)
             {
-                Debug.LogError("Error: MeshingVisualizer._mlSpatialMapper is not set, disabling script!");
+                Debug.LogError("Error: MeshingVisualizer._meshingSubsystemComponent is not set, disabling script!");
                 enabled = false;
                 return;
             }
@@ -67,6 +71,12 @@ namespace MagicLeap
             if (_wireframeMaterial == null)
             {
                 Debug.LogError("Error: MeshingVisualizer._wireframeMaterial is not set, disabling script!");
+                enabled = false;
+                return;
+            }
+            if (_coloredMaterial == null)
+            {
+                Debug.LogError("Error: MeshingVisualizer._coloredMaterial is not set, disabling script!");
                 enabled = false;
                 return;
             }
@@ -83,8 +93,8 @@ namespace MagicLeap
         /// </summary>
         void Start()
         {
-            _mlSpatialMapper.meshAdded += HandleOnMeshReady;
-            _mlSpatialMapper.meshUpdated += HandleOnMeshReady;
+            _meshingSubsystemComponent.meshAdded += HandleOnMeshReady;
+            _meshingSubsystemComponent.meshUpdated += HandleOnMeshReady;
         }
 
         /// <summary>
@@ -92,8 +102,8 @@ namespace MagicLeap
         /// </summary>
         void OnDestroy()
         {
-            _mlSpatialMapper.meshAdded -= HandleOnMeshReady;
-            _mlSpatialMapper.meshUpdated -= HandleOnMeshReady;
+            _meshingSubsystemComponent.meshAdded -= HandleOnMeshReady;
+            _meshingSubsystemComponent.meshUpdated -= HandleOnMeshReady;
         }
 
         /// <summary>
@@ -102,31 +112,32 @@ namespace MagicLeap
         /// <param name="mode">The render mode that should be used on the material.</param>
         public void SetRenderers(RenderMode mode)
         {
-            if (_renderMode != mode)
+            if (renderMode != mode)
             {
                 // Set the render mode.
-                _renderMode = mode;
+                renderMode = mode;
 
                 // Clear existing meshes to process the new mesh type.
-                switch (_renderMode)
+                switch (renderMode)
                 {
                     case RenderMode.Wireframe:
+                    case RenderMode.Colored:
                     case RenderMode.Occlusion:
                     {
-                        _mlSpatialMapper.meshType = MLSpatialMapper.MeshType.Triangles;
+                        _meshingSubsystemComponent.requestedMeshType = MeshingSubsystemComponent.MeshType.Triangles;
 
                         break;
                     }
                     case RenderMode.PointCloud:
                     {
-                        _mlSpatialMapper.meshType = MLSpatialMapper.MeshType.PointCloud;
+                        _meshingSubsystemComponent.requestedMeshType = MeshingSubsystemComponent.MeshType.PointCloud;
 
                         break;
                     }
                 }
 
-                _mlSpatialMapper.DestroyAllMeshes();
-                _mlSpatialMapper.RefreshAllMeshes();
+                _meshingSubsystemComponent.DestroyAllMeshes();
+                _meshingSubsystemComponent.RefreshAllMeshes();
             }
         }
 
@@ -139,21 +150,26 @@ namespace MagicLeap
             if (meshRenderer != null)
             {
                 // Toggle the GameObject(s) and set the correct materia based on the current RenderMode.
-                if (_renderMode == RenderMode.None)
+                if (renderMode == RenderMode.None)
                 {
                     meshRenderer.enabled = false;
                 }
-                else if (_renderMode == RenderMode.PointCloud)
+                else if (renderMode == RenderMode.PointCloud)
                 {
                     meshRenderer.enabled = true;
                     meshRenderer.material = _pointCloudMaterial;
                 }
-                else if (_renderMode == RenderMode.Wireframe)
+                else if (renderMode == RenderMode.Wireframe)
                 {
                     meshRenderer.enabled = true;
                     meshRenderer.material = _wireframeMaterial;
                 }
-                else if (_renderMode == RenderMode.Occlusion)
+                else if (renderMode == RenderMode.Colored)
+                {
+                    meshRenderer.enabled = true;
+                    meshRenderer.material = _coloredMaterial;
+                }
+                else if (renderMode == RenderMode.Occlusion)
                 {
                     meshRenderer.enabled = true;
                     meshRenderer.material = _occlusionMaterial;
@@ -161,31 +177,31 @@ namespace MagicLeap
             }
         }
 
-        #if UNITY_2019_3_OR_NEWER
+#if UNITY_2019_3_OR_NEWER
         /// <summary>
         /// Handles the MeshReady event, which tracks and assigns the correct mesh renderer materials.
         /// </summary>
         /// <param name="meshId">Id of the mesh that got added / upated.</param>
         private void HandleOnMeshReady(UnityEngine.XR.MeshId meshId)
         {
-            if (_mlSpatialMapper.meshIdToGameObjectMap.ContainsKey(meshId))
+            if (_meshingSubsystemComponent.meshIdToGameObjectMap.ContainsKey(meshId))
             {
-                UpdateRenderer(_mlSpatialMapper.meshIdToGameObjectMap[meshId].GetComponent<MeshRenderer>());
+                UpdateRenderer(_meshingSubsystemComponent.meshIdToGameObjectMap[meshId].GetComponent<MeshRenderer>());
             }
         }
-        #else
+#else
         /// <summary>
         /// Handles the MeshReady event, which tracks and assigns the correct mesh renderer materials.
         /// </summary>
         /// <param name="meshId">Id of the mesh that got added / upated.</param>
         private void HandleOnMeshReady(TrackableId meshId)
         {
-            if (_mlSpatialMapper.meshIdToGameObjectMap.ContainsKey(meshId))
+            if (_meshingSubsystemComponent.meshIdToGameObjectMap.ContainsKey(meshId))
             {
-                UpdateRenderer(_mlSpatialMapper.meshIdToGameObjectMap[meshId].GetComponent<MeshRenderer>());
+                UpdateRenderer(_meshingSubsystemComponent.meshIdToGameObjectMap[meshId].GetComponent<MeshRenderer>());
             }
         }
-        #endif
+#endif
     }
 }
 

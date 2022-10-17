@@ -1,19 +1,17 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
 using UnityEngine;
-using UnityEngine.XR.MagicLeap;
+using UnityEngine.InputSystem;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// This class provides the current status of the controller
@@ -22,14 +20,15 @@ namespace MagicLeap
     /// Green: Controller connected.
     /// Yellow: Controller disconnected.
     /// </summary>
-    [RequireComponent(typeof(MLControllerConnectionHandlerBehavior))]
     public class ControllerStatus : MonoBehaviour
     {
         private static ControllerStatus _instance = null;
-        private MLControllerConnectionHandlerBehavior _controllerConnectionHandler = null;
+        private MagicLeapInputs mlInputs;
+        private MagicLeapInputs.ControllerActions controllerActions;
 
         private string _text = "Unknown";
         private Color _color = Color.red;
+
 
         /// <summary>
         /// Returns the status text of the controller.
@@ -38,9 +37,10 @@ namespace MagicLeap
         {
             get
             {
-                if(_instance == null)
+                if (_instance == null)
                 {
-                    Debug.LogError("Error: ControllerStatus._instance is not set, this component must be included in your scene.");
+                    Debug.LogError(
+                        "Error: ControllerStatus._instance is not set, this component must be included in your scene.");
 
                     return string.Empty;
                 }
@@ -48,10 +48,7 @@ namespace MagicLeap
                 return _instance._text;
             }
 
-            private set
-            {
-                _instance._text = value;
-            }
+            private set { _instance._text = value; }
         }
 
         /// <summary>
@@ -63,7 +60,8 @@ namespace MagicLeap
             {
                 if (_instance == null)
                 {
-                    Debug.LogError("Error: ControllerStatus._instance is not set, this component must be included in your scene.");
+                    Debug.LogError(
+                        "Error: ControllerStatus._instance is not set, this component must be included in your scene.");
 
                     return Color.red;
                 }
@@ -71,10 +69,7 @@ namespace MagicLeap
                 return _instance._color;
             }
 
-            private set
-            {
-                _instance._color = value;
-            }
+            private set { _instance._color = value; }
         }
 
         /// <summary>
@@ -83,31 +78,27 @@ namespace MagicLeap
         void Awake()
         {
             _instance = this;
-
-            _controllerConnectionHandler = GetComponent<MLControllerConnectionHandlerBehavior>();
-
-            _controllerConnectionHandler.OnControllerConnected += HandleOnControllerChanged;
-            _controllerConnectionHandler.OnControllerDisconnected += HandleOnControllerChanged;
         }
 
         void Start()
         {
+            mlInputs = new MagicLeapInputs();
+            mlInputs.Enable();
+            controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+
+            controllerActions.IsTracked.performed += HandleOnControllerChanged;
+            controllerActions.IsTracked.canceled += HandleOnControllerChanged;
+
             // Wait until the next cycle to check the status.
             UpdateStatus();
         }
 
         void OnDestroy()
         {
-            _controllerConnectionHandler.OnControllerConnected -= HandleOnControllerChanged;
-            _controllerConnectionHandler.OnControllerDisconnected -= HandleOnControllerChanged;
-        }
+            controllerActions.IsTracked.performed -= HandleOnControllerChanged;
+            controllerActions.IsTracked.canceled -= HandleOnControllerChanged;
 
-        void OnApplicationPause(bool pause)
-        {
-            if(!pause)
-            {
-                UpdateStatus();
-            }
+            mlInputs.Dispose();
         }
 
         /// <summary>
@@ -115,46 +106,24 @@ namespace MagicLeap
         /// </summary>
         private void UpdateStatus()
         {
-            if (_controllerConnectionHandler.enabled)
+            if (controllerActions.IsTracked.WasPerformedThisFrame())
             {
-                if (_controllerConnectionHandler.IsControllerValid())
-                {
-                    #if PLATFORM_LUMIN
-                    MLInput.Controller controller = _controllerConnectionHandler.ConnectedController;
-                    if (controller.Type == MLInput.Controller.ControlType.Control)
-                    {
-                        Text = "Controller Connected";
-                        Color = Color.green;
-                    }
-                    else if (controller.Type == MLInput.Controller.ControlType.MobileApp)
-                    {
-                        Text = "MLA Connected";
-                        Color = Color.green;
-                    }
-                    else
-                    {
-                        Text = "Unknown";
-                        Color = Color.red;
-                    }
-                    #else
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+                Text = "Controller Connected";
+                Color = Color.green;
+#else
                     Text = "Unknown";
                     Color = Color.red;
-                    #endif
-                }
-                else
-                {
-                    Text = "Disconnected";
-                    Color = Color.yellow;
-                }
+#endif
             }
             else
             {
-                Text = "Input Failed to Start";
-                Color = Color.red;
+                Text = "Disconnected";
+                Color = Color.yellow;
             }
         }
 
-        private void HandleOnControllerChanged(byte controllerId)
+        private void HandleOnControllerChanged(InputAction.CallbackContext callbackContext)
         {
             UpdateStatus();
         }

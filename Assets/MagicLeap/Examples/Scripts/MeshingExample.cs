@@ -1,24 +1,26 @@
 // %BANNER_BEGIN%
 // ---------------------------------------------------------------------
 // %COPYRIGHT_BEGIN%
-//
-// Copyright (c) 2019-present, Magic Leap, Inc. All Rights Reserved.
-// Use of this file is governed by the Developer Agreement, located
-// here: https://auth.magicleap.com/terms/developer
-//
+// Copyright (c) (2019-2022) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
 // %COPYRIGHT_END%
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
-#if UNITY_EDITOR || PLATFORM_LUMIN
+#if UNITY_EDITOR || UNITY_MAGICLEAP || UNITY_ANDROID
 
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.XR.MagicLeap;
 using System.Collections;
-using MagicLeap.Core.StarterKit;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.InteractionSubsystems;
+using UnityEngine.XR.MagicLeap;
+using UnityEngine.XR.Management;
 
-namespace MagicLeap
+namespace MagicLeap.Examples
 {
     /// <summary>
     /// This represents all the runtime control over meshing component in order to best visualize the
@@ -27,7 +29,7 @@ namespace MagicLeap
     public class MeshingExample : MonoBehaviour
     {
         [SerializeField, Tooltip("The spatial mapper from which to update mesh params.")]
-        private MLSpatialMapper _mlSpatialMapper = null;
+        private MeshingSubsystemComponent _meshingSubsystemComponent = null;
 
         [SerializeField, Tooltip("Visualizer for the meshing results.")]
         private MeshingVisualizer _meshingVisualizer = null;
@@ -44,14 +46,15 @@ namespace MagicLeap
         [SerializeField, Space, Tooltip("Prefab to shoot into the scene.")]
         private GameObject _shootingPrefab = null;
 
-        [SerializeField, Space, Tooltip("MLControllerConnectionHandlerBehavior reference.")]
-        private MLControllerConnectionHandlerBehavior _controllerConnectionHandler = null;
-
+        [SerializeField, Space, Tooltip("Render mode to render mesh data with.")]
         private MeshingVisualizer.RenderMode _renderMode = MeshingVisualizer.RenderMode.Wireframe;
         private int _renderModeCount;
 
-        private static readonly Vector3 _boundedExtentsSize = new Vector3(2.0f, 2.0f, 2.0f);
-        private static readonly Vector3 _boundlessExtentsSize = new Vector3(10.0f, 10.0f, 10.0f);
+        [SerializeField, Space, Tooltip("Size of the bounds extents when bounded setting is enabled.")]
+        private Vector3 _boundedExtentsSize = new Vector3(2.0f, 2.0f, 2.0f);
+
+        [SerializeField, Space, Tooltip("Size of the bounds extents when bounded setting is disabled.")]
+        private Vector3 _boundlessExtentsSize = new Vector3(10.0f, 10.0f, 10.0f);
 
         private const float SHOOTING_FORCE = 300.0f;
         private const float MIN_BALL_SIZE = 0.2f;
@@ -60,99 +63,120 @@ namespace MagicLeap
 
         private Camera _camera = null;
 
+        private MagicLeapInputs mlInputs;
+        private MagicLeapInputs.ControllerActions controllerActions;
+        private XRRayInteractor xRRayInteractor;
+        private XRInputSubsystem inputSubsystem;
+
+        private readonly MLPermissions.Callbacks permissionCallbacks = new MLPermissions.Callbacks();
+
         /// <summary>
         /// Initializes component data and starts MLInput.
         /// </summary>
         void Awake()
         {
-            if (_mlSpatialMapper == null)
+            permissionCallbacks.OnPermissionGranted += OnPermissionGranted;
+            permissionCallbacks.OnPermissionDenied += OnPermissionDenied;
+            permissionCallbacks.OnPermissionDeniedAndDontAskAgain += OnPermissionDenied;
+
+            if (_meshingSubsystemComponent == null)
             {
-                Debug.LogError("Error: MeshingExample._mlSpatialMapper is not set, disabling script.");
+                Debug.LogError("MeshingExample._meshingSubsystemComponent is not set. Disabling script.");
                 enabled = false;
                 return;
             }
+            else
+            {
+                // disable _meshingSubsystemComponent until we have successfully requested permissions
+                _meshingSubsystemComponent.enabled = false;
+            }
             if (_meshingVisualizer == null)
             {
-                Debug.LogError("Error: MeshingExample._meshingVisualizer is not set, disabling script.");
+                Debug.LogError("MeshingExample._meshingVisualizer is not set. Disabling script.");
                 enabled = false;
                 return;
             }
             if (_visualBounds == null)
             {
-                Debug.LogError("Error: MeshingExample._visualBounds is not set, disabling script.");
+                Debug.LogError("MeshingExample._visualBounds is not set. Disabling script.");
                 enabled = false;
                 return;
             }
             if (_statusLabel == null)
             {
-                Debug.LogError("Error: MeshingExample._statusLabel is not set, disabling script.");
+                Debug.LogError("MeshingExample._statusLabel is not set. Disabling script.");
                 enabled = false;
                 return;
             }
             if (_shootingPrefab == null)
             {
-                Debug.LogError("Error: MeshingExample._shootingPrefab is not set, disabling script.");
+                Debug.LogError("MeshingExample._shootingPrefab is not set. Disabling script.");
                 enabled = false;
                 return;
             }
-            if (_controllerConnectionHandler == null)
+
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            MLDevice.RegisterGestureSubsystem();
+            if (MLDevice.GestureSubsystemComponent == null)
             {
-                Debug.LogError("Error MeshingExample._controllerConnectionHandler not set, disabling script.");
+                Debug.LogError("MLDevice.GestureSubsystemComponent is not set. Disabling script.");
                 enabled = false;
                 return;
             }
+#endif
+            xRRayInteractor = FindObjectOfType<XRRayInteractor>();
 
             _renderModeCount = System.Enum.GetNames(typeof(MeshingVisualizer.RenderMode)).Length;
 
             _camera = Camera.main;
 
-            #if PLATFORM_LUMIN
-            MLInput.OnControllerButtonDown += OnButtonDown;
-            MLInput.OnTriggerDown += OnTriggerDown;
-            MLInput.OnControllerTouchpadGestureStart += OnTouchpadGestureStart;
-            #endif
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            mlInputs = new MagicLeapInputs();
+            mlInputs.Enable();
+            controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+
+            controllerActions.Trigger.performed += OnTriggerDown;
+            controllerActions.Bumper.performed += OnBumperDown;
+            controllerActions.Menu.performed += OnMenuDown;
+
+            MLDevice.GestureSubsystemComponent.onTouchpadGestureChanged += OnTouchpadGestureStart;
+#endif
         }
 
         /// <summary>
         /// Set correct render mode for meshing and update meshing settings.
         /// </summary>
-        void Start()
+        private void Start()
         {
-            #if PLATFORM_LUMIN
-            // Assure that if the 'WorldReconstruction' privilege is missing, then it is logged for all users.
-            MLResult result = MLPrivilegesStarterKit.CheckPrivilege(MLPrivileges.Id.WorldReconstruction);
-            if (result.Result != MLResult.Code.PrivilegeGranted)
-            {
-                Debug.LogErrorFormat("Error: MeshingExample failed to create Mesh Subsystem due to missing 'WorldReconstruction' privilege. Please add to manifest. Disabling script.");
-                enabled = false;
-                return;
-            }
+            MLPermissions.RequestPermission(MLPermission.SpatialMapping, permissionCallbacks);
 
-            result = MLHeadTracking.Start();
-            if (result.IsOk)
-            {
-                MLHeadTracking.RegisterOnHeadTrackingMapEvent(OnHeadTrackingMapEvent);
-            }
-            else
-            {
-                Debug.LogError("MeshingExample could not register to head tracking events because MLHeadTracking could not be started.");
-            }
-            #endif
+            inputSubsystem = XRGeneralSettings.Instance?.Manager?.activeLoader?.GetLoadedSubsystem<XRInputSubsystem>();
+            inputSubsystem.trackingOriginUpdated += OnTrackingOriginChanged;
 
             _meshingVisualizer.SetRenderers(_renderMode);
 
-            _mlSpatialMapper.gameObject.transform.position = _camera.gameObject.transform.position;
-            _mlSpatialMapper.gameObject.transform.localScale = _bounded ? _boundedExtentsSize : _boundlessExtentsSize;
-
-            _visualBounds.SetActive(_bounded);
+            _meshingSubsystemComponent.gameObject.transform.position = _camera.gameObject.transform.position;
+            UpdateBounds();
         }
+
+
 
         /// <summary>
         /// Update mesh polling center position to camera.
         /// </summary>
         void Update()
         {
-            _mlSpatialMapper.gameObject.transform.position = _camera.gameObject.transform.position;
+            if (_meshingVisualizer.renderMode != _renderMode)
+            {
+                _meshingVisualizer.SetRenderers(_renderMode);
+            }
+
+            _meshingSubsystemComponent.gameObject.transform.position = _camera.gameObject.transform.position;
+            if ((_bounded && _meshingSubsystemComponent.gameObject.transform.localScale != _boundedExtentsSize) ||
+                (!_bounded && _meshingSubsystemComponent.gameObject.transform.localScale != _boundlessExtentsSize))
+            {
+                UpdateBounds();
+            }
 
             UpdateStatusText();
         }
@@ -162,13 +186,33 @@ namespace MagicLeap
         /// </summary>
         void OnDestroy()
         {
-            #if PLATFORM_LUMIN
-            MLInput.OnControllerTouchpadGestureStart -= OnTouchpadGestureStart;
-            MLInput.OnTriggerDown -= OnTriggerDown;
-            MLInput.OnControllerButtonDown -= OnButtonDown;
-            MLHeadTracking.UnregisterOnHeadTrackingMapEvent(OnHeadTrackingMapEvent);
-            MLHeadTracking.Stop();
-            #endif
+            permissionCallbacks.OnPermissionGranted -= OnPermissionGranted;
+            permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
+            permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
+
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            controllerActions.Trigger.performed -= OnTriggerDown;
+            controllerActions.Bumper.performed -= OnBumperDown;
+            controllerActions.Menu.performed -= OnMenuDown;
+            inputSubsystem.trackingOriginUpdated -= OnTrackingOriginChanged;
+
+            if (MLDevice.GestureSubsystemComponent != null)
+                MLDevice.GestureSubsystemComponent.onTouchpadGestureChanged -= OnTouchpadGestureStart;
+
+            mlInputs.Dispose();
+#endif
+        }
+
+        private void OnPermissionGranted(string permission)
+        {
+            _meshingSubsystemComponent.enabled = true;
+        }
+
+        private void OnPermissionDenied(string permission)
+        {
+            Debug.LogError($"Failed to create Meshing Subsystem due to missing or denied {MLPermission.SpatialMapping} permission. Please add to manifest. Disabling script.");
+            enabled = false;
+            _meshingSubsystemComponent.enabled = false;
         }
 
         /// <summary>
@@ -189,37 +233,33 @@ namespace MagicLeap
                 "Extents",
                 _bounded.ToString(),
                 "LOD",
-                #if UNITY_2019_3_OR_NEWER
-                MLSpatialMapper.DensityToLevelOfDetail(_mlSpatialMapper.density).ToString()
-                #else
-                _mlSpatialMapper.levelOfDetail.ToString()
-                #endif
+#if UNITY_2019_3_OR_NEWER
+                MeshingSubsystemComponent.DensityToLevelOfDetail(_meshingSubsystemComponent.density).ToString()
+#else
+                _meshingSubsystemComponent.levelOfDetail.ToString()
+#endif
                 );
         }
 
         /// <summary>
-        /// Handles the event for button down. Changes render mode if bumper is pressed or
-        /// changes from bounded to boundless and viceversa if home button is pressed.
+        /// Handles the event for bumper down. Changes render mode.
         /// </summary>
-        /// <param name="controllerId">The id of the controller.</param>
-        /// <param name="button">The button that is being released.</param>
-        private void OnButtonDown(byte controllerId, MLInput.Controller.Button button)
+        /// <param name="callbackContext"></param>
+        private void OnBumperDown(InputAction.CallbackContext callbackContext)
         {
-            if (_controllerConnectionHandler.IsControllerValid(controllerId))
-            {
-                if (button == MLInput.Controller.Button.Bumper)
-                {
-                    _renderMode = (MeshingVisualizer.RenderMode)((int)(_renderMode + 1) % _renderModeCount);
-                    _meshingVisualizer.SetRenderers(_renderMode);
-                }
-                else if (button == MLInput.Controller.Button.HomeTap)
-                {
-                    _bounded = !_bounded;
+            _renderMode = (MeshingVisualizer.RenderMode)((int)(_renderMode + 1) % _renderModeCount);
+            _meshingVisualizer.SetRenderers(_renderMode);
+        }
 
-                    _visualBounds.SetActive(_bounded);
-                    _mlSpatialMapper.gameObject.transform.localScale = _bounded ? _boundedExtentsSize : _boundlessExtentsSize;
-                }
-            }
+        /// <summary>
+        ///  Handles the event for Home down. 
+        /// changes from bounded to boundless and viceversa.
+        /// </summary>
+        /// <param name="callbackContext"></param>
+        private void OnMenuDown(InputAction.CallbackContext callbackContext)
+        {
+            _bounded = !_bounded;
+            UpdateBounds();
         }
 
         /// <summary>
@@ -228,33 +268,30 @@ namespace MagicLeap
         /// </summary>
         /// <param name="controllerId">The id of the controller.</param>
         /// <param name="button">The button that is being released.</param>
-        private void OnTriggerDown(byte controllerId, float value)
+        private void OnTriggerDown(InputAction.CallbackContext callbackContext)
         {
-            if(MLInputModuleBehavior.IsOverUI)
+            if (xRRayInteractor.TryGetCurrentUIRaycastResult(out UnityEngine.EventSystems.RaycastResult result))
             {
                 return;
             }
 
-            if (_controllerConnectionHandler.IsControllerValid(controllerId))
+            // TODO: Use pool object instead of instantiating new object on each trigger down.
+            // Create the ball and necessary components and shoot it along raycast.
+            GameObject ball = Instantiate(_shootingPrefab);
+
+            ball.SetActive(true);
+            float ballsize = Random.Range(MIN_BALL_SIZE, MAX_BALL_SIZE);
+            ball.transform.localScale = new Vector3(ballsize, ballsize, ballsize);
+            ball.transform.position = _camera.gameObject.transform.position;
+
+            Rigidbody rigidBody = ball.GetComponent<Rigidbody>();
+            if (rigidBody == null)
             {
-                // TODO: Use pool object instead of instantiating new object on each trigger down.
-                // Create the ball and necessary components and shoot it along raycast.
-                GameObject ball = Instantiate(_shootingPrefab);
-
-                ball.SetActive(true);
-                float ballsize = Random.Range(MIN_BALL_SIZE, MAX_BALL_SIZE);
-                ball.transform.localScale = new Vector3(ballsize, ballsize, ballsize);
-                ball.transform.position = _camera.gameObject.transform.position;
-
-                Rigidbody rigidBody = ball.GetComponent<Rigidbody>();
-                if (rigidBody == null)
-                {
-                    rigidBody = ball.AddComponent<Rigidbody>();
-                }
-                rigidBody.AddForce(_camera.gameObject.transform.forward * SHOOTING_FORCE);
-
-                Destroy(ball, BALL_LIFE_TIME);
+                rigidBody = ball.AddComponent<Rigidbody>();
             }
+            rigidBody.AddForce(_camera.gameObject.transform.forward * SHOOTING_FORCE);
+
+            Destroy(ball, BALL_LIFE_TIME);
         }
 
         /// <summary>
@@ -263,34 +300,38 @@ namespace MagicLeap
         /// </summary>
         /// <param name="controllerId">The id of the controller.</param>
         /// <param name="gesture">The gesture getting started.</param>
-        private void OnTouchpadGestureStart(byte controllerId, MLInput.Controller.TouchpadGesture gesture)
+        private void OnTouchpadGestureStart(GestureSubsystem.Extensions.TouchpadGestureEvent touchpadGestureEvent)
         {
-            #if PLATFORM_LUMIN
-            if (_controllerConnectionHandler.IsControllerValid(controllerId) &&
-                gesture.Type == MLInput.Controller.TouchpadGesture.GestureType.Swipe && gesture.Direction == MLInput.Controller.TouchpadGesture.GestureDirection.Up)
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            if (touchpadGestureEvent.state == GestureState.Started &&
+                touchpadGestureEvent.type == InputSubsystem.Extensions.TouchpadGesture.Type.Swipe &&
+                touchpadGestureEvent.direction == InputSubsystem.Extensions.TouchpadGesture.Direction.Up)
             {
-                #if UNITY_2019_3_OR_NEWER
-                _mlSpatialMapper.density = MLSpatialMapper.LevelOfDetailToDensity((MLSpatialMapper.DensityToLevelOfDetail(_mlSpatialMapper.density) == MLSpatialMapper.LevelOfDetail.Maximum) ? MLSpatialMapper.LevelOfDetail.Minimum : (MLSpatialMapper.DensityToLevelOfDetail(_mlSpatialMapper.density) + 1));
-                #else
+#if UNITY_2019_3_OR_NEWER
+                _meshingSubsystemComponent.density = MLSpatialMapper.LevelOfDetailToDensity((MLSpatialMapper.DensityToLevelOfDetail(_meshingSubsystemComponent.density) == MLSpatialMapper.LevelOfDetail.Maximum) ? MLSpatialMapper.LevelOfDetail.Minimum : (MLSpatialMapper.DensityToLevelOfDetail(_meshingSubsystemComponent.density) + 1));
+#else
                 _mlSpatialMapper.levelOfDetail = ((_mlSpatialMapper.levelOfDetail == MLSpatialMapper.LevelOfDetail.Maximum) ? MLSpatialMapper.LevelOfDetail.Minimum : (_mlSpatialMapper.levelOfDetail + 1));
-                #endif
+#endif
             }
-            #endif
+#endif
         }
 
         /// <summary>
         /// Handle in charge of refreshing all meshes if a new session occurs
         /// </summary>
-        /// <param name="mapEvents"> Map Events that happened. </param>
-        private void OnHeadTrackingMapEvent(MLHeadTracking.MapEvents mapEvents)
+        /// <param name="inputSubsystem"> The inputSubsystem that invoked this event. </param>
+        private void OnTrackingOriginChanged(XRInputSubsystem inputSubsystem)
         {
-            #if PLATFORM_LUMIN
-            if (mapEvents.IsNewSession())
-            {
-                _mlSpatialMapper.DestroyAllMeshes();
-                _mlSpatialMapper.RefreshAllMeshes();
-            }
-            #endif
+#if UNITY_MAGICLEAP || UNITY_ANDROID
+            _meshingSubsystemComponent.DestroyAllMeshes();
+            _meshingSubsystemComponent.RefreshAllMeshes();
+#endif
+        }
+
+        private void UpdateBounds()
+        {
+            _visualBounds.SetActive(_bounded);
+            _meshingSubsystemComponent.gameObject.transform.localScale = _bounded ? _boundedExtentsSize : _boundlessExtentsSize;
         }
     }
 }
