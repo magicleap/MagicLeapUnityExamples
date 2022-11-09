@@ -168,8 +168,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630a20c8efd01ee43a8e0985985a1200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trackLeftHand: 1
-  _trackRightHand: 1
 --- !u!212 &107111345
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -301,8 +299,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630a20c8efd01ee43a8e0985985a1200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trackLeftHand: 1
-  _trackRightHand: 1
 --- !u!212 &416995524
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -400,8 +396,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630a20c8efd01ee43a8e0985985a1200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trackLeftHand: 1
-  _trackRightHand: 1
 --- !u!212 &420321752
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -561,12 +555,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 1
+  m_Version: 2
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
   m_LightLayerMask: 1
+  m_RenderingLayers: 1
   m_CustomShadowLayers: 0
   m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
@@ -625,6 +621,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7db5f263d5fb4944aae1ca2478e40124, type: 3}
@@ -664,6 +661,26 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 478054213944560442, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 567421404185543197, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 567421404185543197, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 567421404185543197, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 567421404185543197, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
@@ -1078,6 +1095,7 @@ PrefabInstance:
       value: -282.41
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6906f74934047d24e9a47bbdd1afb57a, type: 3}
@@ -1194,8 +1212,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630a20c8efd01ee43a8e0985985a1200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trackLeftHand: 1
-  _trackRightHand: 1
 --- !u!212 &769434850
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1352,8 +1368,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630a20c8efd01ee43a8e0985985a1200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trackLeftHand: 1
-  _trackRightHand: 1
 --- !u!212 &935686920
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1513,6 +1527,7 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 672325584}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c8ccbf4791d65cf42a2e0fae5b3a697f, type: 3}
@@ -1564,6 +1579,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1061051978}
     m_Modifications:
+    - target: {fileID: 2062985119602007160, guid: fe799b2d0a84dfe43b001b56276fd2fb,
+        type: 3}
+      propertyPath: stereoConvergencePoint
+      value: 
+      objectReference: {fileID: 672325582}
     - target: {fileID: 5589497133593145648, guid: fe799b2d0a84dfe43b001b56276fd2fb,
         type: 3}
       propertyPath: m_RootOrder
@@ -1625,6 +1645,7 @@ PrefabInstance:
       value: XR Rig
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe799b2d0a84dfe43b001b56276fd2fb, type: 3}
@@ -1685,8 +1706,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630a20c8efd01ee43a8e0985985a1200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trackLeftHand: 1
-  _trackRightHand: 1
 --- !u!212 &1698944074
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1806,6 +1825,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7db5f263d5fb4944aae1ca2478e40124, type: 3}
@@ -1866,8 +1886,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630a20c8efd01ee43a8e0985985a1200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trackLeftHand: 1
-  _trackRightHand: 1
 --- !u!212 &1902943349
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1965,8 +1983,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 630a20c8efd01ee43a8e0985985a1200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trackLeftHand: 1
-  _trackRightHand: 1
 --- !u!212 &1979595295
 SpriteRenderer:
   m_ObjectHideFlags: 0

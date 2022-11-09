@@ -49,12 +49,12 @@ namespace MagicLeap.Examples
             var result = MLHeadsetFit.GetState(out headsetFitState);
             if (result.IsOk)
             {
-                statusText.text += $"\nHead calibration: {headsetFitState.FitStatus}";
+                statusText.text += $"\nHeadset Fit: {headsetFitState.FitStatus}";
             }
             result = MLEyeCalibration.GetState(out eyeCalibrationState);
             if (result.IsOk)
             {
-                statusText.text += $"\nHead calibration: {eyeCalibrationState.EyeCalibration}";
+                statusText.text += $"\nEye calibration: {eyeCalibrationState.EyeCalibration}";
             }
         }
 

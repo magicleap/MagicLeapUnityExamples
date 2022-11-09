@@ -18,6 +18,7 @@ namespace MagicLeap.Examples
     using SimpleJson;
     using UnityEngine;
     using UnityEngine.Networking;
+    using UnityEngine.SceneManagement;
     using UnityEngine.UI;
     using UnityEngine.XR.MagicLeap;
 
@@ -61,11 +62,17 @@ namespace MagicLeap.Examples
         private Renderer localVideoRenderer;
 
         [SerializeField]
+        private Transform uiRoot;
+
+        [SerializeField]
         private bool useHWBuffers = true;
+
+        [SerializeField]
+        private bool surviveSceneChange = false;
 
         private bool waitingForAnswer = false;
         private bool waitingForAnswerGetRequest = false;
-        private bool shouldDisconnect = false;
+        private bool remotePeerDisconnected = false;
 
         private string serverAddress = "";
         private string serverURI = "";
@@ -93,6 +100,9 @@ namespace MagicLeap.Examples
         private MLCamera.ConnectFlag selectedFlag = MLCamera.ConnectFlag.CamOnly;
         private MLCamera.MRQuality selectedMRQuality = MLCamera.MRQuality._1440x1080;
 
+        // singleton pattern is used in this example to demonstrate persisting the WebRTC session across scene changes in the app
+        private static MLWebRTCExample instance;
+
         enum VideoSize
         {
             _720p,
@@ -103,6 +113,17 @@ namespace MagicLeap.Examples
 
         private void Awake()
         {
+            if(instance != null)
+            {
+                // Scene has loaded but there is already an existing MLWebRTCExample loaded, because it was configured to persist scene changes
+                // so instead of letting this one stay around, re-enable the previous instance and then destroy this one immediately
+                instance.gameObject.SetActive(true);
+                instance.uiRoot.gameObject.SetActive(true);
+                DestroyImmediate(gameObject);
+                DestroyImmediate(uiRoot.gameObject);
+                return;
+            }
+            instance = this;
             permissionCallbacks.OnPermissionGranted += OnPermissionGranted;
             permissionCallbacks.OnPermissionDenied += OnPermissionDenied;
             permissionCallbacks.OnPermissionDeniedAndDontAskAgain += OnPermissionDenied;
@@ -117,6 +138,19 @@ namespace MagicLeap.Examples
                 MLPermissions.RequestPermission(permission, permissionCallbacks);
             }
 #endif
+            if(surviveSceneChange)
+            {
+                SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
+            }
+        }
+
+        private void SceneManager_sceneUnloaded(Scene scene)
+        {
+            if(surviveSceneChange)
+            {
+                gameObject.SetActive(false);
+                uiRoot.gameObject.SetActive(false);
+            }
         }
 
         private void StartAfterPermissions()
@@ -188,6 +222,17 @@ namespace MagicLeap.Examples
                     SubscribeToConnection(connection);
                     await CreateLocalMediaStream();
                     QueryOffers();
+
+                    if (surviveSceneChange)
+                    {
+                        // DontDestoryOnLoad only works on root objects
+                        transform.SetParent(null);
+                        DontDestroyOnLoad(gameObject);
+
+                        // we need to save the UI state as well
+                        uiRoot.SetParent(null);
+                        DontDestroyOnLoad(uiRoot.gameObject);
+                    }
                 });
             }
             catch (UriFormatException)
@@ -270,7 +315,7 @@ namespace MagicLeap.Examples
                 if (MLCamera.TryGetBestFitStreamCapabilityFromCollection(streamCapabilities, captureWidth, captureHeight,
                     MLCamera.CaptureType.Preview, out var previewStreamCapability))
                 {
-                    streamConfigs.Add(MLCamera.CaptureStreamConfig.Create(previewStreamCapability, outputFormat));
+                    streamConfigs.Add(MLCamera.CaptureStreamConfig.Create(previewStreamCapability, MLCamera.OutputFormat.YUV_420_888));
                 }
             }
 
@@ -285,6 +330,8 @@ namespace MagicLeap.Examples
             {
                 localVideoSource =
                     MLWebRTC.MLCameraVideoSource.CreateLocal(mlCamera, captureConfig, out MLResult result, id, localVideoRenderer, useHWBuffers);
+
+                localVideoSource.OnCaptureStatusChanged += LocalVideoSource_OnCaptureStatusChanged;
 
                 var localDefinedAudioSource = (audioType == MLWebRTC.MediaStream.Track.AudioType.Defined) ? new DefinedAudioSourceExample(id) : null;
 
@@ -332,9 +379,10 @@ namespace MagicLeap.Examples
                 });
             }
 
-            if (shouldDisconnect)
+            // the browser client peer disconnected, so we disconnect too
+            if (remotePeerDisconnected)
             {
-                shouldDisconnect = false;
+                remotePeerDisconnected = false;
                 Disconnect();
             }
         }
@@ -346,7 +394,14 @@ namespace MagicLeap.Examples
             permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
             permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
 
-            Disconnect(true);
+            if (!surviveSceneChange)
+            {
+                if(this == instance)
+                {
+                    instance = null;
+                }
+                Disconnect();
+            }
 #endif
         }
 
@@ -661,7 +716,7 @@ namespace MagicLeap.Examples
         {
             // Don't call Disconnect() here because that attempts to destroy the connection object
             // while being inside its callback and results in a deadlock.
-            shouldDisconnect = true;
+            remotePeerDisconnected = true;
         }
 
         private void OnConnectionError(MLWebRTC.PeerConnection connection, string errorMessage)
@@ -801,7 +856,6 @@ namespace MagicLeap.Examples
 #endif
         }
 
-
         public void OnAudioCacheSizeSliderValueChanged()
         {
             if (audioCacheSliderValue != null)
@@ -815,34 +869,16 @@ namespace MagicLeap.Examples
             }
         }
 
-        public void Disconnect(bool onDestroy = false)
+        public void Disconnect()
         {
-            StartCoroutine(DisconnectCoroutine(onDestroy));
-        }
-
-        private IEnumerator DisconnectCoroutine(bool onDestroy = false)
-        {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
-            if (connection == null)
+            if(connection == null)
             {
-                yield break;
+                return;
             }
 
             webRequestManager.HttpPost(serverURI + "/logout/" + localId, string.Empty);
 
-            if (localVideoSource != null)
-            {
-                localVideoSource.DestroyLocal();
-
-                yield return new WaitWhile(() => localVideoSource.IsCapturing);
-
-                if (mlCamera != null)
-                {
-                    mlCamera.Disconnect();
-                }
-            }
-
-            yield return null;
+            localVideoSource.DestroyLocal();
 
             if (dataChannel != null)
             {
@@ -854,39 +890,50 @@ namespace MagicLeap.Examples
             }
 
             UnsubscribeFromConnection(connection);
+#if UNITY_ANDROID
             connection.Destroy();
+#endif
             connection = null;
 
             remoteMediaStream = null;
             waitingForAnswer = false;
             waitingForAnswerGetRequest = false;
 
-            localMediaStream.DestroyLocal();
-            localMediaStream = null;
-
-            if (!onDestroy)
-            {
-                connectButton.gameObject.SetActive(true);
-                serverInput.gameObject.SetActive(true);
-                localVideoSinkBehavior.gameObject.SetActive(false);
-                remoteStatusText.text = "Disconnected";
-                localStatusText.text = "";
-                remoteVideoSinkBehavior.VideoSink.SetStream(null);
-                remoteAudioSinkBehavior.gameObject.SetActive(false);
-                remoteVideoSinkBehavior.gameObject.SetActive(false);
-                disconnectUI.SetActive(false);
-                messageUI.SetActive(false);
-                dataChannelText.text = "";
-                localVideoSourceDropdown.interactable = true;
-                localVideoSizeDropdownRGB.interactable = true;
-                localVideoSizeDropdownMR.interactable = true;
-            }
+            connectButton.gameObject.SetActive(true);
+            serverInput.gameObject.SetActive(true);
+            localVideoSinkBehavior.gameObject.SetActive(false);
+            remoteStatusText.text = "Disconnected";
+            localStatusText.text = "";
+            remoteVideoSinkBehavior.VideoSink.SetStream(null);
+            remoteAudioSinkBehavior.gameObject.SetActive(false);
+            remoteVideoSinkBehavior.gameObject.SetActive(false);
+            disconnectUI.SetActive(false);
+            messageUI.SetActive(false);
+            dataChannelText.text = "";
+            localVideoSourceDropdown.interactable = true;
+            localVideoSizeDropdownRGB.interactable = true;
+            localVideoSizeDropdownMR.interactable = true;
 
             remoteId = "";
             localId = "";
-#else
-            yield break;
+        }
+
+        private void LocalVideoSource_OnCaptureStatusChanged(bool destroyed)
+        {
+#if UNITY_ANDROID
+            if (!localVideoSource.IsCapturing)
 #endif
+            {
+                if (destroyed)
+                {
+                    if (mlCamera != null)
+                    {
+                        mlCamera.Disconnect();
+                    }
+                    localMediaStream.DestroyLocal();
+                    localMediaStream = null;
+                }
+            }
         }
 
         public void SetServerInputValue(string serverInputValue)

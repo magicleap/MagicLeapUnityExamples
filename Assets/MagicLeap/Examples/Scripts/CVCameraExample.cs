@@ -8,14 +8,14 @@
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
-using UnityEngine;
-using UnityEngine.XR.MagicLeap;
-using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.XR.MagicLeap;
 
 
 namespace MagicLeap.Examples
@@ -206,14 +206,14 @@ namespace MagicLeap.Examples
                     Debug.LogError("Camera device unable to received stream caps.");
                     yield break;
                 }
-                
+
                 if (!MLCamera.TryGetBestFitStreamCapabilityFromCollection(streamCapabilities, captureWidth, captureHeight,
                     MLCamera.CaptureType.Video, out selectedCapability))
                 {
                     Debug.LogError("Camera device unable to fit stream caps to chosen options.");
                     yield break;
                 }
-                    
+
                 Debug.Log("Camera device received stream caps");
                 colorCamera.OnRawVideoFrameAvailable += OnCaptureRawVideoFrameAvailable;
                 controllerActions.Bumper.performed += OnButtonDown;
@@ -256,7 +256,7 @@ namespace MagicLeap.Examples
         /// Handles the event of a new image getting captured.
         /// </summary>
         /// <param name="imageData">The raw data of the image.</param>
-        private void OnCaptureRawVideoFrameAvailable(MLCamera.CameraOutput capturedFrame, MLCamera.ResultExtras resultExtras)
+        private void OnCaptureRawVideoFrameAvailable(MLCamera.CameraOutput capturedFrame, MLCamera.ResultExtras resultExtras, MLCamera.Metadata metadataHandle)
         {
             cameraCaptureVisualizer.OnCaptureDataReceived(resultExtras, capturedFrame);
 #if UNITY_ANDROID

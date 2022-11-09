@@ -11,6 +11,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MagicLeap.Core;
@@ -587,7 +588,7 @@ namespace MagicLeap.Examples
         /// </summary>
         /// <param name="capturedFrame">Captured Frame.</param>
         /// <param name="resultExtras">Result Extra.</param>
-        private void OnCaptureRawVideoFrameAvailable(MLCamera.CameraOutput capturedFrame, MLCamera.ResultExtras resultExtras)
+        private void OnCaptureRawVideoFrameAvailable(MLCamera.CameraOutput capturedFrame, MLCamera.ResultExtras resultExtras, MLCamera.Metadata metadataHandle)
         {
             if (string.IsNullOrEmpty(captureInfoText.text) && isCapturingVideo)
             {
@@ -611,12 +612,30 @@ namespace MagicLeap.Examples
         /// </summary>
         /// <param name="capturedImage">Captured frame.</param>
         /// <param name="resultExtras">Results Extras.</param>
-        private void OnCaptureRawImageComplete(MLCamera.CameraOutput capturedImage, MLCamera.ResultExtras resultExtras)
+        private void OnCaptureRawImageComplete(MLCamera.CameraOutput capturedImage, MLCamera.ResultExtras resultExtras, MLCamera.Metadata metadataHandle)
         {
             captureInfoText.text = capturedImage.ToString();
 
             isDisplayingImage = true;
             cameraCaptureVisualizer.OnCaptureDataReceived(resultExtras, capturedImage);
+
+            if(RecordToFile)
+            {
+                if (capturedImage.Format != MLCamera.OutputFormat.YUV_420_888)
+                {
+                    string fileName = DateTime.Now.ToString("MM_dd_yyyy__HH_mm_ss") + ".jpg";
+                    recordedFilePath = System.IO.Path.Combine(Application.persistentDataPath, fileName);
+                    try
+                    {
+                        File.WriteAllBytes(recordedFilePath, capturedImage.Planes[0].Data);
+                        captureInfoText.text += $"\nSaved to {recordedFilePath}";
+                    }
+                    catch(Exception e)
+                    {
+                        Debug.LogError(e.Message);
+                    }
+                }
+            }
         }
 
         private void OnPermissionDenied(string permission)
@@ -690,7 +709,7 @@ namespace MagicLeap.Examples
             contentCanvasGroup.interactable = !isCapturingVideo && !isCapturingPreview;
 
             connectionFlagDropdown.interactable = !IsCameraConnected && !isCapturingVideo && !isCapturingPreview;
-            recordToggle.gameObject.SetActive(IsCameraConnected && CaptureType == MLCamera.CaptureType.Video);
+            recordToggle.gameObject.SetActive(IsCameraConnected && (CaptureType == MLCamera.CaptureType.Video ||  OutputFormat == MLCamera.OutputFormat.JPEG));
             captureButton.gameObject.SetActive(IsCameraConnected);
             connectButton.gameObject.SetActive(!IsCameraConnected);
             disconnectButton.gameObject.SetActive(IsCameraConnected);

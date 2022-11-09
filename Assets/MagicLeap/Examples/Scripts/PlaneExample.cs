@@ -48,11 +48,16 @@ public class PlaneExample : MonoBehaviour
 
     private void Update()
     {
+        UpdateQuery();
+    }
+
+    private void UpdateQuery()
+    {
         if (planeManager.enabled)
         {
             PlanesSubsystem.Extensions.Query = new PlanesSubsystem.Extensions.PlanesQuery
             {
-                Flags = planeManager.currentDetectionMode.ToMLQueryFlags() | PlanesSubsystem.Extensions.MLPlanesQueryFlags.Polygons | PlanesSubsystem.Extensions.MLPlanesQueryFlags.Semantic_All,
+                Flags = planeManager.requestedDetectionMode.ToMLQueryFlags() | PlanesSubsystem.Extensions.MLPlanesQueryFlags.Polygons | PlanesSubsystem.Extensions.MLPlanesQueryFlags.Semantic_All,
                 BoundsCenter = Camera.main.transform.position,
                 BoundsRotation = Camera.main.transform.rotation,
                 BoundsExtents = Vector3.one * 20f,
@@ -65,6 +70,7 @@ public class PlaneExample : MonoBehaviour
     private void OnPermissionGranted(string permission)
     {
         planeManager.enabled = true;
+        UpdateQuery();
     }
 
     private void OnPermissionDenied(string permission)

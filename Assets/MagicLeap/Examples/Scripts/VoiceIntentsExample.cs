@@ -21,6 +21,9 @@ public class VoiceIntentsExample : MonoBehaviour
     private string lastResults = "";
     private bool isProcessing = false;
 
+    [SerializeField, Tooltip("Popup canvas to direct user to Voice Input settings page.")]
+    private GameObject voiceInputSettingsPopup = null;
+
     private readonly MLPermissions.Callbacks permissionCallbacks = new MLPermissions.Callbacks();
 
     private void Awake()
@@ -37,13 +40,31 @@ public class VoiceIntentsExample : MonoBehaviour
         mlInputs.Enable();
         controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
 
+        AppStart();
+    }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        if (!pauseStatus)
+        {
+            AppStart();
+        }
+    }
+
+    private void AppStart()
+    {
+        if (voiceInputSettingsPopup != null)
+        {
+            voiceInputSettingsPopup.SetActive(false);
+        }
+
         MLPermissions.RequestPermission(MLPermission.VoiceInput, permissionCallbacks);
     }
 
     private void Initialize()
     {
         bool isEnabled = MLVoice.VoiceEnabled;
-        startupStatus = "System Supports Voice Intents: "+ isEnabled.ToString();
+        startupStatus = "System Supports Voice Intents: " + isEnabled.ToString();
 
         if (isEnabled)
         {
@@ -70,6 +91,13 @@ public class VoiceIntentsExample : MonoBehaviour
                 Debug.LogError("Failed to Setup Voice Intents with result: " + result);
             }
         }
+        else
+        {
+            if (voiceInputSettingsPopup != null)
+            {
+                voiceInputSettingsPopup.SetActive(true);
+            }
+        }
     }
 
     private void OnDestroy()
@@ -81,6 +109,7 @@ public class VoiceIntentsExample : MonoBehaviour
         permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
         permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
     }
+
 
     // Update is called once per frame
     void Update()
@@ -116,9 +145,9 @@ public class VoiceIntentsExample : MonoBehaviour
         {
             MLResult result;
             if (isProcessing)
-            {  
+            {
                 result = MLVoice.Stop();
-                if(result.IsOk)
+                if (result.IsOk)
                 {
                     isProcessing = false;
                 }
@@ -139,7 +168,7 @@ public class VoiceIntentsExample : MonoBehaviour
                     Debug.LogError("Failed to Re-Setup Voice Intents with result: " + result);
                 }
             }
-            
+
         }
     }
 
@@ -151,5 +180,23 @@ public class VoiceIntentsExample : MonoBehaviour
     private void OnPermissionGranted(string permission)
     {
         Initialize();
+    }
+
+    public void OnVoiceInputSettingsPopupOpen()
+    {
+        UnityEngine.XR.MagicLeap.SettingsIntentsLauncher.LaunchSystemVoiceInputSettings();
+
+        if (voiceInputSettingsPopup != null)
+        {
+            voiceInputSettingsPopup.SetActive(false);
+        }
+    }
+
+    public void OnVoiceInputSettingsPopupCancel()
+    {
+        if (voiceInputSettingsPopup != null)
+        {
+            voiceInputSettingsPopup.SetActive(false);
+        }
     }
 }

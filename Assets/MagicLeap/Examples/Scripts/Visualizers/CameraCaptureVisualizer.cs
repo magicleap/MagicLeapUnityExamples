@@ -253,13 +253,12 @@ namespace MagicLeap.Examples
             channelTexture.Apply();
         }
 
-        private void UpdateRGBTexture(ref Texture2D videoTextureRGB, MLCamera.PlaneInfo imagePlane,
-                                      Renderer renderer)
+        private void UpdateRGBTexture(ref Texture2D videoTextureRGB, MLCamera.PlaneInfo imagePlane, Renderer renderer)
         {
-            int width = (int)(imagePlane.Stride / imagePlane.BytesPerPixel);
+            int actualWidth = (int)(imagePlane.Width * imagePlane.PixelStride);
             
             if (videoTextureRGB != null &&
-                (videoTextureRGB.width != width || videoTextureRGB.height != imagePlane.Height))
+                (videoTextureRGB.width != imagePlane.Width || videoTextureRGB.height != imagePlane.Height))
             {
                 Destroy(videoTextureRGB);
                 videoTextureRGB = null;
@@ -267,7 +266,7 @@ namespace MagicLeap.Examples
 
             if (videoTextureRGB == null)
             {
-                videoTextureRGB = new Texture2D(width, (int)imagePlane.Height, TextureFormat.RGBA32, false);
+                videoTextureRGB = new Texture2D((int)imagePlane.Width, (int)imagePlane.Height, TextureFormat.RGBA32, false);
                 videoTextureRGB.filterMode = FilterMode.Bilinear;
 
                 Material material = renderer.material;
@@ -275,8 +274,21 @@ namespace MagicLeap.Examples
                 material.mainTextureScale = new Vector2(1.0f, -1.0f);
             }
 
-            SetProperRatio(width, (int)imagePlane.Height, _screenRendererRGB);
-            videoTextureRGB.LoadRawTextureData(imagePlane.Data);
+            SetProperRatio((int)imagePlane.Width, (int)imagePlane.Height, _screenRendererRGB);
+
+            if (imagePlane.Stride != actualWidth)
+            {
+                var newTextureChannel = new byte[actualWidth * imagePlane.Height];
+                for(int i = 0; i < imagePlane.Height; i++)
+                {
+                    Buffer.BlockCopy(imagePlane.Data, (int)(i * imagePlane.Stride), newTextureChannel, i * actualWidth, actualWidth);
+                }
+                videoTextureRGB.LoadRawTextureData(newTextureChannel);
+            }
+            else
+            {
+                videoTextureRGB.LoadRawTextureData(imagePlane.Data);
+            }
             videoTextureRGB.Apply();
         }
 

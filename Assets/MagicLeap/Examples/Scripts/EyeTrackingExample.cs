@@ -72,6 +72,8 @@ namespace MagicLeap.Examples
 
             mlInputs.Disable();
             mlInputs.Dispose();
+
+            InputSubsystem.Extensions.MLEyes.StopTracking();
         }
 
         private void Update()

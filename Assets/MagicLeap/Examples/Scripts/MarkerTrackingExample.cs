@@ -98,6 +98,12 @@ namespace MagicLeap.Examples
         public float ArucoMarkerSize = 0.1f;
 
         /// <summary>
+        ///     Camera to use when tracking aruco markers.
+        /// </summary>
+        [HideInInspector]
+        public int ArucoTrackingCamera = 0;
+
+        /// <summary>
         ///     The physical size of the QR code that shall be tracked (in meters). The physical size is
         ///     important to know, because once a QR code is detected we can only determine its
         ///     3D position when we know its correct size. The size of the QR code is given in
@@ -240,7 +246,7 @@ namespace MagicLeap.Examples
 #if UNITY_MAGICLEAP || UNITY_ANDROID
                 // Unity has it's own value for Enum called Everything and sets it to -1
                 MarkerTypes = (int)MarkerTypes == -1 ? MarkerType.All : MarkerTypes;
-                markerSettings = Settings.Create(EnableMarkerScanning, MarkerTypes, QRCodeSize, ArucoDicitonary, ArucoMarkerSize, FPSHint);
+                markerSettings = Settings.Create(EnableMarkerScanning, MarkerTypes, QRCodeSize, ArucoDicitonary, ArucoMarkerSize, ArucoTrackingCamera, FPSHint);
                 SetSettingsAsync(markerSettings).GetAwaiter().GetResult();
 #endif
             }

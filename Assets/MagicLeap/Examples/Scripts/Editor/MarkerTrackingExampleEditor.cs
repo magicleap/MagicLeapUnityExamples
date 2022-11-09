@@ -25,6 +25,7 @@ namespace MagicLeap
         SerializedProperty QRCodeSize;
         SerializedProperty ArucoMarkerSize;
         SerializedProperty ArucoDicitonary;
+        SerializedProperty ArucoTrackingCamera;
         SerializedProperty FPSHint;
         SerializedProperty EnableMarkerScanning;
         SerializedProperty ResolutionHint;
@@ -38,6 +39,7 @@ namespace MagicLeap
             QRCodeSize = serializedObject.FindProperty("QRCodeSize");
             ArucoMarkerSize = serializedObject.FindProperty("ArucoMarkerSize");
             ArucoDicitonary = serializedObject.FindProperty("ArucoDicitonary");
+            ArucoTrackingCamera = serializedObject.FindProperty("ArucoTrackingCamera");
             FPSHint = serializedObject.FindProperty("FPSHint");
             EnableMarkerScanning = serializedObject.FindProperty("EnableMarkerScanning");
             ResolutionHint = serializedObject.FindProperty("ResolutionHint");
@@ -76,6 +78,7 @@ namespace MagicLeap
             {
                 EditorGUILayout.PropertyField(ArucoMarkerSize);
                 EditorGUILayout.PropertyField(ArucoDicitonary);
+                EditorGUILayout.PropertyField(ArucoTrackingCamera);
             }
 
             GUILayout.EndVertical();
