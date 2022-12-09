@@ -158,18 +158,15 @@ namespace MagicLeap.Examples
             }
             else if (frameData.Format == MLCamera.OutputFormat.YUV_420_888)
             {
+                MLCamera.FlipFrameVertically(ref frameData);
                 SetProperRatio((int)frameData.Planes[0].Width, (int)frameData.Planes[0].Height, _screenRendererYUV);
-                UpdateYUVTextureChannel(ref rawVideoTexturesYUV[0], frameData.Planes[0], _screenRendererYUV,
-                    samplerNamesYUV[0], ref yChannelBuffer, true);
-                UpdateYUVTextureChannel(ref rawVideoTexturesYUV[1], frameData.Planes[1], _screenRendererYUV,
-                    samplerNamesYUV[1], ref uChannelBuffer,
-                    false);
-                UpdateYUVTextureChannel(ref rawVideoTexturesYUV[2], frameData.Planes[2], _screenRendererYUV,
-                    samplerNamesYUV[2], ref vChannelBuffer,
-                    false);
+                UpdateYUVTextureChannel(ref rawVideoTexturesYUV[0], frameData.Planes[0], _screenRendererYUV, samplerNamesYUV[0], ref yChannelBuffer, true);
+                UpdateYUVTextureChannel(ref rawVideoTexturesYUV[1], frameData.Planes[1], _screenRendererYUV, samplerNamesYUV[1], ref uChannelBuffer, false);
+                UpdateYUVTextureChannel(ref rawVideoTexturesYUV[2], frameData.Planes[2], _screenRendererYUV, samplerNamesYUV[2], ref vChannelBuffer, false);
             }
             else if (frameData.Format == MLCamera.OutputFormat.RGBA_8888)
             {
+                MLCamera.FlipFrameVertically(ref frameData);
                 UpdateRGBTexture(ref rawVideoTexturesRGBA, frameData.Planes[0], _screenRendererRGB);
             }
         }
@@ -223,8 +220,7 @@ namespace MagicLeap.Examples
                 material.SetTexture(samplerName, channelTexture);
                 if (setTextureScale)
                 {
-                    material.mainTextureScale =
-                        new Vector2(1f / imagePlane.PixelStride, -1.0f);
+                    material.mainTextureScale = new Vector2(1f / imagePlane.PixelStride, 1.0f);
                 }
             }
 
@@ -271,7 +267,7 @@ namespace MagicLeap.Examples
 
                 Material material = renderer.material;
                 material.mainTexture = videoTextureRGB;
-                material.mainTextureScale = new Vector2(1.0f, -1.0f);
+                material.mainTextureScale = new Vector2(1.0f, 1.0f);
             }
 
             SetProperRatio((int)imagePlane.Width, (int)imagePlane.Height, _screenRendererRGB);

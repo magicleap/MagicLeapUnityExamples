@@ -113,7 +113,7 @@ namespace MagicLeap.Examples
 
         private void Awake()
         {
-            if(instance != null)
+            if (instance != null)
             {
                 // Scene has loaded but there is already an existing MLWebRTCExample loaded, because it was configured to persist scene changes
                 // so instead of letting this one stay around, re-enable the previous instance and then destroy this one immediately
@@ -131,14 +131,13 @@ namespace MagicLeap.Examples
 
         void Start()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             // Camera and Microphone must be checked at runtime
             foreach (string permission in requiredPermissions)
             {
                 MLPermissions.RequestPermission(permission, permissionCallbacks);
             }
-#endif
-            if(surviveSceneChange)
+
+            if (surviveSceneChange)
             {
                 SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
             }
@@ -146,7 +145,7 @@ namespace MagicLeap.Examples
 
         private void SceneManager_sceneUnloaded(Scene scene)
         {
-            if(surviveSceneChange)
+            if (surviveSceneChange)
             {
                 gameObject.SetActive(false);
                 uiRoot.gameObject.SetActive(false);
@@ -177,7 +176,6 @@ namespace MagicLeap.Examples
         // Subscribed to keyboard event within the inspector
         public void Connect(string address)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             serverAddress = address;
             serverURI = CreateServerURI(serverAddress);
             remoteStatusText.text = "Creating connection...";
@@ -185,15 +183,13 @@ namespace MagicLeap.Examples
             connectButton.gameObject.SetActive(false);
             Login();
             PlayerPrefs.SetString(PlayerPrefs_ServerAddress_Key, address);
-#endif
         }
 
         public void Login()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             try
             {
-                webRequestManager.HttpPost(serverURI + "/login", string.Empty, 
+                webRequestManager.HttpPost(serverURI + "/login", string.Empty,
                 async (AsyncOperation asyncOp) =>
                 {
                     UnityWebRequestAsyncOperation webRequenstAsyncOp = asyncOp as UnityWebRequestAsyncOperation;
@@ -239,12 +235,10 @@ namespace MagicLeap.Examples
             {
                 Debug.LogError($"Bad URI: hostname \"{serverURI}\" could not be parsed.");
             }
-#endif
         }
 
         private async Task CreateLocalMediaStream()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             localVideoSinkBehavior.gameObject.SetActive(true);
             localStatusText.text = "";
 
@@ -286,7 +280,7 @@ namespace MagicLeap.Examples
                 return;
             }
 
-            MLCamera.StreamCapability[] streamCapabilities = useHWBuffers ? MLCamera.GetImageStreamCapabilitiesForCamera(mlCamera, MLCamera.CaptureType.Video, MLCamera.CaptureType.Preview) 
+            MLCamera.StreamCapability[] streamCapabilities = useHWBuffers ? MLCamera.GetImageStreamCapabilitiesForCamera(mlCamera, MLCamera.CaptureType.Video, MLCamera.CaptureType.Preview)
                                                                           : MLCamera.GetImageStreamCapabilitiesForCamera(mlCamera, MLCamera.CaptureType.Video);
 
             if (streamCapabilities.Length == 0)
@@ -307,7 +301,7 @@ namespace MagicLeap.Examples
             if (MLCamera.TryGetBestFitStreamCapabilityFromCollection(streamCapabilities, captureWidth, captureHeight, MLCamera.CaptureType.Video,
                 out var videoStreamCapability))
             {
-                streamConfigs.Add(MLCamera.CaptureStreamConfig.Create(videoStreamCapability , outputFormat));
+                streamConfigs.Add(MLCamera.CaptureStreamConfig.Create(videoStreamCapability, outputFormat));
             }
 
             if (MLCamera.IsCaptureTypeSupported(mlCamera, MLCamera.CaptureType.Preview) && useHWBuffers)
@@ -351,7 +345,6 @@ namespace MagicLeap.Examples
 
                 localVideoSinkBehavior.VideoSink.SetStream(localMediaStream);
             }
-#endif
         }
 
         void Update()
@@ -370,9 +363,7 @@ namespace MagicLeap.Examples
                     if (ParseAnswer(response, out remoteId, out string remoteAnswer))
                     {
                         waitingForAnswer = false;
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                         connection.SetRemoteAnswer(remoteAnswer);
-#endif
                         // We've received a remoteId. Try to consume ices.
                         ConsumeIces();
                     }
@@ -389,20 +380,18 @@ namespace MagicLeap.Examples
 
         void OnDestroy()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             permissionCallbacks.OnPermissionGranted -= OnPermissionGranted;
             permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
             permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
 
             if (!surviveSceneChange)
             {
-                if(this == instance)
+                if (this == instance)
                 {
                     instance = null;
                 }
                 Disconnect();
             }
-#endif
         }
 
         public void SendMessageOnDataChannel()
@@ -410,7 +399,7 @@ namespace MagicLeap.Examples
             string message = messageInput.text;
             if (string.IsNullOrEmpty(message))
                 return;
-#if UNITY_MAGICLEAP || UNITY_ANDROID
+
             MLResult? result = this.dataChannel?.SendMessage(message);
             if (result.HasValue)
             {
@@ -423,7 +412,6 @@ namespace MagicLeap.Examples
                     Debug.LogError($"MLWebRTC.DataChannel.SendMessage() failed with error {result}");
                 }
             }
-#endif
             messageInput.text = "";
         }
 
@@ -465,7 +453,6 @@ namespace MagicLeap.Examples
 
         public void SendBinaryMessageOnDataChannel()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             // generate an array of 5 random integers to be sent via the data channel
             System.Random rand = new System.Random();
             int[] randomIntegers = new int[5];
@@ -486,7 +473,6 @@ namespace MagicLeap.Examples
                     Debug.LogError($"MLWebRTC.DataChannel.SendMessage() failed with error {result}");
                 }
             }
-#endif
         }
 
         private void QueryOffers()
@@ -494,7 +480,6 @@ namespace MagicLeap.Examples
             // GET request to check the server for any awaiting remote offers.
             webRequestManager.HttpGet(serverURI + "/offers", (AsyncOperation asyncOp) =>
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 UnityWebRequestAsyncOperation webRequenstAsyncOp = asyncOp as UnityWebRequestAsyncOperation;
                 string offers = webRequenstAsyncOp.webRequest.downloadHandler.text;
                 if (ParseOffers(offers, out remoteId, out string sdp))
@@ -510,7 +495,6 @@ namespace MagicLeap.Examples
                     SubscribeToDataChannel(this.dataChannel);
                     connection.CreateOffer();
                 }
-#endif
             });
         }
 
@@ -561,9 +545,7 @@ namespace MagicLeap.Examples
                         JsonObject jsonObj = (JsonObject)jsonArray[i];
                         MLWebRTC.IceCandidate iceCandidate = MLWebRTC.IceCandidate.Create((string)jsonObj["candidate"], (string)jsonObj["sdpMid"], Convert.ToInt32(jsonObj["sdpMLineIndex"]));
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                         MLResult result = connection.AddRemoteIceCandidate(iceCandidate);
-#endif
                         remoteStatusText.text = "";
                     }
                 });
@@ -826,34 +808,26 @@ namespace MagicLeap.Examples
 
         public void ToggleLocalAudio(bool on)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             localMediaStream.ActiveAudioTrack?.SetEnabled(on);
             localAudioStatus.text = on ? "On" : "Off";
-#endif
         }
 
         public void ToggleRemoteAudio(bool on)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             remoteAudioSinkBehavior.AudioSink.Stream?.ActiveAudioTrack?.SetEnabled(on);
             remoteAudioStatus.text = on ? "On" : "Off";
-#endif
         }
 
         public void ToggleLocalVideo(bool on)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             localMediaStream.ActiveVideoTrack?.SetEnabled(on);
             localVideoStatus.text = on ? "On" : "Off";
-#endif
         }
 
         public void ToggleRemoteVideo(bool on)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             remoteVideoSinkBehavior.VideoSink.Stream?.ActiveVideoTrack?.SetEnabled(on);
             remoteVideoStatus.text = on ? "On" : "Off";
-#endif
         }
 
         public void OnAudioCacheSizeSliderValueChanged()
@@ -871,7 +845,7 @@ namespace MagicLeap.Examples
 
         public void Disconnect()
         {
-            if(connection == null)
+            if (connection == null)
             {
                 return;
             }
@@ -890,9 +864,8 @@ namespace MagicLeap.Examples
             }
 
             UnsubscribeFromConnection(connection);
-#if UNITY_ANDROID
+
             connection.Destroy();
-#endif
             connection = null;
 
             remoteMediaStream = null;
@@ -920,9 +893,8 @@ namespace MagicLeap.Examples
 
         private void LocalVideoSource_OnCaptureStatusChanged(bool destroyed)
         {
-#if UNITY_ANDROID
+
             if (!localVideoSource.IsCapturing)
-#endif
             {
                 if (destroyed)
                 {
@@ -943,9 +915,7 @@ namespace MagicLeap.Examples
 
         private void OnPermissionDenied(string permission)
         {
-#if UNITY_ANDROID
             MLPluginLog.Error($"{permission} denied, example won't function.");
-#endif
         }
 
         private void OnPermissionGranted(string permission)

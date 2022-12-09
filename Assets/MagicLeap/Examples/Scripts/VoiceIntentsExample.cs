@@ -24,50 +24,53 @@ public class VoiceIntentsExample : MonoBehaviour
     [SerializeField, Tooltip("Popup canvas to direct user to Voice Input settings page.")]
     private GameObject voiceInputSettingsPopup = null;
 
+    [SerializeField, Tooltip("Popup canvas to alert the user of error when Voice Input settings aren't enabled.")]
+    private GameObject voiceInputErrorPopup;
+
+    [SerializeField, Tooltip("Duration in seconds the error dialog will remain on screen if not dismissed.")]
+    private float errorDisplayTime = 5f;
+
+    private bool userPromptedForSetting = false;
+
     private readonly MLPermissions.Callbacks permissionCallbacks = new MLPermissions.Callbacks();
 
     private void Awake()
     {
-        permissionCallbacks.OnPermissionGranted += OnPermissionGranted;
         permissionCallbacks.OnPermissionDenied += OnPermissionDenied;
         permissionCallbacks.OnPermissionDeniedAndDontAskAgain += OnPermissionDenied;
     }
 
-    // Start is called before the first frame update
+
     private void Start()
     {
         mlInputs = new MagicLeapInputs();
         mlInputs.Enable();
         controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
-
-        AppStart();
+        Initialize();
     }
 
     void OnApplicationPause(bool pauseStatus)
     {
         if (!pauseStatus)
-        {
-            AppStart();
-        }
-    }
-
-    private void AppStart()
-    {
-        if (voiceInputSettingsPopup != null)
-        {
-            voiceInputSettingsPopup.SetActive(false);
-        }
-
-        MLPermissions.RequestPermission(MLPermission.VoiceInput, permissionCallbacks);
+            Initialize();
     }
 
     private void Initialize()
     {
+        if (!MLPermissions.CheckPermission(MLPermission.VoiceInput).IsOk)
+        {
+            MLPermissions.RequestPermission(MLPermission.VoiceInput, permissionCallbacks);
+            return;
+        }
+
         bool isEnabled = MLVoice.VoiceEnabled;
         startupStatus = "System Supports Voice Intents: " + isEnabled.ToString();
 
         if (isEnabled)
         {
+            voiceInputSettingsPopup.SetActive(false);
+            voiceInputErrorPopup.SetActive(false);
+
             MLResult result = MLVoice.SetupVoiceIntents(voiceConfiguration);
 
             if (result.IsOk)
@@ -84,6 +87,24 @@ public class VoiceIntentsExample : MonoBehaviour
                 {
                     startupStatus += "\n" + value;
                 }
+
+                string systemValues = "\n<color=#dbfb76><b>System Intents:</b></color>\n";
+
+                int count = 0;
+                foreach (MLVoiceIntentsConfiguration.SystemIntentFlags flag in System.Enum.GetValues(typeof(MLVoiceIntentsConfiguration.SystemIntentFlags)))
+                {
+                    if (voiceConfiguration.SystemCommands.HasFlag(flag))
+                    {
+                        if (count > 0)
+                        {
+                            systemValues += " , ";
+                        }
+                        systemValues += flag.ToString();
+                        count++;
+                    }
+                }
+
+                startupStatus += systemValues;
             }
             else
             {
@@ -93,9 +114,17 @@ public class VoiceIntentsExample : MonoBehaviour
         }
         else
         {
-            if (voiceInputSettingsPopup != null)
+            if (!userPromptedForSetting)
             {
+                userPromptedForSetting = true;
                 voiceInputSettingsPopup.SetActive(true);
+            }
+            else
+            {
+                Debug.LogError("Voice Commands has not been enabled. Voice intents requires this setting to enabled. It is found in system settings inside Magic Leap Inputs.");
+                voiceInputSettingsPopup.SetActive(false);
+                voiceInputErrorPopup.SetActive(true);
+                StartCoroutine(DelayDismissErrorPopup());
             }
         }
     }
@@ -105,13 +134,11 @@ public class VoiceIntentsExample : MonoBehaviour
         MLVoice.OnVoiceEvent -= VoiceEvent;
         controllerActions.Bumper.performed -= HandleOnBumper;
 
-        permissionCallbacks.OnPermissionGranted -= OnPermissionGranted;
         permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
         permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
     }
 
 
-    // Update is called once per frame
     void Update()
     {
         UpdateStatus();
@@ -177,11 +204,6 @@ public class VoiceIntentsExample : MonoBehaviour
         startupStatus = "<color=#ff0000><b>Permission Denied!</b></color>";
     }
 
-    private void OnPermissionGranted(string permission)
-    {
-        Initialize();
-    }
-
     public void OnVoiceInputSettingsPopupOpen()
     {
         UnityEngine.XR.MagicLeap.SettingsIntentsLauncher.LaunchSystemVoiceInputSettings();
@@ -199,4 +221,13 @@ public class VoiceIntentsExample : MonoBehaviour
             voiceInputSettingsPopup.SetActive(false);
         }
     }
+    private IEnumerator DelayDismissErrorPopup()
+    {
+        yield return new WaitForSeconds(errorDisplayTime);
+        if (voiceInputErrorPopup != null)
+        {
+            voiceInputErrorPopup.SetActive(false);
+        }
+    }
+
 }

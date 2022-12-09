@@ -8,16 +8,16 @@
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
-using MagicLeap.Core;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using MagicLeap.Core;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.MagicLeap;
 using static UnityEngine.XR.MagicLeap.MLMarkerTracker;
-using MarkerSettings = UnityEngine.XR.MagicLeap.MLMarkerTracker.Settings;
+using MarkerSettings = UnityEngine.XR.MagicLeap.MLMarkerTracker.TrackerSettings;
 
 namespace MagicLeap.Examples
 {
@@ -39,51 +39,11 @@ namespace MagicLeap.Examples
         private float markerTrackerTimeout = 0.5f;
 
         /// <summary>
-        ///     If <c> true </c>, Marker Scanner will detect markers and track QR codes.
-        ///     Marker Scanner should be disabled when app is paused and enabled when app
-        ///     resumes. When enabled, Marker Scanner will gain access to the camera and start
-        ///     scanning markers. When disabled Marker Scanner will release the camera and
-        ///     stop scanning markers. Internal state of the scanner will be maintained.
+        /// The marker types that are enabled for this scanner. Enable markers by
+        /// combining any number of <c> MarkerType </c> flags using '|' (bitwise 'or').
         /// </summary>
         [HideInInspector]
-        public bool EnableMarkerScanning;
-
-        /// <summary>
-        ///     A hint to the back-end the max frames per second hat should be analyzed.
-        /// </summary>
-        [HideInInspector]
-        public FPSHint FPSHint;
-
-        /// <summary>
-        ///     A hint to the back-end the resolution that should be used.
-        /// </summary>
-        [HideInInspector]
-        public ResolutionHint ResolutionHint;
-
-        /// <summary>
-        ///     In order to improve performance, the detectors don't always run on the full
-        ///     frame.Full frame analysis is however necessary to detect new markers that
-        ///     weren't detected before. Use this option to control how often the detector may
-        ///     detect new markers and its impact on tracking performance.
-        /// </summary>
-        [HideInInspector]
-        public FullAnalysisIntervalHint FullAnalysisIntervalHint;
-
-        /// <summary>
-        ///     This option provides control over corner refinement methods and a way to
-        ///     balance detection rate, speed and pose accuracy. Always available and
-        ///     applicable for Aruco and April tags.
-        /// </summary>
-        [HideInInspector]
-        public CornerRefineMethod CornerRefineMethod;
-
-        /// <summary>
-        ///     Run refinement step that uses marker edges to generate even more accurate
-        ///     corners, but slow down tracking rate overall by consuming more compute.
-        ///     Aruco/April tags only.
-        /// </summary>
-        [HideInInspector]
-        public bool UseEdgeRefinement;
+        public MarkerType MarkerTypes = MarkerType.All;
 
         /// <summary>
         ///     Aruco dictionary to use.
@@ -118,11 +78,64 @@ namespace MagicLeap.Examples
         public float QRCodeSize = 0.1f;
 
         /// <summary>
-        /// The marker types that are enabled for this scanner. Enable markers by
-        /// combining any number of <c> MarkerType </c> flags using '|' (bitwise 'or').
+        ///     Represents the different tracker profiles used to optimize marker tracking in difference use cases.
         /// </summary>
         [HideInInspector]
-        public MarkerType MarkerTypes = MarkerType.All;
+        public Profile TrackerProfile = Profile.Default;
+
+        /// <summary>
+        ///     If <c> true </c>, Marker Scanner will detect markers and track QR codes.
+        ///     Marker Scanner should be disabled when app is paused and enabled when app
+        ///     resumes. When enabled, Marker Scanner will gain access to the camera and start
+        ///     scanning markers. When disabled Marker Scanner will release the camera and
+        ///     stop scanning markers. Internal state of the scanner will be maintained.
+        /// </summary>
+        [HideInInspector]
+        public bool EnableMarkerScanning;
+
+        /// <summary>
+        ///     A hint to the back-end the max frames per second hat should be analyzed.
+        /// </summary>
+        [HideInInspector]
+        public FPSHint FPSHint;
+
+        /// <summary>
+        ///     A hint to the back-end the resolution that should be used.
+        /// </summary>
+        [HideInInspector]
+        public ResolutionHint ResolutionHint;
+
+        /// <summary>
+        ///     A hint to the back-end for the cameras that should be used.
+        /// </summary>
+        [HideInInspector]
+        public CameraHint CameraHint;
+
+        /// <summary>
+        ///     In order to improve performance, the detectors don't always run on the full
+        ///     frame.Full frame analysis is however necessary to detect new markers that
+        ///     weren't detected before. Use this option to control how often the detector may
+        ///     detect new markers and its impact on tracking performance.
+        /// </summary>
+        [HideInInspector]
+        public FullAnalysisIntervalHint FullAnalysisIntervalHint;
+
+        /// <summary>
+        ///     This option provides control over corner refinement methods and a way to
+        ///     balance detection rate, speed and pose accuracy. Always available and
+        ///     applicable for Aruco and April tags.
+        /// </summary>
+        [HideInInspector]
+        public CornerRefineMethod CornerRefineMethod;
+
+        /// <summary>
+        ///     Run refinement step that uses marker edges to generate even more accurate
+        ///     corners, but slow down tracking rate overall by consuming more compute.
+        ///     Aruco/April tags only.
+        /// </summary>
+        [HideInInspector]
+        public bool UseEdgeRefinement;
+
 
         private List<KeyValuePair<string, MarkerVisual>> markers = new();
         private ASCIIEncoding asciiEncoder = new ASCIIEncoding();
@@ -132,18 +145,14 @@ namespace MagicLeap.Examples
 
         void Start()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             mlInputs = new MagicLeapInputs();
             mlInputs.Enable();
             controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
-#endif
-            
             EnableMarkerTrackerExample();
         }
 
         private void Update()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             // If scanning is enabled from start don't clear flag by input.
             if (!EnableMarkerScanning)
             {
@@ -152,7 +161,6 @@ namespace MagicLeap.Examples
                 else
                     _ = MLMarkerTracker.StopScanningAsync();
             }
-#endif
 
             UpdateVisibleTrackers();
             SetStatusText();
@@ -160,16 +168,12 @@ namespace MagicLeap.Examples
 
         private void OnEnable()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             MLMarkerTracker.OnMLMarkerTrackerResultsFoundArray += OnMLMarkerTrackerResultsFoundArray;
-#endif
         }
 
         private void OnDisable()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             MLMarkerTracker.OnMLMarkerTrackerResultsFoundArray -= OnMLMarkerTrackerResultsFoundArray;
-#endif
         }
 
         private void OnDestroy()
@@ -205,7 +209,6 @@ namespace MagicLeap.Examples
                         else
                         {
                             MarkerVisual marker = Instantiate(markerVisualPrefab, markersRoot.transform);
-
                             markers.Add(new KeyValuePair<string, MarkerVisual>(id, marker));
                             marker.Set(data);
                         }
@@ -229,7 +232,6 @@ namespace MagicLeap.Examples
                         else
                         {
                             MarkerVisual marker = Instantiate(markerVisualPrefab, markersRoot.transform);
-
                             markers.Add(new KeyValuePair<string, MarkerVisual>(id, marker));
                             marker.Set(data, markerText);
                         }
@@ -243,12 +245,11 @@ namespace MagicLeap.Examples
         {
             try
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 // Unity has it's own value for Enum called Everything and sets it to -1
                 MarkerTypes = (int)MarkerTypes == -1 ? MarkerType.All : MarkerTypes;
-                markerSettings = Settings.Create(EnableMarkerScanning, MarkerTypes, QRCodeSize, ArucoDicitonary, ArucoMarkerSize, ArucoTrackingCamera, FPSHint);
+                var customProfile = TrackerProfile == Profile.Custom ? TrackerSettings.CustomProfile.Create(FPSHint, ResolutionHint, CameraHint, FullAnalysisIntervalHint, CornerRefineMethod, UseEdgeRefinement) : default;
+                markerSettings = TrackerSettings.Create(EnableMarkerScanning, MarkerTypes, QRCodeSize, ArucoDicitonary, ArucoMarkerSize, TrackerProfile, customProfile);
                 SetSettingsAsync(markerSettings).GetAwaiter().GetResult();
-#endif
             }
             catch (Exception e)
             {
@@ -313,7 +314,6 @@ namespace MagicLeap.Examples
         {
             StringBuilder builder = new StringBuilder();
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             builder.Append($"<color=#dbfb76><b>ControllerData</b></color>\nStatus: {ControllerStatus.Text}\n\n");
             builder.Append($"<color=#dbfb76><b>Controller Input</b></color>\nTrigger status: {controllerActions.Trigger.ReadValue<float>()}\n");
 
@@ -330,9 +330,6 @@ namespace MagicLeap.Examples
                         $"<color=#dbfb76><b>{marker.Key}</b></color>" +
                         $"\nData: {marker.Value.DataString}\n\n");
             }
-#else
-            builder.Append($"Marker Tracker running: false \n\n");
-#endif
             statusText.text = builder.ToString();
         }
     }

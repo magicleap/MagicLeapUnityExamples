@@ -251,12 +251,12 @@ PrefabInstance:
     - target: {fileID: 1359980009267695964, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1359980009267695964, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5355557165450182212, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
@@ -266,17 +266,17 @@ PrefabInstance:
     - target: {fileID: 9144045079751414315, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9144045079751414315, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9144045079751414315, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 0.42647344
       objectReference: {fileID: 0}
     - target: {fileID: 9144045079827347966, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
@@ -969,6 +969,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6669455948576777451, guid: 0ffd6c0636c54b94cb445a6bcd349bf1,
+        type: 3}
+      propertyPath: source
+      value: http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

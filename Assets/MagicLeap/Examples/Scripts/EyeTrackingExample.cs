@@ -25,8 +25,6 @@ namespace MagicLeap.Examples
     /// </summary>
     public class EyeTrackingExample : MonoBehaviour
     {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
-
         [SerializeField, Tooltip("Left Eye Statistic Panel")]
         private Text leftEyeTextStatic;
         [SerializeField, Tooltip("Right Eye Statistic Panel")]
@@ -41,7 +39,7 @@ namespace MagicLeap.Examples
 
         // Used to get eyes action data.
         private MagicLeapInputs.EyesActions eyesActions;
-        
+
         // Used to get other eye data
         private InputDevice eyesDevice;
 
@@ -102,7 +100,7 @@ namespace MagicLeap.Examples
 
             // Eye data specific to Magic Leap
             InputSubsystem.Extensions.TryGetEyeTrackingState(eyesDevice, out var trackingState);
-            
+
             var leftEyeForwardGaze = eyes.leftEyeRotation * Vector3.forward;
 
             string leftEyeText =
@@ -110,9 +108,9 @@ namespace MagicLeap.Examples
                 $"Gaze:\n({leftEyeForwardGaze.x:F2}, {leftEyeForwardGaze.y:F2}, {leftEyeForwardGaze.z:F2})\n" +
                 $"Confidence:\n{trackingState.LeftCenterConfidence:F2}\n" +
                 $"Pupil Size:\n{eyes.leftEyeOpenAmount:F2}";
-            
+
             leftEyeTextStatic.text = leftEyeText;
-            
+
             var rightEyeForwardGaze = eyes.rightEyeRotation * Vector3.forward;
 
             string rightEyeText =
@@ -120,7 +118,7 @@ namespace MagicLeap.Examples
                 $"Gaze:\n({rightEyeForwardGaze.x:F2}, {rightEyeForwardGaze.y:F2}, {rightEyeForwardGaze.z:F2})\n" +
                 $"Confidence:\n{trackingState.RightCenterConfidence:F2}\n" +
                 $"Pupil Size:\n{eyes.rightEyeOpenAmount:F2}";
-            
+
             rightEyeTextStatic.text = rightEyeText;
 
             string bothEyesText =
@@ -146,7 +144,6 @@ namespace MagicLeap.Examples
             eyesActions = new MagicLeapInputs.EyesActions(mlInputs);
             permissionGranted = true;
         }
-#endif
     }
 }
 

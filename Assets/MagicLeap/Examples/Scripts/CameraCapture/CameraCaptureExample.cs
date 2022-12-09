@@ -236,12 +236,11 @@ namespace MagicLeap.Examples
 
             captureCamera.OnRawVideoFrameAvailable -= OnCaptureRawVideoFrameAvailable;
             captureCamera.OnRawImageAvailable -= OnCaptureRawImageComplete;
-#if UNITY_MAGICLEAP || UNITY_ANDROID
+
             // media player not supported in Magic Leap App Simulator
 #if !UNITY_EDITOR
             mediaPlayerBehavior.MediaPlayer.OnPrepared -= MediaPlayerOnOnPrepared;
             mediaPlayerBehavior.MediaPlayer.OnCompletion -= MediaPlayerOnCompletion;
-#endif
 #endif
             captureCamera.Disconnect();
             RefreshUI();
@@ -438,12 +437,10 @@ namespace MagicLeap.Examples
         /// </summary>
         private void StartRecording()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             // media player not supported in Magic Leap App Simulator
 #if !UNITY_EDITOR
             mediaPlayerBehavior.MediaPlayer.OnPrepared += MediaPlayerOnOnPrepared;
             mediaPlayerBehavior.MediaPlayer.OnCompletion += MediaPlayerOnCompletion;
-#endif
 #endif
             string fileName = DateTime.Now.ToString("MM_dd_yyyy__HH_mm_ss") + validFileFormat;
             recordedFilePath = System.IO.Path.Combine(Application.persistentDataPath, fileName);
@@ -525,33 +522,27 @@ namespace MagicLeap.Examples
         {
             mediaPlayerBehavior.gameObject.SetActive(true);
             mediaPlayerBehavior.source = recordedFilePath;
-#if UNITY_MAGICLEAP || UNITY_ANDROID
+
             // media player not supported in Magic Leap App Simulator
 #if !UNITY_EDITOR
             mediaPlayerBehavior.PrepareMLMediaPlayer();
-#endif
 #endif
         }
 
         private void MediaPlayerOnOnPrepared(MLMedia.Player mediaplayer)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             // media player not supported in Magic Leap App Simulator
 #if !UNITY_EDITOR
             mediaPlayerBehavior.Play();
-#endif
 #endif
         }
 
         private void MediaPlayerOnCompletion(MLMedia.Player mediaplayer)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             // media player not supported in Magic Leap App Simulator
 #if !UNITY_EDITOR
             mediaPlayerBehavior.StopMLMediaPlayer();
 #endif
-#endif
-
             mediaPlayerBehavior.gameObject.SetActive(false);
         }
 
@@ -619,7 +610,7 @@ namespace MagicLeap.Examples
             isDisplayingImage = true;
             cameraCaptureVisualizer.OnCaptureDataReceived(resultExtras, capturedImage);
 
-            if(RecordToFile)
+            if (RecordToFile)
             {
                 if (capturedImage.Format != MLCamera.OutputFormat.YUV_420_888)
                 {
@@ -630,7 +621,7 @@ namespace MagicLeap.Examples
                         File.WriteAllBytes(recordedFilePath, capturedImage.Planes[0].Data);
                         captureInfoText.text += $"\nSaved to {recordedFilePath}";
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Debug.LogError(e.Message);
                     }
@@ -642,15 +633,11 @@ namespace MagicLeap.Examples
         {
             if (permission == MLPermission.Camera)
             {
-#if UNITY_ANDROID
                 MLPluginLog.Error($"{permission} denied, example won't function.");
-#endif
             }
             else if (permission == MLPermission.RecordAudio)
             {
-#if UNITY_ANDROID
                 MLPluginLog.Error($"{permission} denied, audio wont be recorded in the file.");
-#endif
             }
 
             RefreshUI();
@@ -658,10 +645,8 @@ namespace MagicLeap.Examples
 
         private void OnPermissionGranted(string permission)
         {
-#if UNITY_ANDROID
             MLPluginLog.Debug($"Granted {permission}.");
             TryEnableMLCamera();
-#endif
 
             RefreshUI();
         }
@@ -709,7 +694,7 @@ namespace MagicLeap.Examples
             contentCanvasGroup.interactable = !isCapturingVideo && !isCapturingPreview;
 
             connectionFlagDropdown.interactable = !IsCameraConnected && !isCapturingVideo && !isCapturingPreview;
-            recordToggle.gameObject.SetActive(IsCameraConnected && (CaptureType == MLCamera.CaptureType.Video ||  OutputFormat == MLCamera.OutputFormat.JPEG));
+            recordToggle.gameObject.SetActive(IsCameraConnected && (CaptureType == MLCamera.CaptureType.Video || OutputFormat == MLCamera.OutputFormat.JPEG));
             captureButton.gameObject.SetActive(IsCameraConnected);
             connectButton.gameObject.SetActive(!IsCameraConnected);
             disconnectButton.gameObject.SetActive(IsCameraConnected);
@@ -896,7 +881,7 @@ namespace MagicLeap.Examples
             // Video encoder only supports upto 3840x2160 (4K)
             // MLMediaRecorder.Prepare will throw unspecified failure when running with higher resolution.
             // MMF-3718 will provide a better error code.
-            if (GetStreamCapability().Width > 3840)
+            if (GetStreamCapability().Width > 3840 || !recordToggle.isActiveAndEnabled)
             {
                 recordToggle.isOn = false;
                 recordToggle.interactable = false;

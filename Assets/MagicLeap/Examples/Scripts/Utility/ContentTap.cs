@@ -65,12 +65,10 @@ namespace MagicLeap.Examples
         /// </summary>
         void Update()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             if (controllerActions.IsTracked.IsPressed())
             {
                 _touchpadEvents.pressed = controllerActions.TouchpadClick.IsPressed();
             }
-#endif
         }
 
         private void Start()

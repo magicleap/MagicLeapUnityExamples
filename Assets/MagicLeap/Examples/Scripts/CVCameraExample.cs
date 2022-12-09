@@ -259,7 +259,7 @@ namespace MagicLeap.Examples
         private void OnCaptureRawVideoFrameAvailable(MLCamera.CameraOutput capturedFrame, MLCamera.ResultExtras resultExtras, MLCamera.Metadata metadataHandle)
         {
             cameraCaptureVisualizer.OnCaptureDataReceived(resultExtras, capturedFrame);
-#if UNITY_ANDROID
+
             if (MLCVCamera.GetFramePose(resultExtras.VCamTimestamp, out Matrix4x4 cameraTransform).IsOk)
             {
                 poseText = $"Cam Pose: {cameraTransform.GetPosition()}; {cameraTransform.rotation}";
@@ -268,14 +268,11 @@ namespace MagicLeap.Examples
             {
                 poseText = String.Empty;
             }
-#endif
         }
 
         private void OnPermissionDenied(string permission)
         {
-#if UNITY_ANDROID
             MLPluginLog.Error($"{permission} denied, example won't function.");
-#endif
         }
 
         private void OnPermissionGranted(string permission)

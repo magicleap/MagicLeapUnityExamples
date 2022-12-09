@@ -70,13 +70,8 @@ namespace MagicLeap.Examples
         {
             if (controllerActions.IsTracked.IsPressed())
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 _controllerStatusText.text = "Controller Connected";
                 _controllerStatusText.color = Color.green;
-#else
-                    _controllerStatusText.text = "Unknown";
-                    _controllerStatusText.color = Color.red;
-#endif
             }
             else
             {

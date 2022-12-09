@@ -17,32 +17,24 @@ namespace MagicLeap.Examples
     {
         [SerializeField]
         private TextMesh dataText;
-#if UNITY_MAGICLEAP || UNITY_ANDROID
         private Timer disableTimer;
-#endif
 
         void Awake()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             disableTimer = new Timer(3f);
-#endif
         }
 
         void Update()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             if (gameObject.activeSelf && disableTimer.LimitPassed)
             {
                 gameObject.SetActive(false);
             }
-#endif
         }
 
         public void Set(MLMarkerTracker.MarkerData data)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             disableTimer?.Reset();
-#endif
             transform.position = data.Pose.position;
             transform.rotation = data.Pose.rotation;
             dataText.text = data.ToString();

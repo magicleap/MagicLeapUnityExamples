@@ -22,15 +22,15 @@ namespace MagicLeap.Examples
     {
         private Camera _camera;
 
-        #pragma warning disable 414
+#pragma warning disable 414
         // MobileApp-specific variables
         private bool _isCalibrated = false;
-        #pragma warning restore 414
+#pragma warning restore 414
 
         private Quaternion _calibrationOrientation = Quaternion.identity;
         private const float MOBILEAPP_FORWARD_DISTANCE_FROM_CAMERA = 0.75f;
         private const float MOBILEAPP_UP_DISTANCE_FROM_CAMERA = -0.1f;
-        
+
         private MagicLeapInputs mlInputs;
         private MagicLeapInputs.ControllerActions controllerActions;
 
@@ -41,13 +41,11 @@ namespace MagicLeap.Examples
         {
             _camera = Camera.main;
 
-            #if UNITY_MAGICLEAP || UNITY_ANDROID
             mlInputs = new MagicLeapInputs();
             mlInputs.Enable();
             controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
-            
+
             controllerActions.Menu.canceled += HandleOnHomeUp;
-            #endif
         }
 
         /// <summary>
@@ -57,23 +55,17 @@ namespace MagicLeap.Examples
         {
             if (controllerActions.IsTracked.IsPressed())
             {
-                #if UNITY_MAGICLEAP || UNITY_ANDROID
-
                 // For Control, raw input is enough
                 transform.localPosition = controllerActions.Position.ReadValue<Vector3>();
                 transform.localRotation = controllerActions.Position.ReadValue<Quaternion>();
-                
-                #endif
             }
         }
 
         private void OnDestroy()
         {
-            #if UNITY_MAGICLEAP || UNITY_ANDROID
             controllerActions.Menu.canceled -= HandleOnHomeUp;
-            
+
             mlInputs.Dispose();
-            #endif
         }
 
         /// <summary>
@@ -83,15 +75,12 @@ namespace MagicLeap.Examples
         /// <param name="button">The button that is being released.</param>
         private void HandleOnHomeUp(InputAction.CallbackContext callbackContext)
         {
-            #if UNITY_MAGICLEAP || UNITY_ANDROID
-
             if (!_isCalibrated)
             {
                 _calibrationOrientation = transform.rotation * Quaternion.Inverse(controllerActions.Rotation.ReadValue<Quaternion>());
             }
 
             _isCalibrated = !_isCalibrated;
-            #endif
         }
     }
 }

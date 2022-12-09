@@ -74,7 +74,6 @@ namespace MagicLeap.Examples
         {
             _statusText.text = $"<color=#dbfb76><b>Controller Data</b></color>\n Status: {ControllerStatus.Text}\n";
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             StringBuilder strBuilder = new StringBuilder();
             strBuilder.Append($"Position: <i>{controllerActions.Position.ReadValue<Vector3>().ToString("n2")}</i>\n");
             strBuilder.Append($"Velocity: <i>{controllerActions.Velocity.ReadValue<Vector3>().ToString("n2")}</i>\n");
@@ -99,7 +98,6 @@ namespace MagicLeap.Examples
             }
 
             _statusText.text += strBuilder.ToString();
-#endif
         }
 
         /// <summary>

@@ -26,9 +26,11 @@ namespace MagicLeap
         SerializedProperty ArucoMarkerSize;
         SerializedProperty ArucoDicitonary;
         SerializedProperty ArucoTrackingCamera;
-        SerializedProperty FPSHint;
+        SerializedProperty TrackerProfile;
         SerializedProperty EnableMarkerScanning;
+        SerializedProperty FPSHint;
         SerializedProperty ResolutionHint;
+        SerializedProperty CameraHint;
         SerializedProperty FullAnalysisIntervalHint;
         SerializedProperty CornerRefineMethod;
         SerializedProperty UseEdgeRefinement;
@@ -40,9 +42,11 @@ namespace MagicLeap
             ArucoMarkerSize = serializedObject.FindProperty("ArucoMarkerSize");
             ArucoDicitonary = serializedObject.FindProperty("ArucoDicitonary");
             ArucoTrackingCamera = serializedObject.FindProperty("ArucoTrackingCamera");
-            FPSHint = serializedObject.FindProperty("FPSHint");
+            TrackerProfile = serializedObject.FindProperty("TrackerProfile");
             EnableMarkerScanning = serializedObject.FindProperty("EnableMarkerScanning");
+            FPSHint = serializedObject.FindProperty("FPSHint");
             ResolutionHint = serializedObject.FindProperty("ResolutionHint");
+            CameraHint = serializedObject.FindProperty("CameraHint");
             FullAnalysisIntervalHint = serializedObject.FindProperty("FullAnalysisIntervalHint");
             CornerRefineMethod = serializedObject.FindProperty("CornerRefineMethod");
             UseEdgeRefinement = serializedObject.FindProperty("UseEdgeRefinement");
@@ -56,14 +60,9 @@ namespace MagicLeap
             
             GUILayout.BeginVertical("HelpBox");
             GUILayout.Label("Marker tracker settings:");
+
             EditorGUILayout.PropertyField(EnableMarkerScanning);
             EditorGUILayout.PropertyField(MarkerTypes);
-            EditorGUILayout.PropertyField(FPSHint);
-            EditorGUILayout.PropertyField(ResolutionHint);
-            EditorGUILayout.PropertyField(FullAnalysisIntervalHint);
-            EditorGUILayout.PropertyField(CornerRefineMethod);
-            EditorGUILayout.PropertyField(UseEdgeRefinement);
-
 
             if (myTarget.MarkerTypes.HasFlag(MLMarkerTracker.MarkerType.All) ||
                 myTarget.MarkerTypes.HasFlag(MLMarkerTracker.MarkerType.QR) ||
@@ -81,7 +80,23 @@ namespace MagicLeap
                 EditorGUILayout.PropertyField(ArucoTrackingCamera);
             }
 
+            EditorGUILayout.PropertyField(TrackerProfile);
+
+            if (myTarget.TrackerProfile.HasFlag(MLMarkerTracker.Profile.Custom))
+            {
+                GUILayout.BeginVertical("Custom Profile");
+                GUILayout.Label("Custom profile configuration:");
+                EditorGUILayout.PropertyField(FPSHint);
+                EditorGUILayout.PropertyField(ResolutionHint);
+                EditorGUILayout.PropertyField(CameraHint);
+                EditorGUILayout.PropertyField(FullAnalysisIntervalHint);
+                EditorGUILayout.PropertyField(CornerRefineMethod);
+                EditorGUILayout.PropertyField(UseEdgeRefinement);
+                GUILayout.EndVertical();
+            }
+
             GUILayout.EndVertical();
+
 
 
             serializedObject.ApplyModifiedProperties();

@@ -75,12 +75,10 @@ namespace MagicLeap.Examples
 
             _statusText.text = string.Format("<color=#dbfb76><b>Controller Data</b></color>\nStatus: {0}\n\n", ControllerStatus.Text);
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             _statusText.text += string.Format(
                 "<color=#dbfb76><b>Hands Data</b>\n<color=#dbfb76>Pre-Render Update</color>:</color>{0}\n\n<color=#dbfb76>Left</color>: {1}% Confidence\n<color=#dbfb76>IsTracked</color>: {2}\n\n<color=#dbfb76>Right</color>: {3}% Confidence\n<color=#dbfb76>IsTracked</color>: {4}",
                 preRenderHandUpdate.ToString(), (leftConfidence * 100.0f).ToString("n0"), leftIsTracked.ToString(),
                 (rightConfidence * 100.0f).ToString("n0"), rightIsTracked.ToString());
-#endif
         }
 
 

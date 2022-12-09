@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.TestTools;
-using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
+using UnityEngine.TestTools;
+using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.MagicLeap;
 
 
@@ -14,7 +14,6 @@ namespace MagicLeap.Examples
     {
         public GameObject reticle;
         public Text statusText;
-#if UNITY_MAGICLEAP || UNITY_ANDROID
         private MagicLeapInputs magicLeapInputs;
         private MagicLeapInputs.ControllerActions controllerActions;
         private MLAnchors.Request query;
@@ -33,7 +32,7 @@ namespace MagicLeap.Examples
 
         private void Update()
         {
-            if(localizationInfoUpdateTimer.LimitPassed)
+            if (localizationInfoUpdateTimer.LimitPassed)
             {
                 localizationInfoUpdateTimer.Reset();
 
@@ -83,7 +82,6 @@ namespace MagicLeap.Examples
                 }
             }
         }
-#endif
     }
 
 }

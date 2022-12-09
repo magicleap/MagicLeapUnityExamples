@@ -3791,17 +3791,19 @@ MonoBehaviour:
   markersRoot: {fileID: 920891312}
   removeMarkersUsingTimeStamps: 0
   markerTrackerTimeout: 0.5
+  MarkerTypes: -1
+  ArucoDicitonary: 0
+  ArucoMarkerSize: 0.1
+  ArucoTrackingCamera: 1
+  QRCodeSize: 0.1
+  TrackerProfile: 0
   EnableMarkerScanning: 1
   FPSHint: 2
   ResolutionHint: 0
+  CameraHint: 0
   FullAnalysisIntervalHint: 2
   CornerRefineMethod: 0
   UseEdgeRefinement: 0
-  ArucoDicitonary: 0
-  ArucoMarkerSize: 0.1
-  ArucoTrackingCamera: 0
-  QRCodeSize: 0.1
-  MarkerTypes: -1
 --- !u!114 &1286674759
 MonoBehaviour:
   m_ObjectHideFlags: 0

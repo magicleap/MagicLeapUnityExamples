@@ -124,14 +124,13 @@ namespace MagicLeap.Examples
 
             _rmsVisualizerMaterial = _rmsVisualizer.GetComponent<Renderer>().material;
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             mlInputs = new MagicLeapInputs();
             mlInputs.Enable();
             controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
 
             controllerActions.Bumper.performed += HandleOnBumperDown;
             controllerActions.Trigger.performed += HandleOnTriggerDown;
-#endif
+
             // Frequency = number of samples per second
             // 1000ms => AUDIO_CLIP_FREQUENCY_HERTZ
             // 1ms => AUDIO_CLIP_FREQUENCY_HERTZ / 1000
@@ -147,12 +146,10 @@ namespace MagicLeap.Examples
             permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
             permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             controllerActions.Bumper.performed -= HandleOnBumperDown;
             controllerActions.Trigger.performed -= HandleOnTriggerDown;
 
             mlInputs.Dispose();
-#endif
         }
 
         private void Update()
@@ -321,12 +318,10 @@ namespace MagicLeap.Examples
         /// <param name="result"/>
         private void OnPermissionDenied(string permission)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             Debug.LogError($"AudioCaptureExample failed to get requested permission {permission}, disabling script.");
             UpdateStatus();
             enabled = false;
             return;
-#endif
         }
 
         private void OnPermissionGranted(string permission)

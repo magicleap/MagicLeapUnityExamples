@@ -99,7 +99,6 @@ namespace MagicLeap.Examples
                 return;
             }
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             GetFingerBones();
 
             this.handDevice.TryGetFeatureValue(InputSubsystem.Extensions.DeviceFeatureUsages.Hand.Confidence, out float handConfidence);
@@ -174,7 +173,6 @@ namespace MagicLeap.Examples
             _center.localRotation = deviceRotation;
             // Hand Center only has one keypoint so its' index would be 0 for getting its' status.
             _center.gameObject.SetActive(highConfidence && HandTracking.GetKeyPointStatus(this.handDevice, HandTracking.KeyPointLocation.Center, 0));
-#endif
         }
 
         private void GetFingerBones()
@@ -212,65 +210,52 @@ namespace MagicLeap.Examples
             // Pinky
             _pinkyFinger = new List<Transform>();
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             for (int i = 0; i < this._pinkyFingerBones.Count; ++i)
             {
                 _pinkyFinger.Add(CreateKeyPoint(_pinkyColor).transform);
             }
-#endif
 
             // Ring
             _ringFinger = new List<Transform>();
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             for (int i = 0; i < this._ringFingerBones.Count; ++i)
             {
                 _ringFinger.Add(CreateKeyPoint(_ringColor).transform);
             }
-#endif
 
             // Middle
             _middleFinger = new List<Transform>();
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             for (int i = 0; i < this._middleFingerBones.Count; ++i)
             {
                 _middleFinger.Add(CreateKeyPoint(_middleColor).transform);
             }
-#endif
 
             // Index
             _indexFinger = new List<Transform>();
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             for (int i = 0; i < this._indexFingerBones.Count; ++i)
             {
                 _indexFinger.Add(CreateKeyPoint(_indexColor).transform);
             }
-#endif
 
             // Thumb
             _thumb = new List<Transform>();
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             for (int i = 0; i < this._thumbBones.Count; ++i)
             {
                 _thumb.Add(CreateKeyPoint(_thumbColor).transform);
             }
-#endif
 
             // Wrist
             _wrist = new List<Transform>();
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             for (int i = 0; i < this._wristBones.Count; ++i)
             {
                 _wrist.Add(CreateKeyPoint(_wristColor).transform);
             }
-#endif
         }
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
         /// <summary>
         /// Create a GameObject for the desired KeyPoint.
         /// </summary>
@@ -291,6 +276,5 @@ namespace MagicLeap.Examples
 
             return newObject;
         }
-#endif
     }
 }

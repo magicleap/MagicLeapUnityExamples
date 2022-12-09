@@ -149,13 +149,11 @@ namespace MagicLeap.Examples
                 return;
             }
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             mlInputs = new MagicLeapInputs();
             mlInputs.Enable();
-            
+
             controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
             controllerActions.Menu.performed += MenuOnPerformed;
-#endif
         }
 
 
@@ -164,12 +162,10 @@ namespace MagicLeap.Examples
         /// </summary>
         void OnDestroy()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             controllerActions.Bumper.performed -= MenuOnPerformed;
-            
+
             mlInputs.Disable();
             mlInputs.Dispose();
-#endif
         }
 
         /// <summary>

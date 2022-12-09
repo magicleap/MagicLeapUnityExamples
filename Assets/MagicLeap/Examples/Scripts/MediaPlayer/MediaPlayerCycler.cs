@@ -9,11 +9,11 @@
 // %BANNER_END%
 
 using System;
+using MagicLeap.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR.MagicLeap;
-using MagicLeap.Core;
 
 namespace MagicLeap.Examples
 {
@@ -24,7 +24,7 @@ namespace MagicLeap.Examples
     {
         [SerializeField, Tooltip("The text used to display status information for the example.")]
         private Text _statusText = null;
-        
+
         private MLMediaPlayerBehavior[] _mediaPlayerBehaviors = null;
 
         private MagicLeapInputs mlInputs;
@@ -55,9 +55,7 @@ namespace MagicLeap.Examples
             var activeBehavior = _mediaPlayerBehaviors[_mediaPlayerIndex];
             activeBehavior.transform.parent.gameObject.SetActive(true);
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             activeBehavior.Play();
-#endif
         }
 
         /// <summary>
@@ -67,17 +65,14 @@ namespace MagicLeap.Examples
         {
             var inactiveBehavior = _mediaPlayerBehaviors[_mediaPlayerIndex];
             inactiveBehavior.transform.parent.gameObject.SetActive(false);
-#if UNITY_MAGICLEAP || UNITY_ANDROID
+
             inactiveBehavior.Pause();
-#endif
-            
+
             _mediaPlayerIndex = (_mediaPlayerIndex + 1) % _mediaPlayerBehaviors.Length;
             var activeBehavior = _mediaPlayerBehaviors[_mediaPlayerIndex];
             activeBehavior.transform.parent.gameObject.SetActive(true);
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             activeBehavior.Play();
-#endif
         }
 
         /// <summary>
@@ -110,7 +105,6 @@ namespace MagicLeap.Examples
         /// </summary>
         void OnEnable()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             mlInputs = new MagicLeapInputs();
             mlInputs.Enable();
             controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
@@ -118,7 +112,6 @@ namespace MagicLeap.Examples
             permissionCallbacks.OnPermissionGranted += OnPermissionGranted;
             permissionCallbacks.OnPermissionDenied += OnPermissionDenied;
             permissionCallbacks.OnPermissionDeniedAndDontAskAgain += OnPermissionDenied;
-#endif
         }
 
         /// <summary>
@@ -126,13 +119,11 @@ namespace MagicLeap.Examples
         /// </summary>
         void OnDisable()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             controllerActions.Bumper.performed -= OnBumperDown;
 
             permissionCallbacks.OnPermissionGranted -= OnPermissionGranted;
             permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
             permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
-#endif
         }
 
         /// <summary>
@@ -147,9 +138,7 @@ namespace MagicLeap.Examples
 
         private void OnPermissionDenied(string permission)
         {
-#if UNITY_ANDROID
             MLPluginLog.Error($"{permission} denied, example won't function.");
-#endif
         }
 
         private void OnPermissionGranted(string permission)

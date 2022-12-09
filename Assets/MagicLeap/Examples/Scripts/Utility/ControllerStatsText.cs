@@ -25,7 +25,7 @@ namespace MagicLeap.Examples
         private Text _controllerStatsText = null;
         private MagicLeapInputs mlInputs;
         private MagicLeapInputs.ControllerActions controllerActions;
-        
+
         /// <summary>
         /// Initializes component data and starts MLInput.
         /// </summary>
@@ -56,8 +56,6 @@ namespace MagicLeap.Examples
         {
             if (controllerActions.IsTracked.IsPressed())
             {
-                #if UNITY_MAGICLEAP || UNITY_ANDROID
-                
                 _controllerStatsText.text =
                 string.Format("" +
                     "Position:\t<i>{0}</i>\n" +
@@ -80,10 +78,6 @@ namespace MagicLeap.Examples
                     controllerActions.TouchpadForce.ReadValue<float>().ToString("n2"),
                     gestureComponent.gestureSubsystem.touchpadGestureEvents.FirstOrDefault().type.ToString(),
                     gestureComponent.gestureSubsystem.touchpadGestureEvents.FirstOrDefault().state.ToString());
-
-                #else
-                _controllerStatsText.text = "Invalid Controller!";
-                #endif
             }
             else
             {

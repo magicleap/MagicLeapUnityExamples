@@ -35,7 +35,7 @@ namespace MagicLeap.Examples
         /// Triggered when dragging ends
         /// </summary>
         public event Action OnEndDrag;
-        
+
         private MagicLeapInputs mlInputs;
         private MagicLeapInputs.ControllerActions controllerActions;
 
@@ -44,14 +44,12 @@ namespace MagicLeap.Examples
         /// </summary>
         void Start()
         {
-            #if UNITY_MAGICLEAP || UNITY_ANDROID
             mlInputs = new MagicLeapInputs();
             mlInputs.Enable();
             controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
-            
+
             controllerActions.Trigger.performed += HandleTriggerDown;
             controllerActions.Trigger.canceled += HandleTriggerUp;
-            #endif
         }
 
         /// <summary>
@@ -59,12 +57,10 @@ namespace MagicLeap.Examples
         /// </summary>
         private void OnDestroy()
         {
-            #if UNITY_MAGICLEAP || UNITY_ANDROID
             controllerActions.Trigger.performed -= HandleTriggerDown;
             controllerActions.Trigger.canceled -= HandleTriggerUp;
-            
+
             mlInputs.Dispose();
-            #endif
         }
 
         /// <summary>

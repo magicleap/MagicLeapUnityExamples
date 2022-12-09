@@ -60,7 +60,6 @@ namespace MagicLeap.Examples
 
         private void OpenApp()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
 
             AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
@@ -72,9 +71,6 @@ namespace MagicLeap.Examples
             currentActivity.Dispose();
             packageManager.Dispose();
             launchIntent.Dispose();
-#else
-            Debug.LogError("You need to be on Magic Leap device to run this app");
-#endif
         }
     }
 }

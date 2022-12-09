@@ -9,10 +9,10 @@
 // %BANNER_END%
 
 using System;
+using MagicLeap.Core;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.MagicLeap;
-using MagicLeap.Core;
 
 namespace MagicLeap.Examples
 {
@@ -31,13 +31,13 @@ namespace MagicLeap.Examples
 
         [SerializeField, Tooltip("Rewind Button")]
         private MediaPlayerButton rewindButton = null;
-        
+
         [SerializeField, Tooltip("Number of ms to rewind")]
         private int rewindMS = -10000;
 
         [SerializeField, Tooltip("Forward Button")]
         private MediaPlayerButton forwardButton = null;
-        
+
         [SerializeField, Tooltip("Number of ms to forward")]
         private int forwardMS = 10000;
 
@@ -81,7 +81,6 @@ namespace MagicLeap.Examples
 
         private void RegisterCallbacks()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             mediaPlayerBehavior.OnPrepared += HandleOnPrepared;
             mediaPlayerBehavior.OnPlay += HandleOnPlay;
             mediaPlayerBehavior.OnPause += HandleOnPause;
@@ -102,12 +101,10 @@ namespace MagicLeap.Examples
             forwardButton.OnButtonClick += FastForward;
             timelineSlider.OnTimelineChanged += TimelineSliderChange;
             volumeSlider.OnVolumeChanged += SetVolume;
-#endif
         }
 
         private void UnregisterCallbacks()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             mediaPlayerBehavior.OnPrepared -= HandleOnPrepared;
             mediaPlayerBehavior.OnPlay -= HandleOnPlay;
             mediaPlayerBehavior.OnPause -= HandleOnPause;
@@ -128,11 +125,8 @@ namespace MagicLeap.Examples
             forwardButton.OnButtonClick -= FastForward;
             timelineSlider.OnTimelineChanged -= TimelineSliderChange;
             volumeSlider.OnVolumeChanged -= SetVolume;
-#endif
         }
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
-        
         /// <summary>
         /// Handler when Play/Pause Toggle is triggered.
         /// See HandlePlay() and HandlePause() for more info
@@ -193,7 +187,7 @@ namespace MagicLeap.Examples
         {
             if (mediaPlayerBehavior.IsSeeking)
                 return;
-            
+
             if (!mediaPlayerBehavior.IsPrepared)
                 return;
 
@@ -217,7 +211,7 @@ namespace MagicLeap.Examples
             rewindButton.enabled = enabled;
             timelineSlider.enabled = enabled;
             volumeSlider.enabled = enabled;
-            
+
             if (!enabled)
             {
                 elapsedTime.text = "--:--:--";
@@ -337,6 +331,10 @@ namespace MagicLeap.Examples
         private void HandleOnSeekComplete()
         {
             EnableUI(!mediaPlayerBehavior.IsBuffering);
+            if (!mediaPlayerBehavior.MediaPlayer.IsPlaying)
+            {
+                mediaPlayerBehavior.Play();
+            }
         }
 
         /// <summary>
@@ -367,7 +365,6 @@ namespace MagicLeap.Examples
             TimeSpan timeSpan = new TimeSpan(elapsedTimeMs * TimeSpan.TicksPerMillisecond);
             elapsedTime.text = $"{timeSpan.Hours}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}";
         }
-#endif
     }
 }
 

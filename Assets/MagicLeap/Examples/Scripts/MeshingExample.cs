@@ -8,8 +8,6 @@
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
-#if UNITY_EDITOR || UNITY_MAGICLEAP || UNITY_ANDROID
-
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -70,6 +68,7 @@ namespace MagicLeap.Examples
 
         private readonly MLPermissions.Callbacks permissionCallbacks = new MLPermissions.Callbacks();
 
+
         /// <summary>
         /// Initializes component data and starts MLInput.
         /// </summary>
@@ -115,7 +114,6 @@ namespace MagicLeap.Examples
                 return;
             }
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             MLDevice.RegisterGestureSubsystem();
             if (MLDevice.GestureSubsystemComponent == null)
             {
@@ -123,14 +121,13 @@ namespace MagicLeap.Examples
                 enabled = false;
                 return;
             }
-#endif
+
             xRRayInteractor = FindObjectOfType<XRRayInteractor>();
 
             _renderModeCount = System.Enum.GetNames(typeof(MeshingVisualizer.RenderMode)).Length;
 
             _camera = Camera.main;
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             mlInputs = new MagicLeapInputs();
             mlInputs.Enable();
             controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
@@ -140,7 +137,7 @@ namespace MagicLeap.Examples
             controllerActions.Menu.performed += OnMenuDown;
 
             MLDevice.GestureSubsystemComponent.onTouchpadGestureChanged += OnTouchpadGestureStart;
-#endif
+            MeshingSubsystem.Extensions.MLMeshing.Config.SetCustomMeshBlockRequests(CustomBlockRequests);
         }
 
         /// <summary>
@@ -158,8 +155,6 @@ namespace MagicLeap.Examples
             _meshingSubsystemComponent.gameObject.transform.position = _camera.gameObject.transform.position;
             UpdateBounds();
         }
-
-
 
         /// <summary>
         /// Update mesh polling center position to camera.
@@ -190,7 +185,6 @@ namespace MagicLeap.Examples
             permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
             permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             controllerActions.Trigger.performed -= OnTriggerDown;
             controllerActions.Bumper.performed -= OnBumperDown;
             controllerActions.Menu.performed -= OnMenuDown;
@@ -200,7 +194,6 @@ namespace MagicLeap.Examples
                 MLDevice.GestureSubsystemComponent.onTouchpadGestureChanged -= OnTouchpadGestureStart;
 
             mlInputs.Dispose();
-#endif
         }
 
         private void OnPermissionGranted(string permission)
@@ -302,7 +295,6 @@ namespace MagicLeap.Examples
         /// <param name="gesture">The gesture getting started.</param>
         private void OnTouchpadGestureStart(GestureSubsystem.Extensions.TouchpadGestureEvent touchpadGestureEvent)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             if (touchpadGestureEvent.state == GestureState.Started &&
                 touchpadGestureEvent.type == InputSubsystem.Extensions.TouchpadGesture.Type.Swipe &&
                 touchpadGestureEvent.direction == InputSubsystem.Extensions.TouchpadGesture.Direction.Up)
@@ -313,7 +305,6 @@ namespace MagicLeap.Examples
                 _mlSpatialMapper.levelOfDetail = ((_mlSpatialMapper.levelOfDetail == MLSpatialMapper.LevelOfDetail.Maximum) ? MLSpatialMapper.LevelOfDetail.Minimum : (_mlSpatialMapper.levelOfDetail + 1));
 #endif
             }
-#endif
         }
 
         /// <summary>
@@ -322,10 +313,8 @@ namespace MagicLeap.Examples
         /// <param name="inputSubsystem"> The inputSubsystem that invoked this event. </param>
         private void OnTrackingOriginChanged(XRInputSubsystem inputSubsystem)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             _meshingSubsystemComponent.DestroyAllMeshes();
             _meshingSubsystemComponent.RefreshAllMeshes();
-#endif
         }
 
         private void UpdateBounds()
@@ -333,7 +322,21 @@ namespace MagicLeap.Examples
             _visualBounds.SetActive(_bounded);
             _meshingSubsystemComponent.gameObject.transform.localScale = _bounded ? _boundedExtentsSize : _boundlessExtentsSize;
         }
+
+        MeshingSubsystem.Extensions.MLMeshing.MeshBlockRequest[] CustomBlockRequests(MeshingSubsystem.Extensions.MLMeshing.MeshBlockInfo[] blockInfos)
+        {
+            var blockRequests = new MeshingSubsystem.Extensions.MLMeshing.MeshBlockRequest[blockInfos.Length];
+            for (int i = 0; i < blockInfos.Length; ++i)
+            {
+                var blockInfo = blockInfos[i];
+                var distanceFromCamera = Vector3.Distance(_camera.transform.position, blockInfo.pose.position);
+                if (distanceFromCamera > 1)
+                    blockRequests[i] = new MeshingSubsystem.Extensions.MLMeshing.MeshBlockRequest(blockInfo.id, MeshingSubsystem.Extensions.MLMeshing.LevelOfDetail.Minimum);
+                else
+                    blockRequests[i] = new MeshingSubsystem.Extensions.MLMeshing.MeshBlockRequest(blockInfo.id, MeshingSubsystem.Extensions.MLMeshing.LevelOfDetail.Maximum);
+            }
+
+            return blockRequests;
+        }
     }
 }
-
-#endif

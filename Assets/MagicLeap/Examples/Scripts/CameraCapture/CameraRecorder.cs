@@ -46,7 +46,7 @@ namespace MagicLeap.Examples
             };
         }
     }
-    
+
     public class CameraRecorder
     {
         /// <summary>
@@ -79,7 +79,6 @@ namespace MagicLeap.Examples
         /// <param name="filePath">Path in which video will be saved</param>
         public MLResult StartRecording(string filePath, CameraRecorderConfig config)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             if (isRecording)
             {
                 return MLResult.Create(MLResult.Code.Ok);
@@ -90,7 +89,7 @@ namespace MagicLeap.Examples
             MediaRecorder.OnError += MediaRecorderOnError;
             MediaRecorder.OnTrackInfo += MediaRecorderOnTrackInfo;
             MediaRecorder.OnTrackError += MediaRecorderOnTrackError;
-            
+
             MediaRecorder.SetVideoSource(MLMediaRecorder.VideoSource.Camera);
             if (MLPermissions.CheckPermission(MLPermission.RecordAudio).IsOk)
             {
@@ -104,29 +103,26 @@ namespace MagicLeap.Examples
             MediaRecorder.SetVideoEncoder(config.VideoEncoder);
             MediaRecorder.SetAudioEncoder(config.AudioEncoder);
             MediaRecorder.SetOutputFileForPath(filePath);
-            
+
             var mediaFormat = MLMediaFormat.CreateEmpty();
             mediaFormat.SetValue(MLMediaFormatKey.Width, config.Width);
-            mediaFormat.SetValue(MLMediaFormatKey.Height,config.Height);
+            mediaFormat.SetValue(MLMediaFormatKey.Height, config.Height);
             mediaFormat.SetValue(MLMediaFormatKey.Frame_Rate, config.FrameRate);
             mediaFormat.SetValue(MLMediaFormatKey.Parameter_Video_Bitrate, config.VideoBitrate);
             mediaFormat.SetValue(MLMediaFormatKey.Bit_Rate, config.AudioBitrate);
             mediaFormat.SetValue(MLMediaFormatKey.Channel_Count, config.ChannelCount);
             mediaFormat.SetValue(MLMediaFormatKey.Sample_Rate, config.SampleRate);
-            
+
             MLResult result = MediaRecorder.Prepare(mediaFormat);
 
             if (!result.IsOk)
                 return result;
-            
+
             result = MediaRecorder.Start();
             MediaRecorder.GetInputSurface();
             isRecording = true;
 
             return result;
-#else
-            return MLResult.Create(MLResult.Code.NotImplemented);
-#endif
         }
 
         /// <summary>
@@ -134,7 +130,6 @@ namespace MagicLeap.Examples
         /// </summary>
         public MLResult EndRecording()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             if (!isRecording)
             {
                 return MLResult.Create(MLResult.Code.Ok);
@@ -150,9 +145,6 @@ namespace MagicLeap.Examples
 
             MediaRecorder = null;
             return result;
-#else
-            return MLResult.Create(MLResult.Code.NotImplemented);
-#endif
         }
 
         private void MediaRecorderOnTrackError(MLMediaRecorder.OnTrackErrorData trackInfo)

@@ -67,16 +67,11 @@ namespace MagicLeap.Examples
         /// </summary>
         void LateUpdate()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             if (controllerActions.IsTracked.IsPressed())
             {
                 UpdateTouchPosition();
             }
-#endif
         }
-
-#if UNITY_MAGICLEAP || UNITY_ANDROID
-
 
         /// <summary>
         /// Update cursor position based on touch
@@ -98,6 +93,5 @@ namespace MagicLeap.Examples
 
             _touchActiveBefore = true;
         }
-#endif
     }
 }

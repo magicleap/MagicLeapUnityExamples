@@ -8,8 +8,6 @@
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
-#if UNITY_EDITOR || UNITY_MAGICLEAP || UNITY_ANDROID
-
 using UnityEngine;
 using UnityEngine.XR.MagicLeap;
 
@@ -45,7 +43,7 @@ namespace MagicLeap.Examples
         [SerializeField, Tooltip("The material to apply for point cloud rendering.")]
         private Material _pointCloudMaterial = null;
 
-        public RenderMode renderMode 
+        public RenderMode renderMode
         {
             get; private set;
         } = RenderMode.Wireframe;
@@ -62,7 +60,7 @@ namespace MagicLeap.Examples
                 enabled = false;
                 return;
             }
-            if(_occlusionMaterial == null)
+            if (_occlusionMaterial == null)
             {
                 Debug.LogError("Error: MeshingVisualizer._occlusionMaterial is not set, disabling script!");
                 enabled = false;
@@ -123,17 +121,17 @@ namespace MagicLeap.Examples
                     case RenderMode.Wireframe:
                     case RenderMode.Colored:
                     case RenderMode.Occlusion:
-                    {
-                        _meshingSubsystemComponent.requestedMeshType = MeshingSubsystemComponent.MeshType.Triangles;
+                        {
+                            _meshingSubsystemComponent.requestedMeshType = MeshingSubsystemComponent.MeshType.Triangles;
 
-                        break;
-                    }
+                            break;
+                        }
                     case RenderMode.PointCloud:
-                    {
-                        _meshingSubsystemComponent.requestedMeshType = MeshingSubsystemComponent.MeshType.PointCloud;
+                        {
+                            _meshingSubsystemComponent.requestedMeshType = MeshingSubsystemComponent.MeshType.PointCloud;
 
-                        break;
-                    }
+                            break;
+                        }
                 }
 
                 _meshingSubsystemComponent.DestroyAllMeshes();
@@ -204,5 +202,3 @@ namespace MagicLeap.Examples
 #endif
     }
 }
-
-#endif

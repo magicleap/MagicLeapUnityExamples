@@ -9,14 +9,14 @@
 // %BANNER_END%
 
 using System;
-using System.Text;
 using System.Runtime.InteropServices;
+using System.Text;
 using MagicLeap.Core;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR.MagicLeap;
 using UnityEngine.XR.MagicLeap.Native;
-using UnityEngine.InputSystem;
 
 namespace MagicLeap.Examples
 {
@@ -42,6 +42,15 @@ namespace MagicLeap.Examples
 
         [SerializeField, Tooltip("Button navigating to next page.")]
         private Button nextButton;
+
+        [SerializeField, Tooltip("Button to pause webview.")]
+        private Button pauseButton;
+
+        [SerializeField, Tooltip("Dropdown to determine which pause type to use when pausing.")]
+        private Dropdown pauseDropdown;
+
+        [SerializeField, Tooltip("Button to resume webview.")]
+        private Button resumeButton;
 
         [SerializeField, Tooltip("Text on the reset zoom button.")]
         private Text zoomFactorText;
@@ -98,12 +107,10 @@ namespace MagicLeap.Examples
             {
                 if (webViewScreenBehavior.WebView != null)
                 {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                     zoomFactorText.text = (webViewScreenBehavior.WebView.GetZoomFactor() * 100) + "%";
 
                     backButton.interactable = webViewScreenBehavior.WebView.CanGoBack();
                     nextButton.interactable = webViewScreenBehavior.WebView.CanGoForward();
-#endif
                 }
             }
         }
@@ -131,7 +138,6 @@ namespace MagicLeap.Examples
 
         private void OnTabCreated(MLWebViewTabBehavior tab)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             tab.WebView.OnLoadEnded += OnLoadEnded;
             tab.WebView.OnErrorLoaded += OnErrorLoaded;
             tab.WebView.OnCertificateErrorLoaded += OnCertificateErrorLoaded;
@@ -139,26 +145,21 @@ namespace MagicLeap.Examples
             tab.WebView.OnKeyboardDismissed += OnKeyboardDismissed;
 
             tab.GoToUrl(homeUrl);
-#endif
         }
 
         private void OnTabDestroyed(MLWebViewTabBehavior tab)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             tab.WebView.OnLoadEnded -= OnLoadEnded;
             tab.WebView.OnErrorLoaded -= OnErrorLoaded;
             tab.WebView.OnCertificateErrorLoaded -= OnCertificateErrorLoaded;
             tab.WebView.OnKeyboardShown -= OnKeyboardShown;
             tab.WebView.OnKeyboardDismissed -= OnKeyboardDismissed;
-#endif
         }
 
         private void OnLoadEnded(MLWebView webView, bool isMainFrame, int httpStatusCode)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             // make sure the next time a page is loaded that it doesn't ignore cert errors
             webView.IgnoreCertificateError = false;
-#endif
             loadStatus = String.Format("Success - {0}", httpStatusCode.ToString());
         }
 
@@ -180,7 +181,6 @@ namespace MagicLeap.Examples
             loadStatus = String.Format("Cert Error - {0} - {1}", errorCode.ToString(), errorMessage);
         }
 
-#if UNITY_MAGICLEAP || UNITY_ANDROID
         private void OnKeyboardShown(MLWebView webView, MLWebView.InputFieldData keyboardShowData)
         {
             if (virtualKeyboard != null)
@@ -194,7 +194,6 @@ namespace MagicLeap.Examples
                 virtualKeyboard.Open();
             }
         }
-#endif
 
         private void OnKeyboardDismissed(MLWebView webView)
         {
@@ -206,31 +205,25 @@ namespace MagicLeap.Examples
 
         private void OnCharacterAdded(char character)
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             webViewScreenBehavior.WebView?.InjectChar(character);
-#endif
         }
 
         private void OnCharacterDeleted()
         {
             if (webViewScreenBehavior.WebView != null)
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 webViewScreenBehavior.WebView.InjectKeyDown(MLWebView.KeyCode.Delete, (uint)MLWebView.EventFlags.None);
                 webViewScreenBehavior.WebView.InjectKeyUp(MLWebView.KeyCode.Delete, (uint)MLWebView.EventFlags.None);
-#endif
             }
         }
 
         private void CreateWebViewWindow()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             if (!webViewScreenBehavior.CreateWebViewWindow())
             {
                 Debug.LogError("Failed to create web view window");
             }
             else
-#endif
             {
                 tabBar.CreateTab();
             }
@@ -243,12 +236,10 @@ namespace MagicLeap.Examples
         {
             if (webViewScreenBehavior.WebView != null)
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 if (!webViewScreenBehavior.WebView.GoTo(url).IsOk)
                 {
                     Debug.LogError("Failed to navigate to url " + url);
                 }
-#endif
             }
         }
 
@@ -260,12 +251,10 @@ namespace MagicLeap.Examples
         {
             if (webViewScreenBehavior.WebView != null)
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 if (!webViewScreenBehavior.WebView.GoTo(homeUrl).IsOk)
                 {
                     Debug.LogError("Failed to load home page URL");
                 }
-#endif
             }
         }
 
@@ -276,13 +265,11 @@ namespace MagicLeap.Examples
         {
             if (webViewScreenBehavior.WebView != null)
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 webViewScreenBehavior.WebView.IgnoreCertificateError = ignoreCertificateError;
                 if (!webViewScreenBehavior.WebView.Reload().IsOk)
                 {
                     Debug.LogError("Failed to reload current URL");
                 }
-#endif
             }
         }
 
@@ -293,12 +280,10 @@ namespace MagicLeap.Examples
         {
             if (webViewScreenBehavior.WebView != null)
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 if (!webViewScreenBehavior.WebView.GoForward().IsOk)
                 {
                     Debug.LogError("Failed to navigate forward");
                 }
-#endif
             }
         }
 
@@ -309,12 +294,10 @@ namespace MagicLeap.Examples
         {
             if (webViewScreenBehavior.WebView != null)
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 if (!webViewScreenBehavior.WebView.GoBack().IsOk)
                 {
                     Debug.LogError("Failed to navigate back");
                 }
-#endif
             }
         }
 
@@ -325,12 +308,10 @@ namespace MagicLeap.Examples
         {
             if (webViewScreenBehavior.WebView != null)
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 if (!webViewScreenBehavior.WebView.ZoomIn().IsOk)
                 {
                     Debug.LogError("Failed to zoom in");
                 }
-#endif
             }
         }
 
@@ -341,12 +322,10 @@ namespace MagicLeap.Examples
         {
             if (webViewScreenBehavior.WebView != null)
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 if (!webViewScreenBehavior.WebView.ZoomOut().IsOk)
                 {
                     Debug.LogError("Failed to zoom out");
                 }
-#endif
             }
         }
 
@@ -357,12 +336,10 @@ namespace MagicLeap.Examples
         {
             if (webViewScreenBehavior.WebView != null)
             {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
                 if (!webViewScreenBehavior.WebView.ResetZoom().IsOk)
                 {
                     Debug.LogError("Failed to reset zoom to 100%");
                 }
-#endif
             }
         }
 
@@ -371,6 +348,35 @@ namespace MagicLeap.Examples
             if (certErrorPopup != null)
             {
                 certErrorPopup.SetActive(false);
+            }
+        }
+
+        public void Pause()
+        {
+            var pauseType = (MLWebView.PauseType)pauseDropdown.value;
+            if (!webViewScreenBehavior.WebView.Pause(pauseType).IsOk)
+            {
+                Debug.LogError("Failed to pause");
+            }
+            else
+            {
+                pauseButton.gameObject.SetActive(false);
+                pauseDropdown.gameObject.SetActive(false);
+                resumeButton.gameObject.SetActive(true);
+            }
+        }
+
+        public void Resume()
+        {
+            if (!webViewScreenBehavior.WebView.Resume().IsOk)
+            {
+                Debug.LogError("Failed to resume");
+            }
+            else
+            {
+                pauseButton.gameObject.SetActive(true);
+                pauseDropdown.gameObject.SetActive(true);
+                resumeButton.gameObject.SetActive(false);
             }
         }
 

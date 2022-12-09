@@ -106,12 +106,10 @@ namespace MagicLeap.Examples
         /// </summary>
         private void UpdateIcon()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             if (controllerActions.IsTracked.IsPressed())
             {
                 _spriteRenderer.sprite = _controllerIcon;
             }
-#endif
         }
 
         /// <summary>
@@ -120,9 +118,7 @@ namespace MagicLeap.Examples
         /// </summary>
         private void SetDefaultIcon()
         {
-#if UNITY_MAGICLEAP || UNITY_ANDROID
             _spriteRenderer.sprite = _controllerIcon;
-#endif
         }
 
         private void HandleOnControllerChanged(InputAction.CallbackContext callbackContext)
