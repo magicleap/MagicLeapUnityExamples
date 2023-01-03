@@ -21,4 +21,5 @@
   <uses-permission android:name="com.magicleap.permission.MARKER_TRACKING" />
   <uses-permission android:name="com.magicleap.permission.SPATIAL_MAPPING" />
   <uses-permission android:name="com.magicleap.permission.EYE_TRACKING" />
+  <uses-permission android:name="com.magicleap.permission.DEPTH_CAMERA" />
 </manifest>

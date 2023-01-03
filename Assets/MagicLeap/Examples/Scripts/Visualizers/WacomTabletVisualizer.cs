@@ -76,6 +76,12 @@ namespace MagicLeap.Examples
         private RenderTexture _canvas = null;
         private int currentColorIndex;
 
+        // Origin point (0,0) in Drawing_Plane_GEO, used to offset the pen movement
+        private Vector2 originPoint = new Vector2(0.128f, -0.077f);
+        // Used to scale the pen position
+        private Vector2 penPositionScale = new Vector2(2800, 5700);
+
+
         /// <summary>
         /// Validates fields, sets up the canvas, and registers for the MLInput tablet callbacks.
         /// </summary>
@@ -104,14 +110,15 @@ namespace MagicLeap.Examples
                 return;
 
             // Set the location of the pen.
-            _pen.localPosition = new Vector3(wacomTabletExample.Position.x / -7.75f, 
-                wacomTabletExample.Distance / 100, 
-                wacomTabletExample.Position.y / 13.25f);
+            _pen.localPosition = new Vector3(originPoint.x - wacomTabletExample.Position.x / penPositionScale.x,
+                wacomTabletExample.Distance / 100,
+                originPoint.y - wacomTabletExample.Position.y / penPositionScale.y);
 
             // Set the rotation of the pen.
             _pen.localRotation = Quaternion.Euler(-90, 0, 0) * 
                                  Quaternion.Euler(wacomTabletExample.PenTilt.y, wacomTabletExample.PenTilt.x * -1, 0);
-            
+
+
 
             // Only draw when the pen is touching.
             if (wacomTabletExample.Tip)

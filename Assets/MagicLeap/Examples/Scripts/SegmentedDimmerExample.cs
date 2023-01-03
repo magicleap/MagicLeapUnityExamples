@@ -19,23 +19,16 @@ namespace MagicLeap.Examples
 
         [SerializeField, Tooltip("Popup canvas to alert the user of error when Segmented Dimmer settings aren't enabled.")]
         private GameObject segmentedDimmerErrorPopup;
+        
 
-        [SerializeField, Tooltip("Duration in seconds the error dialog will remain on screen if not dismissed.")]
-        private float errorDisplayTime = 5f;
-
-        private bool userPromptedForSetting = false;
+        private static bool userPromptedForSetting;
 
         // Start is called before the first frame update
         void Start()
         {
             if (!DimmerModeEnabled())
             {
-                if (segmentedDimmerSettingsPopup != null)
-                {
-                    userPromptedForSetting = true;
-                    segmentedDimmerSettingsPopup.SetActive(true);
-
-                }
+               ShowDimmerDisabledPopup();
             }
 
             Debug.Log($"Found Segmented Dimmer: " + MLSegmentedDimmer.Exists);
@@ -46,29 +39,30 @@ namespace MagicLeap.Examples
             }
         }
 
+        private void ShowDimmerDisabledPopup()
+        {
+            segmentedDimmerErrorPopup.SetActive(false);
+            segmentedDimmerSettingsPopup.SetActive(false);
+
+            if (userPromptedForSetting)
+            {
+                Debug.LogError("Segmented Dimmer has not been enabled in system display settings. Segmented Dimmer will not be visible in this application until the setting is turned on.");
+                segmentedDimmerErrorPopup.SetActive(true);
+            }
+            else
+            {
+                segmentedDimmerSettingsPopup.SetActive(true);
+                userPromptedForSetting = true;
+            }
+        }
+
         void OnApplicationPause(bool pauseStatus)
         {
             if (!pauseStatus)
             {
                 if (!DimmerModeEnabled())
                 {
-                    if (!userPromptedForSetting)
-                    {
-                        if (segmentedDimmerSettingsPopup != null)
-                        {
-                            userPromptedForSetting = true;
-                            segmentedDimmerSettingsPopup.SetActive(true);
-                        }
-                    }
-                    else
-                    {
-                        if (segmentedDimmerErrorPopup != null)
-                        {
-                            Debug.LogError("Segmented Dimmer has not been enabled in system display settings. Segmented Dimmer will not be visible in this application until the setting is turned on.");
-                            segmentedDimmerErrorPopup.SetActive(true);
-                            StartCoroutine(DelayDismissErrorPopup());
-                        }
-                    }
+                    ShowDimmerDisabledPopup();
                 }
             }
         }
@@ -108,15 +102,6 @@ namespace MagicLeap.Examples
             if (segmentedDimmerSettingsPopup != null)
             {
                 segmentedDimmerSettingsPopup.SetActive(false);
-            }
-        }
-
-        private IEnumerator DelayDismissErrorPopup()
-        {
-            yield return new WaitForSeconds(errorDisplayTime);
-            if(segmentedDimmerErrorPopup != null)
-            {
-                segmentedDimmerErrorPopup.SetActive(false);
             }
         }
     }

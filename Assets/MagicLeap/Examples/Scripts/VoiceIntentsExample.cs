@@ -26,11 +26,8 @@ public class VoiceIntentsExample : MonoBehaviour
 
     [SerializeField, Tooltip("Popup canvas to alert the user of error when Voice Input settings aren't enabled.")]
     private GameObject voiceInputErrorPopup;
-
-    [SerializeField, Tooltip("Duration in seconds the error dialog will remain on screen if not dismissed.")]
-    private float errorDisplayTime = 5f;
-
-    private bool userPromptedForSetting = false;
+    
+    private static bool userPromptedForSetting;
 
     private readonly MLPermissions.Callbacks permissionCallbacks = new MLPermissions.Callbacks();
 
@@ -124,7 +121,6 @@ public class VoiceIntentsExample : MonoBehaviour
                 Debug.LogError("Voice Commands has not been enabled. Voice intents requires this setting to enabled. It is found in system settings inside Magic Leap Inputs.");
                 voiceInputSettingsPopup.SetActive(false);
                 voiceInputErrorPopup.SetActive(true);
-                StartCoroutine(DelayDismissErrorPopup());
             }
         }
     }
@@ -221,13 +217,4 @@ public class VoiceIntentsExample : MonoBehaviour
             voiceInputSettingsPopup.SetActive(false);
         }
     }
-    private IEnumerator DelayDismissErrorPopup()
-    {
-        yield return new WaitForSeconds(errorDisplayTime);
-        if (voiceInputErrorPopup != null)
-        {
-            voiceInputErrorPopup.SetActive(false);
-        }
-    }
-
 }

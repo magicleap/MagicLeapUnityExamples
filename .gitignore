@@ -71,16 +71,16 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-/[Aa]ssets/[Ss]treamingAssets/
-/[Aa]ssets/[Ss]treamingAssets.meta
-
 # python ignores
 *__pycache__
 *.pyc
 *__pycache__.meta
 
-# Mac
-.DS_Store
-
 # ZI Libs
 Assets/Plugins/Lumin/Editor*
+
+# OSX-specific
+.DS_Store
+
+# Exclude rider idea data
+.idea
