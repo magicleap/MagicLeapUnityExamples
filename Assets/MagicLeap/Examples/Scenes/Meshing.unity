@@ -700,7 +700,7 @@ PrefabInstance:
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<color=#dbfb76><b>Bumper</b></color>
+      value: '<color=#B7B7B8><b>Bumper</b></color>
 
         Cycles rendering modes:
 
@@ -719,7 +719,7 @@ PrefabInstance:
 
 
 
-        <color=#dbfb76><b>Home Button</b></color>
+        <color=#B7B7B8><b>Home Button</b></color>
 
         Toggles
         the bounds extents:
@@ -732,14 +732,14 @@ PrefabInstance:
 
 
 
-        <color=#dbfb76><b>Trigger</b></color>
+        <color=#B7B7B8><b>Trigger</b></color>
 
         Shoot
         ball into the scene to demonstrate occlusion and physics.
 
 
 
-        <color=#dbfb76><b>Touchpad</b></color>
+        <color=#B7B7B8><b>Touchpad</b></color>
 
         -
         Swipe Up. Switch level of detail of the mesh data to minimum, medium or maximum.
@@ -831,7 +831,7 @@ PrefabInstance:
 
 
 
-        <color=#dbfb76><b>Mandatory
+        <color=#B7B7B8><b>Mandatory
         permissions required by this feature</b></color>
 
         - SpatialMapping'

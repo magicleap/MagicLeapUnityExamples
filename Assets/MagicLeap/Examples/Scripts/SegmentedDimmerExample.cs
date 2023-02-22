@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using UnityEngine.XR.MagicLeap;
 
@@ -11,19 +8,33 @@ namespace MagicLeap.Examples
 {
     public class SegmentedDimmerExample : MonoBehaviour
     {
+        enum DimmerMode
+        {
+            DepthBuffer,
+            URP,
+            Off
+        }
+
         [SerializeField]
-        private Toggle enableToggle;
+        private DimmerMode dimmerMode = DimmerMode.DepthBuffer;
 
         [SerializeField, Tooltip("Popup canvas to direct user to Segmented Dimmer settings page.")]
         private GameObject segmentedDimmerSettingsPopup = null;
 
         [SerializeField, Tooltip("Popup canvas to alert the user of error when Segmented Dimmer settings aren't enabled.")]
         private GameObject segmentedDimmerErrorPopup;
-        
+
+        [SerializeField]
+        private TextMesh modeMessage;
+
+        [SerializeField]
+        private Text status;
+
+        private MagicLeapInputs mlInputs;
+        private MagicLeapInputs.ControllerActions controllerActions;
 
         private static bool userPromptedForSetting;
 
-        // Start is called before the first frame update
         void Start()
         {
             if (!DimmerModeEnabled())
@@ -31,11 +42,70 @@ namespace MagicLeap.Examples
                ShowDimmerDisabledPopup();
             }
 
-            Debug.Log($"Found Segmented Dimmer: " + MLSegmentedDimmer.Exists);
+            var data = Camera.main.GetUniversalAdditionalCameraData();
+            data.SetRenderer(0);
 
-            if(MLSegmentedDimmer.Exists)
+            MLSegmentedDimmer.Activate();
+
+            mlInputs = new MagicLeapInputs();
+            mlInputs.Enable();
+            controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+
+            controllerActions.Bumper.performed += OnBumperDown;
+
+            UpdateMessage();
+        }
+
+        private void OnDisable()
+        {
+            MLSegmentedDimmer.Deactivate();
+            controllerActions.Bumper.performed -= OnBumperDown;
+        }
+
+        private void OnBumperDown(InputAction.CallbackContext context)
+        {
+            switch (dimmerMode)
             {
+                case DimmerMode.DepthBuffer:
+                    dimmerMode = DimmerMode.Off;
+                    //dimmerMode = DimmerMode.URP;
+                    break;
+                case DimmerMode.URP:
+                    dimmerMode = DimmerMode.Off;
+                    break;
+                case DimmerMode.Off:
+                    dimmerMode = DimmerMode.DepthBuffer;
+                    break;
+            }
+
+            var cameraData = Camera.main.GetUniversalAdditionalCameraData();
+            if (dimmerMode != DimmerMode.Off)
+            {
+                cameraData.SetRenderer((int)dimmerMode);
                 MLSegmentedDimmer.Activate();
+            }
+            else
+            {
+                cameraData.SetRenderer(0);
+                MLSegmentedDimmer.Deactivate();
+            }
+
+            UpdateMessage();
+        }
+
+        private void UpdateMessage()
+        {
+            var val = (dimmerMode == DimmerMode.DepthBuffer) ? "On" : "Off";
+            var message = "Segmented Dimmer mode: " + val;
+            //var message = "Segmented Dimmer mode: " + dimmerMode.ToString();
+
+            if (modeMessage != null)
+            {
+                modeMessage.text = message;
+            }
+            if (status != null)
+            {
+                status.text = message;
             }
         }
 
@@ -65,11 +135,6 @@ namespace MagicLeap.Examples
                     ShowDimmerDisabledPopup();
                 }
             }
-        }
-
-        public void HandleEnableToggle(bool on)
-        {
-            MLSegmentedDimmer.SetEnabled(on);
         }
 
         public bool DimmerModeEnabled()

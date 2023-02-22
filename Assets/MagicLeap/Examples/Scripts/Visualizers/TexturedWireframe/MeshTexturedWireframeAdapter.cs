@@ -178,6 +178,10 @@ public class MeshTexturedWireframeAdapter : MonoBehaviour
                 mesh.SetVertices(vertices);
                 mesh.SetUVs(0, uvs);
                 mesh.SetTriangles(indices, 0);
+                if (_meshingSubsystemComponent.computeNormals)
+                {
+                    mesh.RecalculateNormals();
+                }
                 meshFilter.mesh = mesh;
             }
         }

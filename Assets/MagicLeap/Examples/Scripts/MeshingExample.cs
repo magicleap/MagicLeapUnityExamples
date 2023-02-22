@@ -137,7 +137,6 @@ namespace MagicLeap.Examples
             controllerActions.Menu.performed += OnMenuDown;
 
             MLDevice.GestureSubsystemComponent.onTouchpadGestureChanged += OnTouchpadGestureStart;
-            MeshingSubsystem.Extensions.MLMeshing.Config.SetCustomMeshBlockRequests(CustomBlockRequests);
         }
 
         /// <summary>
@@ -213,10 +212,10 @@ namespace MagicLeap.Examples
         /// </summary>
         private void UpdateStatusText()
         {
-            _statusLabel.text = string.Format("<color=#dbfb76><b>Controller Data</b></color>\nStatus: {0}\n", ControllerStatus.Text);
+            _statusLabel.text = string.Format("<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {0}\n", ControllerStatus.Text);
 
             _statusLabel.text += string.Format(
-                "\n<color=#dbfb76><b>{0} {1}</b></color>\n{2} {3}: {4}\n{5} {6}: {7}\n{8}: {9}",
+                "\n<color=#B7B7B8><b>{0} {1}</b></color>\n{2} {3}: {4}\n{5} {6}: {7}\n{8}: {9}",
                 "Meshing",
                 "Data",
                 "Render",
@@ -321,22 +320,6 @@ namespace MagicLeap.Examples
         {
             _visualBounds.SetActive(_bounded);
             _meshingSubsystemComponent.gameObject.transform.localScale = _bounded ? _boundedExtentsSize : _boundlessExtentsSize;
-        }
-
-        MeshingSubsystem.Extensions.MLMeshing.MeshBlockRequest[] CustomBlockRequests(MeshingSubsystem.Extensions.MLMeshing.MeshBlockInfo[] blockInfos)
-        {
-            var blockRequests = new MeshingSubsystem.Extensions.MLMeshing.MeshBlockRequest[blockInfos.Length];
-            for (int i = 0; i < blockInfos.Length; ++i)
-            {
-                var blockInfo = blockInfos[i];
-                var distanceFromCamera = Vector3.Distance(_camera.transform.position, blockInfo.pose.position);
-                if (distanceFromCamera > 1)
-                    blockRequests[i] = new MeshingSubsystem.Extensions.MLMeshing.MeshBlockRequest(blockInfo.id, MeshingSubsystem.Extensions.MLMeshing.LevelOfDetail.Minimum);
-                else
-                    blockRequests[i] = new MeshingSubsystem.Extensions.MLMeshing.MeshBlockRequest(blockInfo.id, MeshingSubsystem.Extensions.MLMeshing.LevelOfDetail.Maximum);
-            }
-
-            return blockRequests;
         }
     }
 }

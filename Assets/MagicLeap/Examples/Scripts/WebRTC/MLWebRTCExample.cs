@@ -852,8 +852,6 @@ namespace MagicLeap.Examples
 
             webRequestManager.HttpPost(serverURI + "/logout/" + localId, string.Empty);
 
-            localVideoSource.DestroyLocal();
-
             if (dataChannel != null)
             {
                 dataChannel.OnClosed -= OnDataChannelClosed;
@@ -867,6 +865,8 @@ namespace MagicLeap.Examples
 
             connection.Destroy();
             connection = null;
+
+            localVideoSource.DestroyLocal();
 
             remoteMediaStream = null;
             waitingForAnswer = false;

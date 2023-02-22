@@ -204,12 +204,12 @@ namespace MagicLeap.Examples
             }
 
             statusText.text =
-                $"<color=#dbfb76><b>Tablet Data</b></color>\nStatus: {(PenConnected ? "Connected" : "Disconnected")}\n\n";
+                $"<color=#B7B7B8><b>Tablet Data</b></color>\nStatus: {(PenConnected ? "Connected" : "Disconnected")}\n\n";
 
             if (PenConnected)
             {
                 statusText.text +=
-                    $"<b><color=#dbfb76>Pen</color></b>\n\tLocation:\t\t({Position.x}, {Position.y})\n" +
+                    $"<b><color=#B7B7B8>Pen</color></b>\n\tLocation:\t\t({Position.x}, {Position.y})\n" +
                     $"\tDelta:\t\t\t\t\t({Delta.x}, {Delta.y})\n" +
                     $"\tPressure:\t\t{Pressure}\n" +
                     $"\tTilt:\t\t\t\t\t({PenTilt.x}, {PenTilt.y})\n" +
@@ -217,7 +217,7 @@ namespace MagicLeap.Examples
                     $"\tTouching:\t\t{Pressing}\n" +
                     $"\tTool Type:\t{(Eraser ? "Eraser" : "Tip")}\n " +
                     $"\tTouch Ring: {Radius}\n" +
-                    $"\n<b><color=#dbfb76>Events</color></b>\n" +
+                    $"\n<b><color=#B7B7B8>Events</color></b>\n" +
                     $"\tFirstBarrel Button pressed:\t\t\t {(FirstBarrel ? "Yes" : "No")}" +
                     $"\tSecondBarrel Button pressed:\t\t\t {(SecondBarrel ? "Yes" : "No")}" +
                     $"\tThirdBarrel Button pressed:\t\t\t {(ThirdBarrel ? "Yes" : "No")}" +

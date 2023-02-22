@@ -29,6 +29,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3733390453042379695}
   m_RootOrder: 0
@@ -125,6 +126,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 633303460754475344}
   m_Father: {fileID: 0}
@@ -156,7 +158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.86274517, g: 0.9803922, b: 0.48627454, a: 1}
+  m_Color: {r: 0.46666667, g: 0.35686275, b: 0.8666667, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -251,12 +253,12 @@ MonoBehaviour:
     _image: {fileID: 0}
     _default: {r: 1, g: 1, b: 1, a: 1}
     _hover: {r: 0, g: 0, b: 0, a: 1}
-    _pressed: {r: 0, g: 0, b: 0, a: 1}
+    _pressed: {r: 1, g: 1, b: 1, a: 1}
   - _text: {fileID: 0}
     _image: {fileID: 4166490040311234227}
     _default: {r: 0.47058827, g: 0.47058827, b: 0.47058827, a: 0.19607843}
     _hover: {r: 1, g: 1, b: 1, a: 1}
-    _pressed: {r: 0.8588236, g: 0.9843138, b: 0.46274513, a: 1}
+    _pressed: {r: 0.46666667, g: 0.35686275, b: 0.8666667, a: 1}
   _hoverImage: {fileID: 0}
   _activeToggle: 1
   ignoreContent: 1

@@ -117,7 +117,7 @@ namespace MagicLeap.Examples
 
         private void UpdateStatus()
         {
-            statusText.text = $"<color=#dbfb76><b>Web View Data</b></color>\n";
+            statusText.text = $"<color=#B7B7B8><b>Web View Data</b></color>\n";
             StringBuilder strBuilder = new StringBuilder();
             strBuilder.Append($"Scrolling Mode: <i>{webViewScreenBehavior.scrollingMode.ToString()}</i>\n\n");
             strBuilder.Append($"Load Status: <i>{loadStatus}</i>\n");
@@ -144,7 +144,14 @@ namespace MagicLeap.Examples
             tab.WebView.OnKeyboardShown += OnKeyboardShown;
             tab.WebView.OnKeyboardDismissed += OnKeyboardDismissed;
 
+            tab.OnTabSelected += TabOnOnTabSelected;
+            
             tab.GoToUrl(homeUrl);
+        }
+
+        private void TabOnOnTabSelected(MLWebViewTabBehavior obj)
+        {
+            UpdateVisuals();
         }
 
         private void OnTabDestroyed(MLWebViewTabBehavior tab)
@@ -154,6 +161,8 @@ namespace MagicLeap.Examples
             tab.WebView.OnCertificateErrorLoaded -= OnCertificateErrorLoaded;
             tab.WebView.OnKeyboardShown -= OnKeyboardShown;
             tab.WebView.OnKeyboardDismissed -= OnKeyboardDismissed;
+            
+            tab.OnTabSelected -= TabOnOnTabSelected;
         }
 
         private void OnLoadEnded(MLWebView webView, bool isMainFrame, int httpStatusCode)
@@ -223,10 +232,6 @@ namespace MagicLeap.Examples
             {
                 Debug.LogError("Failed to create web view window");
             }
-            else
-            {
-                tabBar.CreateTab();
-            }
         }
 
         /// <summary>
@@ -285,6 +290,8 @@ namespace MagicLeap.Examples
                     Debug.LogError("Failed to navigate forward");
                 }
             }
+            
+            UpdateVisuals();
         }
 
         /// <summary>
@@ -299,6 +306,8 @@ namespace MagicLeap.Examples
                     Debug.LogError("Failed to navigate back");
                 }
             }
+            
+            UpdateVisuals();
         }
 
         /// <summary>
@@ -360,10 +369,17 @@ namespace MagicLeap.Examples
             }
             else
             {
-                pauseButton.gameObject.SetActive(false);
-                pauseDropdown.gameObject.SetActive(false);
-                resumeButton.gameObject.SetActive(true);
+                tabBar.currentTab.Pause();
             }
+            
+            UpdateVisuals();
+        }
+
+        private void UpdateVisuals()
+        {
+            pauseButton.gameObject.SetActive(!tabBar.currentTab.IsPaused);
+            pauseDropdown.gameObject.SetActive(!tabBar.currentTab.IsPaused);
+            resumeButton.gameObject.SetActive(tabBar.currentTab.IsPaused);
         }
 
         public void Resume()
@@ -374,10 +390,10 @@ namespace MagicLeap.Examples
             }
             else
             {
-                pauseButton.gameObject.SetActive(true);
-                pauseDropdown.gameObject.SetActive(true);
-                resumeButton.gameObject.SetActive(false);
+                tabBar.currentTab.Resume();
             }
+
+            UpdateVisuals();
         }
 
         private void OnDestroy()

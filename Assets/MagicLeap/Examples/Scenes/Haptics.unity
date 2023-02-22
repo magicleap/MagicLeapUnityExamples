@@ -568,19 +568,19 @@ PrefabInstance:
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<color=#dbfb76><b>Trigger:</b></color>
+      value: '<color=#B7B7B8><b>Trigger:</b></color>
 
         Starts a buzz haptics
         command when pressed down.
 
 
-        <color=#dbfb76><b>Bumper:</b></color>
+        <color=#B7B7B8><b>Bumper:</b></color>
 
         Starts
         a custom haptics sequence when pressed down.
 
 
-        <color=#dbfb76><b>Hover:</b></color>
+        <color=#B7B7B8><b>Hover:</b></color>
 
         Hovering
         over UI elements starts a predefined haptics pattern.'

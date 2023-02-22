@@ -606,13 +606,13 @@ PrefabInstance:
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<color=#dbfb76><b>Trigger Down</b></color>
+      value: '<color=#B7B7B8><b>Trigger Down</b></color>
 
         - Cycle Audio Modes
 
 
 
-        <color=#dbfb76><b>Bumper</b></color>
+        <color=#B7B7B8><b>Bumper</b></color>
 
         -
         Reset the location of the parrot.
@@ -679,8 +679,8 @@ PrefabInstance:
         Realtime Playback, the audio will playback immediately and without any pitch
         modifications to the audio clip.\r\n\r\n- Delayed Playback, the audio will
         playback with a slightly higher pitch once it detects that you have finished
-        speaking.\r\n\r\n<color=#dbfb76><b>Mandatory permissions required by this
-        feature</b></color> \n- AudioCaptureMic\n\r\n<color=#dbfb76><b>Permissions
+        speaking.\r\n\r\n<color=#B7B7B8><b>Mandatory permissions required by this
+        feature</b></color> \n- AudioCaptureMic\n\r\n<color=#B7B7B8><b>Permissions
         required by this example</b></color>\r\n- ControllerPose\r\n"
       objectReference: {fileID: 0}
     - target: {fileID: 9144045081349396370, guid: 6906f74934047d24e9a47bbdd1afb57a,

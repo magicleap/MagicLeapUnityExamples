@@ -513,7 +513,7 @@ PrefabInstance:
       propertyPath: m_Text
       value: '
 
-        <color=#dbfb76><b>Mandatory permissions required by this
+        <color=#B7B7B8><b>Mandatory permissions required by this
         feature</b></color>
 
         - ControllerPose
@@ -524,14 +524,14 @@ PrefabInstance:
 
 
 
-        <color=#dbfb76><b>Permissions
+        <color=#B7B7B8><b>Permissions
         required by this example</b></color>
 
         - Internet Connection
 
 
 
-        <color=#dbfb76><b>Trigger</b></color>
+        <color=#B7B7B8><b>Trigger</b></color>
 
         Activate
         interactable interface object pointed to by the controller''s ray.
@@ -540,7 +540,7 @@ PrefabInstance:
 
 
 
-        <color=#dbfb76><b>Bumper</b></color>
+        <color=#B7B7B8><b>Bumper</b></color>
 
         Cycle
         through example MLMediaPlayer content.

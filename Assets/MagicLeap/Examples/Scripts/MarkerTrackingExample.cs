@@ -314,12 +314,12 @@ namespace MagicLeap.Examples
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.Append($"<color=#dbfb76><b>ControllerData</b></color>\nStatus: {ControllerStatus.Text}\n\n");
-            builder.Append($"<color=#dbfb76><b>Controller Input</b></color>\nTrigger status: {controllerActions.Trigger.ReadValue<float>()}\n");
+            builder.Append($"<color=#B7B7B8><b>ControllerData</b></color>\nStatus: {ControllerStatus.Text}\n\n");
+            builder.Append($"<color=#B7B7B8><b>Controller Input</b></color>\nTrigger status: {controllerActions.Trigger.ReadValue<float>()}\n");
 
             builder.Append($"Marker Tracker running: {MLMarkerTracker.IsStarted} \n\n");
             builder.Append($"Scanning status: {EnableMarkerScanning || controllerActions.Trigger.ReadValue<float>() > .1f} \n\n");
-            builder.Append($"<color=#dbfb76><b>Marker Settings</b></color>\nScan Types: {MarkerTypes}\n");
+            builder.Append($"<color=#B7B7B8><b>Marker Settings</b></color>\nScan Types: {MarkerTypes}\n");
             builder.Append($"Enable Marker Scanning: {EnableMarkerScanning}\n");
             builder.Append($"QR Code Size: {QRCodeSize}\n\n");
             builder.Append($"Aruco Size: {ArucoMarkerSize}\n\n");
@@ -327,7 +327,7 @@ namespace MagicLeap.Examples
             foreach (var marker in markers)
             {
                 builder.Append(
-                        $"<color=#dbfb76><b>{marker.Key}</b></color>" +
+                        $"<color=#B7B7B8><b>{marker.Key}</b></color>" +
                         $"\nData: {marker.Value.DataString}\n\n");
             }
             statusText.text = builder.ToString();

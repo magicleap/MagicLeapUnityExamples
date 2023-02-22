@@ -265,8 +265,8 @@ namespace MagicLeap.Examples
         /// </summary>
         private void UpdateStatus()
         {
-            _statusLabel.text = string.Format("<color=#dbfb76><b>Controller Data</b></color>\nStatus: {0}\n", ControllerStatus.Text);
-            _statusLabel.text += "\n<color=#dbfb76><b>AudioCapture Data</b></color>\n";
+            _statusLabel.text = string.Format("<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {0}\n", ControllerStatus.Text);
+            _statusLabel.text += "\n<color=#B7B7B8><b>AudioCapture Data</b></color>\n";
             _statusLabel.text += string.Format("Status: {0}\n", captureMode.ToString());
         }
 

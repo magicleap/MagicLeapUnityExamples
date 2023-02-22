@@ -115,15 +115,15 @@ namespace MagicLeap.Examples
                 GestureClassification.TryGetHandPosture(leftHandDevice, out GestureClassification.PostureType leftPosture);
                 GestureClassification.TryGetHandPosture(rightHandDevice, out GestureClassification.PostureType rightPosture);
 
-                statusStringBuilder += "\n\n<color=#dbfb76><b>Left Posture</b></color>: " + leftPosture.ToString();
-                statusStringBuilder += "\n<color=#dbfb76><b>Right Posture</b></color>: " + rightPosture.ToString();
+                statusStringBuilder += "\n\n<color=#B7B7B8><b>Left Posture</b></color>: " + leftPosture.ToString();
+                statusStringBuilder += "\n<color=#B7B7B8><b>Right Posture</b></color>: " + rightPosture.ToString();
 
                 // KeyPose
                 GestureClassification.TryGetHandKeyPose(leftHandDevice, out GestureClassification.KeyPoseType leftKeyPose);
                 GestureClassification.TryGetHandKeyPose(rightHandDevice, out GestureClassification.KeyPoseType rightKeyPose);
 
-                statusStringBuilder += "\n\n<color=#dbfb76><b>Left KeyPose</b></color>: " + leftKeyPose.ToString();
-                statusStringBuilder += "\n<color=#dbfb76><b>Right KeyPose</b></color>: " + rightKeyPose.ToString();
+                statusStringBuilder += "\n\n<color=#B7B7B8><b>Left KeyPose</b></color>: " + leftKeyPose.ToString();
+                statusStringBuilder += "\n<color=#B7B7B8><b>Right KeyPose</b></color>: " + rightKeyPose.ToString();
             }
 
 
@@ -132,7 +132,7 @@ namespace MagicLeap.Examples
 
         private void UpdateStatus()
         {
-            statusText.text = $"<color=#dbfb76><b>Gesture Tracking Data</b></color>\n{statusStringBuilder}";
+            statusText.text = $"<color=#B7B7B8><b>Gesture Tracking Data</b></color>\n{statusStringBuilder}";
         }
     }
 }

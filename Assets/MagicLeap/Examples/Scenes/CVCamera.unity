@@ -548,7 +548,7 @@ PrefabInstance:
 
 
 
-        <color=#dbfb76><b>Mandatory
+        <color=#B7B7B8><b>Mandatory
         permissions required by this feature</b></color>
 
         - android.permission.CAMERA

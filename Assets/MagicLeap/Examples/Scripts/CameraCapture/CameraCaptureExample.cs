@@ -143,6 +143,23 @@ namespace MagicLeap.Examples
         }
 
         /// <summary>
+        /// Handle Camera connection if application is paused.
+        /// </summary>
+        private void OnApplicationPause(bool isPaused)
+        {
+            if (isPaused && IsCameraConnected)
+            {
+                DisconnectCamera();
+            }
+            else
+            {
+                DisableImageCaptureObject();
+                mediaPlayerBehavior.Reset();
+                mediaPlayerBehavior.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
         /// Display permission error if necessary or update status text.
         /// </summary>
         private void Update()
@@ -544,6 +561,7 @@ namespace MagicLeap.Examples
             mediaPlayerBehavior.StopMLMediaPlayer();
 #endif
             mediaPlayerBehavior.gameObject.SetActive(false);
+            mediaPlayerBehavior.Reset();
         }
 
         /// <summary>
@@ -677,7 +695,7 @@ namespace MagicLeap.Examples
         /// </summary>
         private void UpdateStatusText()
         {
-            statusText.text = $"<color=#dbfb76><b>Controller Data</b></color>\nStatus: {ControllerStatus.Text}\n";
+            statusText.text = $"<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {ControllerStatus.Text}\n";
             statusText.text += $"\nCamera Available: {cameraDeviceAvailable}";
             statusText.text += $"\nCamera Connected: {IsCameraConnected}";
             if (!isCapturingVideo && !isCapturingPreview && !string.IsNullOrEmpty(recordedFilePath))

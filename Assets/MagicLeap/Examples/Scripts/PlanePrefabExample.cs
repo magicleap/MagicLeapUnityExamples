@@ -4,6 +4,9 @@ using UnityEngine.XR.ARSubsystems;
 
 public class PlanePrefabExample : MonoBehaviour
 {
+    private const int GRAY_PLANE_QUEUE = 3001;
+    private const int DEFAULT_PLANE_QUEUE = 3000;
+
     void Start()
     {
         ColorClassify();
@@ -26,6 +29,8 @@ public class PlanePrefabExample : MonoBehaviour
                 break;
         }
 
-        GetComponent<MeshRenderer>().material.color = color;
+        var mat = GetComponent<MeshRenderer>().material;
+        mat.color = color;
+        mat.renderQueue = color == Color.gray ? GRAY_PLANE_QUEUE : DEFAULT_PLANE_QUEUE;
     }
 }

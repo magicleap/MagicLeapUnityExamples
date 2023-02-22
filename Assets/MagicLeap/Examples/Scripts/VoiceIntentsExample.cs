@@ -74,7 +74,7 @@ public class VoiceIntentsExample : MonoBehaviour
             {
                 controllerActions.Bumper.performed += HandleOnBumper;
                 isProcessing = true;
-                startupStatus += "\n\n<color=#dbfb76><b>List of Voice Intents:</b></color>";
+                startupStatus += "\n\n<color=#B7B7B8><b>List of Voice Intents:</b></color>";
 
                 MLVoice.OnVoiceEvent += VoiceEvent;
 
@@ -85,19 +85,22 @@ public class VoiceIntentsExample : MonoBehaviour
                     startupStatus += "\n" + value;
                 }
 
-                string systemValues = "\n<color=#dbfb76><b>System Intents:</b></color>\n";
+                string systemValues = "\n<color=#B7B7B8><b>System Intents:</b></color>\n";
 
-                int count = 0;
+                bool skipFirst = true;
                 foreach (MLVoiceIntentsConfiguration.SystemIntentFlags flag in System.Enum.GetValues(typeof(MLVoiceIntentsConfiguration.SystemIntentFlags)))
                 {
-                    if (voiceConfiguration.SystemCommands.HasFlag(flag))
+                    if (voiceConfiguration.AutoAllowAllSystemIntents || voiceConfiguration.SystemCommands.HasFlag(flag))
                     {
-                        if (count > 0)
+                        if (!skipFirst)
                         {
                             systemValues += " , ";
                         }
+                        else
+                        {
+                            skipFirst = false;
+                        }
                         systemValues += flag.ToString();
-                        count++;
                     }
                 }
 
@@ -142,7 +145,7 @@ public class VoiceIntentsExample : MonoBehaviour
 
     private void UpdateStatus()
     {
-        _statusText.text = $"<color=#dbfb76><b>Voice Intents Data</b></color>\n{startupStatus}";
+        _statusText.text = $"<color=#B7B7B8><b>Voice Intents Data</b></color>\n{startupStatus}";
         _statusText.text += "\n\nIs Processing: " + isProcessing;
         _statusText.text += lastResults;
     }
@@ -150,7 +153,7 @@ public class VoiceIntentsExample : MonoBehaviour
     void VoiceEvent(in bool wasSuccessful, in MLVoice.IntentEvent voiceEvent)
     {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.Append($"\n\n<color=#dbfb76><b>Last Voice Event:</b></color>\n");
+        strBuilder.Append($"\n\n<color=#B7B7B8><b>Last Voice Event:</b></color>\n");
         strBuilder.Append($"Was Successful: <i>{wasSuccessful}</i>\n");
         strBuilder.Append($"State: <i>{voiceEvent.State}</i>\n");
         strBuilder.Append($"No Intent Reason\n(Expected NoReason): \n<i>{voiceEvent.NoIntentReason}</i>\n");

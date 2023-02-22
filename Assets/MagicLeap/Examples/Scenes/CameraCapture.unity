@@ -2275,9 +2275,9 @@ PrefabInstance:
         to select Desired stream that will be captured. \n\nThe data received from
         the camera is processed with a posterization algorithm and then rendered
         to a texture for example purposes. Intrinsic properties of the camera are
-        shown on the side when recording starts.\n\n\n<color=#dbfb76><b>Mandatory
+        shown on the side when recording starts.\n\n\n<color=#B7B7B8><b>Mandatory
         permissions required by this feature</b></color>\n- CameraCapture\n- Computer
-        Vision\n\n\n<color=#dbfb76><b>Permissions required by this example</b></color>\n-
+        Vision\n\n\n<color=#B7B7B8><b>Permissions required by this example</b></color>\n-
         AudioCaptureMic\n- ControllerPose\n"
       objectReference: {fileID: 0}
     - target: {fileID: 9144045081096290919, guid: 6906f74934047d24e9a47bbdd1afb57a,

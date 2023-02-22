@@ -66,11 +66,14 @@ EditorBuildSettings:
     path: Assets/MagicLeap/Examples/Scenes/Haptics.unity
     guid: cc5bc9245138756488e5a7a49ad43ac7
   - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/WordCamera.unity
+    path: Assets/MagicLeap/Examples/Scenes/WorldCamera.unity
     guid: d95f285ede08f2d4a9620b54707a2946
   - enabled: 1
     path: Assets/MagicLeap/Examples/Scenes/DepthCamera.unity
     guid: 6cb7f27304ffa402b98fed685b981b47
+  - enabled: 1
+    path: Assets/MagicLeap/Examples/Scenes/WacomTablet.unity
+    guid: 858001671d830a34c8cb14f536bbdee1
   m_configObjects:
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 7d361085fa4a54255a6722b7e9ea2ed8,
       type: 2}

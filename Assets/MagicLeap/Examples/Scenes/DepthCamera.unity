@@ -911,7 +911,7 @@ PrefabInstance:
       value: 'This example demonstrates the functionality of using the depth camera.
 
 
-        <color=#dbfb76><b>Mandatory
+        <color=#B7B7B8><b>Mandatory
         permissions required by this feature</b></color>
 
         - CameraCapture
@@ -921,7 +921,7 @@ PrefabInstance:
 
 
 
-        <color=#dbfb76><b>Permissions required by this
+        <color=#B7B7B8><b>Permissions required by this
         example</b></color>
 
         - DepthCamera

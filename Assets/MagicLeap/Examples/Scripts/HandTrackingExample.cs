@@ -73,10 +73,10 @@ namespace MagicLeap.Examples
             rightHandDevice.TryGetFeatureValue(InputSubsystem.Extensions.DeviceFeatureUsages.Hand.Confidence, out float rightConfidence);
             rightHandDevice.TryGetFeatureValue(CommonUsages.isTracked, out bool rightIsTracked);
 
-            _statusText.text = string.Format("<color=#dbfb76><b>Controller Data</b></color>\nStatus: {0}\n\n", ControllerStatus.Text);
+            _statusText.text = string.Format("<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {0}\n\n", ControllerStatus.Text);
 
             _statusText.text += string.Format(
-                "<color=#dbfb76><b>Hands Data</b>\n<color=#dbfb76>Pre-Render Update</color>:</color>{0}\n\n<color=#dbfb76>Left</color>: {1}% Confidence\n<color=#dbfb76>IsTracked</color>: {2}\n\n<color=#dbfb76>Right</color>: {3}% Confidence\n<color=#dbfb76>IsTracked</color>: {4}",
+                "<color=#B7B7B8><b>Hands Data</b>\n<color=#B7B7B8>Pre-Render Update</color>:</color>{0}\n\n<color=#B7B7B8>Left</color>: {1}% Confidence\n<color=#B7B7B8>IsTracked</color>: {2}\n\n<color=#B7B7B8>Right</color>: {3}% Confidence\n<color=#B7B7B8>IsTracked</color>: {4}",
                 preRenderHandUpdate.ToString(), (leftConfidence * 100.0f).ToString("n0"), leftIsTracked.ToString(),
                 (rightConfidence * 100.0f).ToString("n0"), rightIsTracked.ToString());
         }

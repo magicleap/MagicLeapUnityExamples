@@ -863,35 +863,35 @@ PrefabInstance:
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<color=#dbfb76><b>Hometap</b></color>
+      value: '<color=#B7B7B8><b>Hometap</b></color>
 
         Toggle the tablet following
         head pose.
 
 
 
-        <color=#dbfb76><b>Tablet Touch Ring</b></color>
+        <color=#B7B7B8><b>Tablet Touch Ring</b></color>
 
         Rotate
         through a list of 16 pre-defined colors.
 
 
 
-        <color=#dbfb76><b>Tablet
+        <color=#B7B7B8><b>Tablet
         Touch Ring - Button</b></color>
 
         Clear the canvas.
 
 
 
-        <color=#dbfb76><b>Drawing</b></color>
+        <color=#B7B7B8><b>Drawing</b></color>
 
         Use
         the pen on the tablet surface to draw with the selected color.
 
 
 
-        <color=#dbfb76><b>Erasing</b></color>
+        <color=#B7B7B8><b>Erasing</b></color>
 
         -
         Default Pen:  Use the opposite end of the pen while drawing to erase content.
@@ -961,7 +961,7 @@ PrefabInstance:
         the line thickness will change based on applied pressure and the color will
         reflect the selection from the color wheel.\r\n\r\nWith the tablet turned
         on, hold the center ring button until a blue light flashes on the right,
-        to the right of the Wacom logo.\r\n\r\n<i>Visible in Settings/Connectivity/Bluetooth.</i>\r\n\r\n<color=#dbfb76><b>Permissions
+        to the right of the Wacom logo.\r\n\r\n<i>Visible in Settings/Connectivity/Bluetooth.</i>\r\n\r\n<color=#B7B7B8><b>Permissions
         required by this example</b></color>\r\n- ControllerPose"
       objectReference: {fileID: 0}
     - target: {fileID: 9144045081096290919, guid: 6906f74934047d24e9a47bbdd1afb57a,

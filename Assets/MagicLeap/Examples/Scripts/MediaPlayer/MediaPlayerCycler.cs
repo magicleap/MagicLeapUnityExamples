@@ -88,7 +88,7 @@ namespace MagicLeap.Examples
         /// </summary>
         private void UpdateStatusText()
         {
-            _statusText.text = $"<color=#dbfb76><b>ControllerData</b></color>\nStatus: {ControllerStatus.Text}\n";
+            _statusText.text = $"<color=#B7B7B8><b>ControllerData</b></color>\nStatus: {ControllerStatus.Text}\n";
 
             var sourcePlayed = "None";
             if (_mediaPlayerBehaviors.Length > 0)
@@ -97,7 +97,7 @@ namespace MagicLeap.Examples
                 sourcePlayed = $"Source: {activeBehavior.pathSourceType}, path: {activeBehavior.source}.";
             }
 
-            _statusText.text += $"\n<color=#dbfb76><b>Active MediaPlayer source</b></color>\n{sourcePlayed}\n";
+            _statusText.text += $"\n<color=#B7B7B8><b>Active MediaPlayer source</b></color>\n{sourcePlayed}\n";
         }
 
         /// <summary>

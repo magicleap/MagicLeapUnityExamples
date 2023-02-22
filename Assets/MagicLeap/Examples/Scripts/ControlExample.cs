@@ -72,26 +72,24 @@ namespace MagicLeap.Examples
 
         private void UpdateStatus()
         {
-            _statusText.text = $"<color=#dbfb76><b>Controller Data</b></color>\n Status: {ControllerStatus.Text}\n";
+            _statusText.text = $"<color=#B7B7B8><b>Controller Data</b></color>\n Status: {ControllerStatus.Text}\n";
 
             StringBuilder strBuilder = new StringBuilder();
             strBuilder.Append($"Position: <i>{controllerActions.Position.ReadValue<Vector3>().ToString("n2")}</i>\n");
-            strBuilder.Append($"Velocity: <i>{controllerActions.Velocity.ReadValue<Vector3>().ToString("n2")}</i>\n");
-            strBuilder.Append($"AngularVelocity: <i>{controllerActions.AngularVelocity.ReadValue<Vector3>().ToString("n2")}</i>\n");
             strBuilder.Append($"Acceleration: <i>{controllerActions.Acceleration.ReadValue<Vector3>().ToString("n2")}</i>\n");
             strBuilder.Append($"AngularAcceleration: <i>{controllerActions.AngularAcceleration.ReadValue<Vector3>().ToString("n2")}</i>\n");
 
             strBuilder.Append($"Rotation: <i>{controllerActions.Rotation.ReadValue<Quaternion>().ToString("n1")}</i>\n\n");
-            strBuilder.Append($"<color=#dbfb76><b>Buttons</b></color>\n");
+            strBuilder.Append($"<color=#B7B7B8><b>Buttons</b></color>\n");
             strBuilder.Append($"Menu: <i>{controllerActions.Menu.IsPressed()}</i>\n\n");
             strBuilder.Append($"Trigger: <i>{controllerActions.Trigger.ReadValue<float>():n2}</i>\n");
             strBuilder.Append($"TriggerHold phase: <i>{controllerActions.TriggerHold.phase}</i>\n");
             strBuilder.Append($"Bumper: <i>{controllerActions.Bumper.IsPressed()}</i>\n\n");
-            strBuilder.Append($"<color=#dbfb76><b>Touchpad</b></color>\n");
+            strBuilder.Append($"<color=#B7B7B8><b>Touchpad</b></color>\n");
             strBuilder.Append($"Location: <i>({controllerActions.TouchpadPosition.ReadValue<Vector2>().x:n2}," +
                               $"{controllerActions.TouchpadPosition.ReadValue<Vector2>().y:n2})</i>\n");
             strBuilder.Append($"Pressure: <i>{controllerActions.TouchpadForce.ReadValue<float>()}</i>\n\n");
-            strBuilder.Append($"<color=#dbfb76><b>Gestures</b></color>\n<i></i>");
+            strBuilder.Append($"<color=#B7B7B8><b>Gestures</b></color>\n<i></i>");
             foreach (var touchpadEvent in gestureComponent.gestureSubsystem.touchpadGestureEvents)
             {
                 strBuilder.Append($"<i>{touchpadEvent.type} {touchpadEvent.state}</i>");

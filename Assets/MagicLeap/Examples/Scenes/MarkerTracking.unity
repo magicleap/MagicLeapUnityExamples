@@ -567,7 +567,7 @@ PrefabInstance:
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<color=#dbfb76><b>Trigger</b></color>
+      value: '<color=#B7B7B8><b>Trigger</b></color>
 
         If tracking was not
         set to enabled in the inspector settings, holding the trigger will toggle
@@ -628,10 +628,10 @@ PrefabInstance:
       propertyPath: m_Text
       value: "This example demonstrates the following features:\r\n- tracking for
         aruco markers and april tags as well as scanning for qr codes and barcodes
-        \n\r\n<color=#dbfb76><b>AruCo/April tracking</b></color>\r\nShow your headset
+        \n\r\n<color=#B7B7B8><b>AruCo/April tracking</b></color>\r\nShow your headset
         an aruco marker from the dictionary set on the MLArucoTrackerBehavior object.
-        \r\nYou can find markers at https://chev.me/arucogen/\r\n\r\n<color=#dbfb76><b>Barcode/QR
-        scanning</b></color>\r\nShow your headset a barcode/QR code.\n\r\n<color=#dbfb76><b>Permissions</b></color>\r\n-MarkerTracking"
+        \r\nYou can find markers at https://chev.me/arucogen/\r\n\r\n<color=#B7B7B8><b>Barcode/QR
+        scanning</b></color>\r\nShow your headset a barcode/QR code.\n\r\n<color=#B7B7B8><b>Permissions</b></color>\r\n-MarkerTracking"
       objectReference: {fileID: 0}
     - target: {fileID: 9144045081349396370, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}

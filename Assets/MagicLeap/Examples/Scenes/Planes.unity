@@ -479,14 +479,14 @@ PrefabInstance:
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<color=#dbfb76><b>Bumper</b></color>
+      value: '<color=#B7B7B8><b>Bumper</b></color>
 
         Toggles the texturing
         mode for planes.
 
 
 
-        <color=#dbfb76><b>Home Button</b></color>
+        <color=#B7B7B8><b>Home Button</b></color>
 
         Switch
         plane query extents between bounded and unbounded.
@@ -564,7 +564,7 @@ PrefabInstance:
         planes have no semantic classification.
 
 
-        <color=#dbfb76><b>Mandatory
+        <color=#B7B7B8><b>Mandatory
         permissions required by this feature</b></color>
 
         - SpatialMapping

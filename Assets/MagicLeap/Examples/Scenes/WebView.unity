@@ -2539,12 +2539,12 @@ PrefabInstance:
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: "Point over WebView window to control the position of the mouse cursor.\n\n<color=#dbfb76><b>Trigger</b></color>\r\nTrigger
+      value: "Point over WebView window to control the position of the mouse cursor.\n\n<color=#B7B7B8><b>Trigger</b></color>\r\nTrigger
         is used to interact with the Web View panel and web page rendered within.
         \n\nIf scroll mode is set to TriggerDrag it will also be used to scroll the
-        web page content.\n\n<color=#dbfb76><b>Touchpad</b></color>\r\nIf scroll
+        web page content.\n\n<color=#B7B7B8><b>Touchpad</b></color>\r\nIf scroll
         mode is set to Touchpad (the default), sliding across the touchpad will scroll
-        the web page content.\n\r\n<color=#dbfb76><b>Bumper</b></color>\r\nBumper
+        the web page content.\n\r\n<color=#B7B7B8><b>Bumper</b></color>\r\nBumper
         is used to toggle the scroll mode. \n\r"
       objectReference: {fileID: 0}
     - target: {fileID: 9144045080852108117, guid: 6906f74934047d24e9a47bbdd1afb57a,
@@ -2613,7 +2613,7 @@ PrefabInstance:
         with the browser.
 
 
-        <color=#dbfb76><b>Mandatory
+        <color=#B7B7B8><b>Mandatory
 
         permissions
         required by this feature</b></color>

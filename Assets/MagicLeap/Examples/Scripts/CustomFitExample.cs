@@ -44,7 +44,7 @@ namespace MagicLeap.Examples
         /// </summary>
         private void UpdateStatusText()
         {
-            statusText.text = $"<color=#dbfb76><b>Controller Data</b></color>";
+            statusText.text = $"<color=#B7B7B8><b>Controller Data</b></color>";
             statusText.text += $"\nStatus: {ControllerStatus.Text}\n";
             var result = MLHeadsetFit.GetState(out headsetFitState);
             if (result.IsOk)

@@ -670,7 +670,7 @@ PrefabInstance:
         Press bumper to cycle through the different frames.
 
 
-        <color=#dbfb76><b>Mandatory
+        <color=#B7B7B8><b>Mandatory
         permissions required by this feature</b></color>
 
         - Camera'
@@ -1023,8 +1023,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0094, y: -0.132}
-  m_SizeDelta: {x: 225.2891, y: 123.2936}
+  m_AnchoredPosition: {x: 0.013, y: -0.1606}
+  m_SizeDelta: {x: 225.2891, y: 190.6804}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1376686265
 MonoBehaviour:
@@ -1048,7 +1048,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 12
+    m_FontSize: 9
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1

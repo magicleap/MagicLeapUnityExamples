@@ -1018,13 +1018,13 @@ PrefabInstance:
 
 
 
-        <color=#dbfb76><b>Mandatory
+        <color=#B7B7B8><b>Mandatory
         permissions required by this feature</b></color>
 
         - HandTracking
 
 
-        <color=#dbfb76><b>Permissions
+        <color=#B7B7B8><b>Permissions
         required by this example</b></color>
 
         - ControllerPose'

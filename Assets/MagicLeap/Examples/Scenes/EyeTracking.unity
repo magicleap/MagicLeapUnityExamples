@@ -897,17 +897,7 @@ PrefabInstance:
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: 'The example uses Hand Gestures to control the rendering mode.
-
-
-
-
-
-        -
-        Hold the <b>Ok</b> Hand Key Pose with your right hand for 2 seconds to switch
-        between render modes.
-
-        - Cover the virtual objects with your hands.'
+      value: The example uses respective Eyes to place the markers.
       objectReference: {fileID: 0}
     - target: {fileID: 9144045080852108117, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
@@ -954,8 +944,8 @@ PrefabInstance:
         as you look around. Details about eye tracking are displayed above. Bumper
         is used to switch between tracking modes.\r\n\r\nTracking Modes:\r\nBoth
         Eyes - Tracks each eye separately and displays for each eye it's focus point.\r\nFixation
-        Point - Displays both eyes approximate focus point.\r\n  \r\n<color=#dbfb76><b>Mandatory
-        permissions required by this feature</b></color>\r\n\r\n<color=#dbfb76><b>Permissions
+        Point - Displays both eyes approximate focus point.\r\n  \r\n<color=#B7B7B8><b>Mandatory
+        permissions required by this feature</b></color>\r\n\r\n<color=#B7B7B8><b>Permissions
         required by this example</b></color>"
       objectReference: {fileID: 0}
     - target: {fileID: 9144045081354614237, guid: 6906f74934047d24e9a47bbdd1afb57a,

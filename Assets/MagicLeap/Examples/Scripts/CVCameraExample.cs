@@ -114,7 +114,7 @@ namespace MagicLeap.Examples
         /// </summary>
         private void UpdateStatusText()
         {
-            _statusText.text = string.Format("<color=#dbfb76><b>Controller Data</b></color>\nStatus: {0}\n", ControllerStatus.Text);
+            _statusText.text = string.Format("<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {0}\n", ControllerStatus.Text);
             _statusText.text += $"\nCamera Available: {cameraDeviceAvailable}";
             if (isCameraConnected)
             {

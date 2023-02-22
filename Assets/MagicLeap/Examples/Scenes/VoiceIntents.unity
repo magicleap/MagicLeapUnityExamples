@@ -1131,7 +1131,7 @@ PrefabInstance:
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<color=#dbfb76><b>Speak the App Specific command out loud</b></color>
+      value: '<color=#B7B7B8><b>Speak the App Specific command out loud</b></color>
 
         Use
         one of the listed commands in the status panel to the right.
@@ -1155,7 +1155,7 @@ PrefabInstance:
         without the addition of a controller.
 
 
-        <color=#dbfb76><b>Controller
+        <color=#B7B7B8><b>Controller
         Bumper</b></color>
 
         By Default this example scene starts processing
@@ -1208,9 +1208,9 @@ PrefabInstance:
         take a few seconds to start listening for commands.\n\nValues with a \" |
         \" mean either command can be used for that specific intent. \n\nSystem Intents
         are currently experimental and can be used by speaking \"Hey Magic Leap\"
-        and then the command.\n\n<color=#dbfb76><b>Mandatory system settings required
+        and then the command.\n\n<color=#B7B7B8><b>Mandatory system settings required
         by this feature</b></color>\n-  Settings > Magic Leap Inputs > Voice > Voice
-        Commands\n\n<color=#dbfb76><b>Mandatory permissions required by this feature</b></color>\n-
+        Commands\n\n<color=#B7B7B8><b>Mandatory permissions required by this feature</b></color>\n-
         SpatialMapping\n"
       objectReference: {fileID: 0}
     - target: {fileID: 9144045081354614237, guid: 6906f74934047d24e9a47bbdd1afb57a,
