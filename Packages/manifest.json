@@ -35,12 +35,12 @@
     "com.unity.modules.vehicles": "1.0.0",
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.magicleap.unitysdk": "1.4.0"
+    "com.magicleap.unitysdk": "1.5.0"
   },
   "scopedRegistries": [
     {
       "name": "Magic Leap",
-      "url": "http://registry.npmjs.org",
+      "url": "https://registry.npmjs.org",
       "scopes": [
         "com.magicleap"
       ]

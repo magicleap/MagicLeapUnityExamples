@@ -232,6 +232,10 @@ namespace MagicLeap.Examples
             {
                 Debug.LogError("Failed to create web view window");
             }
+            else
+            {
+                tabBar.CreateTab();
+            }
         }
 
         /// <summary>

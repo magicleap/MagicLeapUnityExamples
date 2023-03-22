@@ -45,6 +45,8 @@ namespace MagicLeap.Examples
             controllerActions.Trigger.performed += HandleOnTrigger;
 
             InputSubsystem.Extensions.Controller.AttachTriggerListener(HandleOnTriggerEvent);
+
+            _statusText.fontSize = 11;
         }
 
         /// <summary>

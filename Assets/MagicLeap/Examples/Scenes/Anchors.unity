@@ -748,8 +748,7 @@ PrefabInstance:
     - target: {fileID: 9144045080993300993, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<b>To create or localize to a map you must exit and use the Mapping
-        Tool application first.</b>
+      value: '<b>To create or localize to a map you must exit and use the Spaces application first.</b>
 
 
         This example demonstrates spatial anchors.

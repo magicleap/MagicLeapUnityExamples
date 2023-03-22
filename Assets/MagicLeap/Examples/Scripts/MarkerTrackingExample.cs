@@ -29,14 +29,13 @@ namespace MagicLeap.Examples
         [SerializeField]
         private MarkerVisual markerVisualPrefab;
 
-        [SerializeField]
-        private GameObject markersRoot;
-
         [SerializeField, Tooltip("Wait for a given amount of time before removing unobsereved trackers.")]
         private bool removeMarkersUsingTimeStamps = false;
 
         [SerializeField, Tooltip("The timeout duration before removing unobserved trackers. Only used if removeMarkersUsingTimeStamps is set.")]
         private float markerTrackerTimeout = 0.5f;
+
+        private Transform xrOrigin;
 
         /// <summary>
         /// The marker types that are enabled for this scanner. Enable markers by
@@ -148,6 +147,7 @@ namespace MagicLeap.Examples
             mlInputs = new MagicLeapInputs();
             mlInputs.Enable();
             controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+            xrOrigin = FindObjectOfType<Unity.XR.CoreUtils.XROrigin>().transform;
             EnableMarkerTrackerExample();
         }
 
@@ -208,7 +208,7 @@ namespace MagicLeap.Examples
                         }
                         else
                         {
-                            MarkerVisual marker = Instantiate(markerVisualPrefab, markersRoot.transform);
+                            MarkerVisual marker = Instantiate(markerVisualPrefab, xrOrigin);
                             markers.Add(new KeyValuePair<string, MarkerVisual>(id, marker));
                             marker.Set(data);
                         }
@@ -231,7 +231,7 @@ namespace MagicLeap.Examples
                         }
                         else
                         {
-                            MarkerVisual marker = Instantiate(markerVisualPrefab, markersRoot.transform);
+                            MarkerVisual marker = Instantiate(markerVisualPrefab, xrOrigin);
                             markers.Add(new KeyValuePair<string, MarkerVisual>(id, marker));
                             marker.Set(data, markerText);
                         }

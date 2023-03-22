@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,6 +11,9 @@ public class VoiceIntentsExample : MonoBehaviour
 {
     [SerializeField, Tooltip("The text used to display status information for the example.")]
     private Text _statusText = null;
+
+    [SerializeField, Tooltip("The text used to display input controls for the example.")]
+    private Text controlsText = null;
 
     [SerializeField, Tooltip("The configuration file that holds the list of intents used for this application.")]
     private MLVoiceIntentsConfiguration voiceConfiguration;
@@ -74,37 +78,10 @@ public class VoiceIntentsExample : MonoBehaviour
             {
                 controllerActions.Bumper.performed += HandleOnBumper;
                 isProcessing = true;
-                startupStatus += "\n\n<color=#B7B7B8><b>List of Voice Intents:</b></color>";
 
                 MLVoice.OnVoiceEvent += VoiceEvent;
 
-                List<string> allValues = voiceConfiguration.GetValues();
-
-                foreach (string value in allValues)
-                {
-                    startupStatus += "\n" + value;
-                }
-
-                string systemValues = "\n<color=#B7B7B8><b>System Intents:</b></color>\n";
-
-                bool skipFirst = true;
-                foreach (MLVoiceIntentsConfiguration.SystemIntentFlags flag in System.Enum.GetValues(typeof(MLVoiceIntentsConfiguration.SystemIntentFlags)))
-                {
-                    if (voiceConfiguration.AutoAllowAllSystemIntents || voiceConfiguration.SystemCommands.HasFlag(flag))
-                    {
-                        if (!skipFirst)
-                        {
-                            systemValues += " , ";
-                        }
-                        else
-                        {
-                            skipFirst = false;
-                        }
-                        systemValues += flag.ToString();
-                    }
-                }
-
-                startupStatus += systemValues;
+                SetControlsText();
             }
             else
             {
@@ -147,7 +124,41 @@ public class VoiceIntentsExample : MonoBehaviour
     {
         _statusText.text = $"<color=#B7B7B8><b>Voice Intents Data</b></color>\n{startupStatus}";
         _statusText.text += "\n\nIs Processing: " + isProcessing;
+        _statusText.text += "\n\nInstructions and List of commands in Controls Tab";
         _statusText.text += lastResults;
+    }
+
+    private void SetControlsText()
+    {
+        StringBuilder controlsScrollview = new StringBuilder();
+
+        controlsScrollview.Append($"<color=#B7B7B8><b>Speak the App Specific command out loud</b></color>\n");
+        controlsScrollview.Append($"Use one of these listed commands: \n");
+
+        controlsScrollview.AppendJoin('\n', voiceConfiguration.GetValues());
+
+        controlsScrollview.Append($"\n\n<color=#B7B7B8><b>To Use a System Intent speak \"Hey Magic Leap\"</b></color>\nDots to indicate the device is listening should appear. Then speak one of the enabled system commands: \n");
+
+        foreach (MLVoiceIntentsConfiguration.SystemIntentFlags flag in System.Enum.GetValues(typeof(MLVoiceIntentsConfiguration.SystemIntentFlags)))
+        {
+            if (voiceConfiguration.AutoAllowAllSystemIntents || voiceConfiguration.SystemCommands.HasFlag(flag))
+            {
+                controlsScrollview.Append($"{flag.ToString()}\n");
+
+            }
+        }
+
+        controlsScrollview.Append($"\n\n<color=#B7B7B8><b>Slots</b></color>\nA Slot is a placeholder for a list of possible values. The name of the slot is placed between brackets within the App Specific commands value and when uttering the phrase one of the slots values is used in its place.\n");
+        controlsScrollview.Append($"Slots Values Used:");
+
+        foreach (MLVoiceIntentsConfiguration.SlotData slot in voiceConfiguration.SlotsForVoiceCommands)
+        {
+            controlsScrollview.Append($"\n{slot.name} : {string.Join(" - ", slot.values)}");
+        }
+
+        controlsScrollview.Append($"\n\n<color=#B7B7B8><b>Controller Bumper</b></color>\nBy Default this example scene starts processing Voice Intents. Tap the bumper to stop processing, then tap it again to begin processing again.");
+
+        controlsText.text = controlsScrollview.ToString();
     }
 
     void VoiceEvent(in bool wasSuccessful, in MLVoice.IntentEvent voiceEvent)
@@ -159,6 +170,9 @@ public class VoiceIntentsExample : MonoBehaviour
         strBuilder.Append($"No Intent Reason\n(Expected NoReason): \n<i>{voiceEvent.NoIntentReason}</i>\n");
         strBuilder.Append($"Event Unique Name:\n<i>{voiceEvent.EventName}</i>\n");
         strBuilder.Append($"Event Unique Id: <i>{voiceEvent.EventID}</i>\n");
+
+        strBuilder.Append($"Slots Used:\n");
+        strBuilder.AppendJoin("\n",voiceEvent.EventSlotsUsed.Select(v => $"Name: {v.SlotName} - Value: {v.SlotValue}"));
 
         lastResults = strBuilder.ToString();
     }

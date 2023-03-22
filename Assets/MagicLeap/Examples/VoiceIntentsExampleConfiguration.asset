@@ -20,4 +20,18 @@ MonoBehaviour:
     Value: Trigger Event
   - Id: 103
     Value: Hello Friend | Hello Buddy
+  - Id: 104
+    Value: Slot Test for ({Shape}|{Color})
+  AutoAllowAllSystemIntents: 0
   SystemCommands: 2008
+  SlotsForVoiceCommands:
+  - name: Shape
+    values:
+    - Square
+    - Circle
+    - Triangle
+  - name: Color
+    values:
+    - Red
+    - Green
+    - Blue

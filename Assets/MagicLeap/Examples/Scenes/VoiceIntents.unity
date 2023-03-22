@@ -856,17 +856,17 @@ PrefabInstance:
     - target: {fileID: 9144045079751414315, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9144045079751414315, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 0.99999976
       objectReference: {fileID: 0}
     - target: {fileID: 9144045079751414315, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 0.37016335
       objectReference: {fileID: 0}
     - target: {fileID: 9144045079804107918, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
@@ -1116,7 +1116,7 @@ PrefabInstance:
     - target: {fileID: 9144045080803666704, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 252
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 9144045080803666704, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
@@ -1126,41 +1126,12 @@ PrefabInstance:
     - target: {fileID: 9144045080803666704, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -144
+      value: -27
       objectReference: {fileID: 0}
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<color=#B7B7B8><b>Speak the App Specific command out loud</b></color>
-
-        Use
-        one of the listed commands in the status panel to the right.
-
-
-        These
-        commands are application specific and are controlled in a list within the
-        Voice Intents Confguration Scriptable Object referenced in the example script.
-
-
-        A
-        list of the System Intents enabled from within the Applcation will be listed
-        in the status panel to the right as well. To use them, speak "Hey Magic Leap"
-        and dots to indicate the device is listening should appear. Then speak the
-        system command that has been enabled in the application.
-
-
-        System
-        intents are currently experimental as there are potentially issues if the
-        command causes a system popup and being able to accept or reject verbally
-        without the addition of a controller.
-
-
-        <color=#B7B7B8><b>Controller
-        Bumper</b></color>
-
-        By Default this example scene starts processing
-        Voice Intents. Tap the bumper to stop processing, then tap it again to begin
-        processing again.'
+      value: Filled in from Example Script
       objectReference: {fileID: 0}
     - target: {fileID: 9144045080852108117, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
@@ -1251,7 +1222,7 @@ PrefabInstance:
     - target: {fileID: 9144045081617561596, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: -66.41
+      value: -300.41
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1267,6 +1238,18 @@ RectTransform:
 --- !u!114 &587049732 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9144045081349396371, guid: 6906f74934047d24e9a47bbdd1afb57a,
+    type: 3}
+  m_PrefabInstance: {fileID: 587049730}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &587049733 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
     type: 3}
   m_PrefabInstance: {fileID: 587049730}
   m_PrefabAsset: {fileID: 0}
@@ -2088,10 +2071,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _statusText: {fileID: 587049732}
+  controlsText: {fileID: 587049733}
   voiceConfiguration: {fileID: 11400000, guid: fcc23b1971b6efa418c12c9ff7cf490b, type: 2}
   voiceInputSettingsPopup: {fileID: 1080811520}
   voiceInputErrorPopup: {fileID: 201242689}
-  errorDisplayTime: 5
 --- !u!1 &1845271348
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,11 +9,13 @@ namespace MagicLeap.Examples
         public GameObject anchorPrefab;
         public MLAnchors.Request query;
         private Transform mainCamera;
+        private Transform xrOrigin;
         private Dictionary<string, AnchorVisual> map = new Dictionary<string, AnchorVisual>();
 
         void Start()
         {
             mainCamera = Camera.main.transform;
+            xrOrigin = FindObjectOfType<Unity.XR.CoreUtils.XROrigin>().transform;
             query = new MLAnchors.Request();
         }
 
@@ -32,7 +34,7 @@ namespace MagicLeap.Examples
                     string id = anchor.Id;
                     if (map.ContainsKey(id) == false)
                     {
-                        GameObject anchorGO = Instantiate(anchorPrefab);
+                        GameObject anchorGO = Instantiate(anchorPrefab, xrOrigin);
                         map.Add(id, anchorGO.AddComponent<AnchorVisual>());
                     }
                     map[id].Set(anchor);

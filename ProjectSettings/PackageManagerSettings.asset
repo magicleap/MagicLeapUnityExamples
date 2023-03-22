@@ -28,7 +28,7 @@ MonoBehaviour:
     m_ConfigSource: 0
   - m_Id: scoped:project:Magic Leap
     m_Name: Magic Leap
-    m_Url: http://registry.npmjs.org
+    m_Url: https://registry.npmjs.org
     m_Scopes:
     - com.magicleap
     m_IsDefault: 0

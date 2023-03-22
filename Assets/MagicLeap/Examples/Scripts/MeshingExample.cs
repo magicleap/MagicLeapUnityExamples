@@ -322,4 +322,4 @@ namespace MagicLeap.Examples
             _meshingSubsystemComponent.gameObject.transform.localScale = _bounded ? _boundedExtentsSize : _boundlessExtentsSize;
         }
     }
-}
+} 
