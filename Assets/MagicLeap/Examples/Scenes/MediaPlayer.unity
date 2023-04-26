@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028386, g: 0.22571427, b: 0.3069231, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -266,17 +266,17 @@ PrefabInstance:
     - target: {fileID: 9144045079751414315, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9144045079751414315, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9144045079751414315, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.42647344
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9144045079827347966, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
@@ -945,10 +945,20 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 4970164632262232344, guid: 0ffd6c0636c54b94cb445a6bcd349bf1,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 4970164632385023829, guid: 0ffd6c0636c54b94cb445a6bcd349bf1,
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4970164632476373581, guid: 0ffd6c0636c54b94cb445a6bcd349bf1,
+        type: 3}
+      propertyPath: captionsStayDuration
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4970164632542030427, guid: 0ffd6c0636c54b94cb445a6bcd349bf1,
         type: 3}
@@ -969,11 +979,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6669455948576777451, guid: 0ffd6c0636c54b94cb445a6bcd349bf1,
-        type: 3}
-      propertyPath: source
-      value: http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1208,6 +1213,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4970164632476373581, guid: 0ffd6c0636c54b94cb445a6bcd349bf1,
+        type: 3}
+      propertyPath: captionsStayDuration
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6303785438278071680, guid: 0ffd6c0636c54b94cb445a6bcd349bf1,
         type: 3}
       propertyPath: m_Enabled
@@ -1356,6 +1366,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMin.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4970164632476373581, guid: 0ffd6c0636c54b94cb445a6bcd349bf1,
+        type: 3}
+      propertyPath: captionsStayDuration
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6303785438278071680, guid: 0ffd6c0636c54b94cb445a6bcd349bf1,
         type: 3}

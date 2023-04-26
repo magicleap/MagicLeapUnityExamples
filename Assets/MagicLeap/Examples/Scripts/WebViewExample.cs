@@ -136,7 +136,7 @@ namespace MagicLeap.Examples
             }
         }
 
-        private void OnTabCreated(MLWebViewTabBehavior tab)
+        private void OnTabCreated(MLWebViewTabBehavior tab, string url = null)
         {
             tab.WebView.OnLoadEnded += OnLoadEnded;
             tab.WebView.OnErrorLoaded += OnErrorLoaded;
@@ -146,7 +146,7 @@ namespace MagicLeap.Examples
 
             tab.OnTabSelected += TabOnOnTabSelected;
             
-            tab.GoToUrl(homeUrl);
+            tab.GoToUrl(url ?? homeUrl);
         }
 
         private void TabOnOnTabSelected(MLWebViewTabBehavior obj)

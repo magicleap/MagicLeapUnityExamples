@@ -9,6 +9,8 @@
 // %BANNER_END%
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using MagicLeap.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -59,6 +61,21 @@ namespace MagicLeap.Examples
         [SerializeField, Tooltip("Text for captions")]
         private Text captionsText = null;
 
+        [SerializeField, Tooltip("Dropdown for the language track for captions")]
+        private Dropdown captionsTracksDropdown = null;
+
+        [SerializeField, Tooltip("Duration in seconds to delay before displaying a caption")]
+        private float captionsDelayDuration = 1;
+
+        [SerializeField, Tooltip("Duration in seconds for a caption to stay on screen")]
+        private float captionsStayDuration = 4;
+
+        private IEnumerator captionsCoroutine;
+        private List<MLMedia.Player.Track> tracks = new List<MLMedia.Player.Track>();
+        private List<string> trackLanguages = new List<string>();
+        private MLMedia.Player.Track currentTrack;
+        private float currentElapsedTimeMS;
+
         void Awake()
         {
             if (mediaPlayerBehavior == null)
@@ -79,6 +96,37 @@ namespace MagicLeap.Examples
             UnregisterCallbacks();
         }
 
+        public void OnTrackDropdownValueChanged(int value)
+        {
+            mediaPlayerBehavior.UnselectTrack(currentTrack);
+
+            if (captionsCoroutine != null)
+                StopCoroutine(captionsCoroutine);
+
+            bool wasPlaying = mediaPlayerBehavior.IsPlaying;
+
+            // seek current position in the timeline to trigger the track to change if not stopped
+            if (currentElapsedTimeMS > 0)
+            {
+                mediaPlayerBehavior.SeekTo(currentElapsedTimeMS);
+
+                // ensure that if it was already paused that it will remain paused
+                if (!wasPlaying)
+                {
+                    StartCoroutine(PauseAfterSeeking());
+                }
+            }
+
+            currentTrack = tracks[value];
+            mediaPlayerBehavior.SelectTrack(currentTrack);
+        }
+
+        private IEnumerator PauseAfterSeeking()
+        {
+            yield return new WaitUntil(() => mediaPlayerBehavior.IsPlaying);
+            mediaPlayerBehavior.MediaPlayer.Pause();
+        }
+
         private void RegisterCallbacks()
         {
             mediaPlayerBehavior.OnPrepared += HandleOnPrepared;
@@ -89,6 +137,7 @@ namespace MagicLeap.Examples
             mediaPlayerBehavior.OnSeekComplete += HandleOnSeekComplete;
             mediaPlayerBehavior.OnCaptionsText += OnCaptionsText;
             mediaPlayerBehavior.OnTrackSelected += OnTrackSelected;
+            mediaPlayerBehavior.OnTrackFound += OnTrackFound;
             mediaPlayerBehavior.OnUpdateTimeline += HandleOnTimelineChanged;
             mediaPlayerBehavior.OnUpdateElapsedTime += HandleOnElapsedTimeChanged;
             mediaPlayerBehavior.OnIsBufferingChanged += HandleOnIsBufferingChanged;
@@ -113,6 +162,7 @@ namespace MagicLeap.Examples
             mediaPlayerBehavior.OnSeekComplete -= HandleOnSeekComplete;
             mediaPlayerBehavior.OnCaptionsText -= OnCaptionsText;
             mediaPlayerBehavior.OnTrackSelected -= OnTrackSelected;
+            mediaPlayerBehavior.OnTrackFound -= OnTrackFound;
             mediaPlayerBehavior.OnUpdateTimeline -= HandleOnTimelineChanged;
             mediaPlayerBehavior.OnUpdateElapsedTime -= HandleOnElapsedTimeChanged;
             mediaPlayerBehavior.OnIsBufferingChanged -= HandleOnIsBufferingChanged;
@@ -148,6 +198,7 @@ namespace MagicLeap.Examples
         /// </summary>
         private void Stop()
         {
+            currentElapsedTimeMS = 0;
             mediaPlayerBehavior.StopMLMediaPlayer();
         }
 
@@ -338,11 +389,45 @@ namespace MagicLeap.Examples
         }
 
         /// <summary>
+        /// Callback handler on track found.
+        /// </summary>
+        /// <param name="track"></param>
+        private void OnTrackFound(MLMedia.Player.Track track)
+        {
+            if (track.TrackType == MLMedia.Player.Track.Type.TimedText)
+            {
+                captionsTracksDropdown.gameObject.SetActive(true);
+
+                tracks.Add(track);
+                string languageType = GetTrackLanguage(track);
+                trackLanguages.Add(languageType);
+                captionsTracksDropdown.ClearOptions();
+                captionsTracksDropdown.AddOptions(trackLanguages);
+
+                // default to English when starting
+                if (trackLanguages.Contains("English"))
+                    captionsTracksDropdown.value = trackLanguages.IndexOf("English");
+
+                if (currentTrack == null || track.Language == "en")
+                {
+                    if (currentTrack != null)
+                        mediaPlayerBehavior.UnselectTrack(currentTrack);
+
+                    currentTrack = track;
+
+                    mediaPlayerBehavior.SelectTrack(currentTrack);
+                }
+            }
+        }
+
+        /// <summary>
         /// Callback handler on track selected.
         /// </summary>
         /// <param name="track"></param>
         void OnTrackSelected(MLMedia.Player.Track track)
         {
+            currentTrack = track;
+
             if (track.TrackType == MLMedia.Player.Track.Type.TimedText || track.TrackType == MLMedia.Player.Track.Type.Subtitle)
                 captionsText.text = string.Empty;
         }
@@ -353,7 +438,11 @@ namespace MagicLeap.Examples
         /// <param name="text"></param>
         void OnCaptionsText(string text)
         {
-            captionsText.text = text;
+            if (captionsCoroutine != null)
+                StopCoroutine(captionsCoroutine);
+
+            captionsCoroutine = DisplayCaption(text);
+            StartCoroutine(captionsCoroutine);
         }
 
         /// <summary>
@@ -362,8 +451,35 @@ namespace MagicLeap.Examples
         /// <param name="elapsedTimeMs">Elapsed time in milliseconds</param>
         private void UpdateElapsedTime(long elapsedTimeMs)
         {
+            currentElapsedTimeMS = elapsedTimeMs;
+
             TimeSpan timeSpan = new TimeSpan(elapsedTimeMs * TimeSpan.TicksPerMillisecond);
             elapsedTime.text = $"{timeSpan.Hours}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}";
+        }
+
+
+        private IEnumerator DisplayCaption(string text)
+        {
+            yield return new WaitForSeconds(captionsDelayDuration);
+            captionsText.text = text;
+            yield return new WaitForSeconds(captionsStayDuration);
+            captionsText.text = "";
+            captionsCoroutine = null;
+        }
+
+        private string GetTrackLanguage(MLMedia.Player.Track track)
+        {
+            // TODO: Add support for more captions track languages
+            if (track.Language == "en")
+                return "English";
+            else if (track.Language == "es")
+                return "Español";
+            else if (track.Language == "fr")
+                return "Français";
+            else if (track.Language == "de")
+                return "Deutsch";
+            else
+                return track.Language.ToString();
         }
     }
 }
