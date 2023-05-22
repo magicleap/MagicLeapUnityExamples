@@ -29,6 +29,13 @@ public class MeshTexturedWireframeAdapter : MonoBehaviour
     private int _lineTextureWidth = 2048;       // Overall width of texture used for the line (will be 1px high)
     private int _linePixelWidth = 24;           // Line fill pixel width (left side) representing line, over background
     private int _lineEdgeGradientWidth = 4;     // Falloff gradient pixel size to smooth line edge
+    
+    private List<float> confidences = new List<float>();
+    private List<Vector3> vertices = new List<Vector3>();
+    private List<int> indices = new List<int>();
+    private List<Vector3> uvs = new List<Vector3>();
+
+    private Mesh meshReference;
 
     void Awake()
     {
@@ -80,8 +87,7 @@ public class MeshTexturedWireframeAdapter : MonoBehaviour
             return;
         }
 
-        GameObject meshGameObject = null;
-        if (_meshingSubsystemComponent.meshIdToGameObjectMap.TryGetValue(meshId, out meshGameObject))
+        if (_meshingSubsystemComponent.meshIdToGameObjectMap.TryGetValue(meshId, out var meshGameObject))
         {
             // Check that the mesh is using the wireframe material before proceeding
             var meshRenderer = meshGameObject.GetComponent<MeshRenderer>();
@@ -94,17 +100,18 @@ public class MeshTexturedWireframeAdapter : MonoBehaviour
             var meshFilter = meshGameObject.GetComponent<MeshFilter>();
             if (meshFilter != null)
             {
-                var origMesh = meshFilter.mesh;
+                meshReference = meshFilter.mesh;
 
-                List<float> confidences = new List<float>();
                 bool validConfidences = _meshingSubsystemComponent.requestVertexConfidence &&
                                         _meshingSubsystemComponent.TryGetConfidence(meshId, confidences);
 
-                List<Vector3> vertices = new List<Vector3>();
-                origMesh.GetVertices(vertices);
-                List<Vector3> uvs = new List<Vector3>(Enumerable.Repeat(Vector3.forward, vertices.Count));
-                List<int> indices = new List<int>();
-                origMesh.GetTriangles(indices, 0);
+                meshReference.GetVertices(vertices);
+                uvs.Clear();
+                for (int i = 0; i < vertices.Count; i++)
+                {
+                    uvs.Add(Vector3.forward);
+                }
+                meshReference.GetTriangles(indices, 0);
 
                 // Encode confidence in uv.z
                 if (validConfidences)
@@ -174,15 +181,13 @@ public class MeshTexturedWireframeAdapter : MonoBehaviour
                     indices.Add(iC);
                 }
 
-                var mesh = new Mesh();
-                mesh.SetVertices(vertices);
-                mesh.SetUVs(0, uvs);
-                mesh.SetTriangles(indices, 0);
+                meshReference.SetVertices(vertices);
+                meshReference.SetUVs(0, uvs);
+                meshReference.SetTriangles(indices, 0);
                 if (_meshingSubsystemComponent.computeNormals)
                 {
-                    mesh.RecalculateNormals();
+                    meshReference.RecalculateNormals();
                 }
-                meshFilter.mesh = mesh;
             }
         }
     }

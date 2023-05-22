@@ -98,7 +98,7 @@ public class VoiceIntentsExample : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Voice Commands has not been enabled. Voice intents requires this setting to enabled. It is found in system settings inside Magic Leap Inputs.");
+                Debug.LogError("Voice Commands has not been enabled. Voice intents requires this setting to be enabled. It is found in system settings inside Magic Leap Inputs.");
                 voiceInputSettingsPopup.SetActive(false);
                 voiceInputErrorPopup.SetActive(true);
             }

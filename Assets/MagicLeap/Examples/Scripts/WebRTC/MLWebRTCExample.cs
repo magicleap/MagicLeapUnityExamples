@@ -217,6 +217,7 @@ namespace MagicLeap.Examples
 
                     SubscribeToConnection(connection);
                     await CreateLocalMediaStream();
+                    InitTracks();
                     QueryOffers();
 
                     if (surviveSceneChange)
@@ -322,29 +323,32 @@ namespace MagicLeap.Examples
             // Use factory methods to create a new media stream.
             if (localMediaStream == null)
             {
-                localVideoSource =
-                    MLWebRTC.MLCameraVideoSource.CreateLocal(mlCamera, captureConfig, out MLResult result, id, localVideoRenderer, useHWBuffers);
+                localVideoSource = await Task.Run(() =>
+                    MLWebRTC.MLCameraVideoSource.CreateLocal(mlCamera, captureConfig, out MLResult result, id, localVideoRenderer, useHWBuffers));
 
                 localVideoSource.OnCaptureStatusChanged += LocalVideoSource_OnCaptureStatusChanged;
 
                 var localDefinedAudioSource = (audioType == MLWebRTC.MediaStream.Track.AudioType.Defined) ? new DefinedAudioSourceExample(id) : null;
 
-                localMediaStream = MLWebRTC.MediaStream.CreateWithAppDefinedVideoTrack(id, localVideoSource, audioType, "", localDefinedAudioSource);
-
-                if (localAppDefinedAudioSourceBehavior != null)
-                {
-                    if (audioType == MLWebRTC.MediaStream.Track.AudioType.Defined)
-                    {
-                        localAppDefinedAudioSourceBehavior.gameObject.SetActive(true);
-                        localAppDefinedAudioSourceBehavior.Init(localMediaStream.AudioTracks[0] as DefinedAudioSourceExample);
-                    }
-                }
-
-                connection.AddLocalTrack(localMediaStream.ActiveVideoTrack);
-                connection.AddLocalTrack(localMediaStream.ActiveAudioTrack);
-
-                localVideoSinkBehavior.VideoSink.SetStream(localMediaStream);
+                localMediaStream = MLWebRTC.MediaStream.CreateWithAppDefinedVideoTrack(id, localVideoSource, audioType, "", localDefinedAudioSource);                
             }
+        }
+
+        private void InitTracks()
+        {
+            if (localAppDefinedAudioSourceBehavior != null)
+            {
+                if (audioType == MLWebRTC.MediaStream.Track.AudioType.Defined)
+                {
+                    localAppDefinedAudioSourceBehavior.gameObject.SetActive(true);
+                    localAppDefinedAudioSourceBehavior.Init(localMediaStream.AudioTracks[0] as DefinedAudioSourceExample);
+                }
+            }
+
+            connection.AddLocalTrack(localMediaStream.ActiveVideoTrack);
+            connection.AddLocalTrack(localMediaStream.ActiveAudioTrack);
+
+            localVideoSinkBehavior.VideoSink.SetStream(localMediaStream);
         }
 
         void Update()
@@ -893,17 +897,16 @@ namespace MagicLeap.Examples
 
         private void LocalVideoSource_OnCaptureStatusChanged(bool destroyed)
         {
-
             if (!localVideoSource.IsCapturing)
             {
                 if (destroyed)
                 {
-                    if (mlCamera != null)
-                    {
-                        mlCamera.Disconnect();
-                    }
                     localMediaStream.DestroyLocal();
                     localMediaStream = null;
+                    if (mlCamera != null)
+                    {
+                        mlCamera.DisconnectAsync();
+                    }
                 }
             }
         }

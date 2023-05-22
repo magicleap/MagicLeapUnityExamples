@@ -8,7 +8,6 @@ public class DepthCameraExample : MonoBehaviour
 
     private bool permissionGranted;
     private bool isFrameAvailable = false;
-    private MLDepthCamera depthCamera = null;
     private MLDepthCamera.Data lastData = null;
 
     /// <summary>
@@ -47,6 +46,8 @@ public class DepthCameraExample : MonoBehaviour
 
     private float confidenceMinDist;
     private float confidenceMaxDist;
+
+    private bool isPerceptionSystemStarted;
 
     [SerializeField, Tooltip("Timeout in milliseconds for data retrieval.")]
     private ulong timeout = 0;
@@ -91,13 +92,6 @@ public class DepthCameraExample : MonoBehaviour
 
     void Start()
     {
-        var settings = new MLDepthCamera.Settings()
-        {
-            Mode = mode,
-            Flags = captureFlag
-        };
-        depthCamera = new MLDepthCamera(settings);
-
         MLPermissions.RequestPermission(MLPermission.DepthCamera, permissionCallbacks);
     }
 
@@ -108,16 +102,21 @@ public class DepthCameraExample : MonoBehaviour
 
     void Update()
     {
-        if (!permissionGranted || depthCamera == null || !depthCamera.IsConnected)
+        if (!permissionGranted || !MLDepthCamera.IsConnected)
         {
             return;
         }
 
-        var result = depthCamera.GetLatestDepthData(timeout, out MLDepthCamera.Data data);
+        var result = MLDepthCamera.GetLatestDepthData(timeout, out MLDepthCamera.Data data);
         isFrameAvailable = result.IsOk;
         if (result.IsOk)
         {
             lastData = data;
+        }
+
+        if (lastData == null)
+        {
+            return;
         }
 
         switch (captureFlag)
@@ -171,7 +170,10 @@ public class DepthCameraExample : MonoBehaviour
         permissionCallbacks.OnPermissionGranted -= OnPermissionGranted;
         permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
         permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
-        DisonnectCamera();
+        if (MLDepthCamera.IsConnected)
+        {
+            DisonnectCamera();
+        }
     }
 
     private void OnPermissionDenied(string permission)
@@ -190,16 +192,25 @@ public class DepthCameraExample : MonoBehaviour
     {
         MLPluginLog.Debug($"Granted {permission}.");
         permissionGranted = true;
+
+        var settings = new MLDepthCamera.Settings()
+        {
+            Mode = mode,
+            Flags = captureFlag
+        };
+        MLDepthCamera.SetSettings(settings);
+
         ConnectCamera();
         UpdateUI(0);
     }
 
     private void ConnectCamera()
     {
-        var result = depthCamera.Connect();
-        if (result.IsOk && depthCamera.IsConnected)
+        var result = MLDepthCamera.Connect();
+        if (result.IsOk && MLDepthCamera.IsConnected)
         {
-            Debug.Log($"Connected to new depth camera with mode = {depthCamera.CurrentSettings.Mode} and flags = {depthCamera.CurrentSettings.Flags}");
+            isPerceptionSystemStarted = true;
+            Debug.Log($"Connected to new depth camera with mode = {MLDepthCamera.CurrentSettings.Mode} and flags = {MLDepthCamera.CurrentSettings.Flags}");
         }
         else
         {
@@ -209,10 +220,10 @@ public class DepthCameraExample : MonoBehaviour
 
     private void DisonnectCamera()
     {
-        var result = depthCamera.Disconnect();
-        if (result.IsOk && !depthCamera.IsConnected)
+        var result = MLDepthCamera.Disconnect();
+        if (result.IsOk && !MLDepthCamera.IsConnected)
         {
-            Debug.Log($"Disconnected depth camera with mode = {depthCamera.CurrentSettings.Mode} and flags = {depthCamera.CurrentSettings.Flags}");
+            Debug.Log($"Disconnected depth camera with mode = {MLDepthCamera.CurrentSettings.Mode} and flags = {MLDepthCamera.CurrentSettings.Flags}");
         }
         else
         {
@@ -222,7 +233,6 @@ public class DepthCameraExample : MonoBehaviour
 
     void UpdateUI(int _)
     {
-
         mode = cameraModeDropdown.GetSelected<MLDepthCamera.Mode>();
         captureFlag = captureFlagsDropdown.GetSelected<MLDepthCamera.CaptureFlags>();
 
@@ -267,7 +277,7 @@ public class DepthCameraExample : MonoBehaviour
 
     private void CheckAndCreateTexture(int width, int height)
     {
-        if (ImageTexture == null || ImageTexture.width != width || ImageTexture.height != height)
+        if (ImageTexture == null || (ImageTexture != null && (ImageTexture.width != width || ImageTexture.height != height)))
         {
             ImageTexture = new Texture2D(width, height, TextureFormat.RFloat, false);
             ImageTexture.filterMode = FilterMode.Bilinear;
@@ -292,6 +302,6 @@ public class DepthCameraExample : MonoBehaviour
             Flags = captureFlag
         };
 
-        depthCamera.UpdateSettings(settings);
+        MLDepthCamera.UpdateSettings(settings);
     }
 }

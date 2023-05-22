@@ -122,7 +122,7 @@ namespace MagicLeap.Examples
             }
             if (!string.IsNullOrEmpty(poseText))
             {
-                _statusText.text += poseText;
+                _statusText.text += "\n" + poseText;
             }
         }
 

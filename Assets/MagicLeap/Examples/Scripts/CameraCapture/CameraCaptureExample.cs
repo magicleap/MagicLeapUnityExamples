@@ -76,6 +76,8 @@ namespace MagicLeap.Examples
         [SerializeField, Tooltip("Button that disconnect from MLCamera")]
         private Button disconnectButton;
 
+        private Coroutine recordingRoutine;
+
         private bool IsCameraConnected => captureCamera != null && captureCamera.ConnectionEstablished;
 
         private List<MLCamera.StreamCapability> streamCapabilities;
@@ -149,6 +151,8 @@ namespace MagicLeap.Examples
         {
             if (isPaused && IsCameraConnected)
             {
+                StopCoroutine(recordingRoutine);
+                StopVideoCapture();
                 DisconnectCamera();
             }
             else
@@ -302,7 +306,7 @@ namespace MagicLeap.Examples
                      GetStreamCapability().CaptureType == MLCamera.CaptureType.Preview)
             {
                 StartVideoCapture();
-                StartCoroutine(StopVideo());
+                recordingRoutine = StartCoroutine(StopVideo());
             }
 
             RefreshUI();
@@ -604,9 +608,11 @@ namespace MagicLeap.Examples
                 captureInfoText.text = capturedFrame.ToString();
             }
 
-            if (OutputFormat == MLCamera.OutputFormat.RGBA_8888 && FrameRate == MLCamera.CaptureFrameRate._30FPS && GetStreamCapability().Width >= 4096)
+            if (OutputFormat == MLCamera.OutputFormat.RGBA_8888 && FrameRate == MLCamera.CaptureFrameRate._30FPS && GetStreamCapability().Width >= 3840)
             {
-                // cameraCaptureVisualizer cannot handle throughput of RGBA_8888 4096x3072 at 30 fps 
+                // cameraCaptureVisualizer cannot handle throughput of:
+                // 1) RGBA_8888 3840x2160 at 30 fps
+                // 2) RGBA_8888 4096x3072 at 30 fps
                 skipFrame = !skipFrame;
                 if (skipFrame)
                 {

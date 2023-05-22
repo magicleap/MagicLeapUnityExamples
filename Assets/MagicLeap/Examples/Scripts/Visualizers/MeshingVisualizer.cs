@@ -8,6 +8,7 @@
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
+using System;
 using UnityEngine;
 using UnityEngine.XR.MagicLeap;
 
@@ -87,7 +88,7 @@ namespace MagicLeap.Examples
         }
 
         /// <summary>
-        /// Register for new and updated freagments.
+        /// Register for new and updated fragments.
         /// </summary>
         void Start()
         {
@@ -115,90 +116,49 @@ namespace MagicLeap.Examples
                 // Set the render mode.
                 renderMode = mode;
 
-                // Clear existing meshes to process the new mesh type.
+                _meshingSubsystemComponent.requestedMeshType = (renderMode == RenderMode.PointCloud) ? 
+                    MeshingSubsystemComponent.MeshType.PointCloud : 
+                    MeshingSubsystemComponent.MeshType.Triangles;
+
                 switch (renderMode)
                 {
+                    case RenderMode.None:
+                        break;
                     case RenderMode.Wireframe:
+                        _meshingSubsystemComponent.PrefabRenderer.sharedMaterial = _wireframeMaterial;
+                        break;
                     case RenderMode.Colored:
-                    case RenderMode.Occlusion:
-                        {
-                            _meshingSubsystemComponent.requestedMeshType = MeshingSubsystemComponent.MeshType.Triangles;
-
-                            break;
-                        }
+                        _meshingSubsystemComponent.PrefabRenderer.sharedMaterial = _coloredMaterial;
+                        break;
                     case RenderMode.PointCloud:
-                        {
-                            _meshingSubsystemComponent.requestedMeshType = MeshingSubsystemComponent.MeshType.PointCloud;
-
-                            break;
-                        }
+                        _meshingSubsystemComponent.PrefabRenderer.sharedMaterial = _pointCloudMaterial;
+                        break;
+                    case RenderMode.Occlusion:
+                        _meshingSubsystemComponent.PrefabRenderer.sharedMaterial = _occlusionMaterial;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException($"unknown renderMode value: {renderMode}");
                 }
 
                 _meshingSubsystemComponent.DestroyAllMeshes();
                 _meshingSubsystemComponent.RefreshAllMeshes();
             }
         }
-
-        /// <summary>
-        /// Updates the currently selected render material on the MeshRenderer.
-        /// </summary>
-        /// <param name="meshRenderer">The MeshRenderer that should be updated.</param>
-        private void UpdateRenderer(MeshRenderer meshRenderer)
-        {
-            if (meshRenderer != null)
-            {
-                // Toggle the GameObject(s) and set the correct materia based on the current RenderMode.
-                if (renderMode == RenderMode.None)
-                {
-                    meshRenderer.enabled = false;
-                }
-                else if (renderMode == RenderMode.PointCloud)
-                {
-                    meshRenderer.enabled = true;
-                    meshRenderer.material = _pointCloudMaterial;
-                }
-                else if (renderMode == RenderMode.Wireframe)
-                {
-                    meshRenderer.enabled = true;
-                    meshRenderer.material = _wireframeMaterial;
-                }
-                else if (renderMode == RenderMode.Colored)
-                {
-                    meshRenderer.enabled = true;
-                    meshRenderer.material = _coloredMaterial;
-                }
-                else if (renderMode == RenderMode.Occlusion)
-                {
-                    meshRenderer.enabled = true;
-                    meshRenderer.material = _occlusionMaterial;
-                }
-            }
-        }
-
-#if UNITY_2019_3_OR_NEWER
+        
         /// <summary>
         /// Handles the MeshReady event, which tracks and assigns the correct mesh renderer materials.
         /// </summary>
         /// <param name="meshId">Id of the mesh that got added / upated.</param>
         private void HandleOnMeshReady(UnityEngine.XR.MeshId meshId)
         {
-            if (_meshingSubsystemComponent.meshIdToGameObjectMap.ContainsKey(meshId))
+            if (_meshingSubsystemComponent.meshIdToGameObjectMap.TryGetValue(meshId, out var meshGameObject))
             {
-                UpdateRenderer(_meshingSubsystemComponent.meshIdToGameObjectMap[meshId].GetComponent<MeshRenderer>());
+                var mr = meshGameObject.GetComponent<MeshRenderer>();
+                if (mr != null)
+                {
+                    mr.enabled = renderMode != RenderMode.None;
+                }
             }
         }
-#else
-        /// <summary>
-        /// Handles the MeshReady event, which tracks and assigns the correct mesh renderer materials.
-        /// </summary>
-        /// <param name="meshId">Id of the mesh that got added / upated.</param>
-        private void HandleOnMeshReady(TrackableId meshId)
-        {
-            if (_meshingSubsystemComponent.meshIdToGameObjectMap.ContainsKey(meshId))
-            {
-                UpdateRenderer(_meshingSubsystemComponent.meshIdToGameObjectMap[meshId].GetComponent<MeshRenderer>());
-            }
-        }
-#endif
     }
 }

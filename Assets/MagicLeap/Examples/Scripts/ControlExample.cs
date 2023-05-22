@@ -78,6 +78,8 @@ namespace MagicLeap.Examples
 
             StringBuilder strBuilder = new StringBuilder();
             strBuilder.Append($"Position: <i>{controllerActions.Position.ReadValue<Vector3>().ToString("n2")}</i>\n");
+            strBuilder.Append($"Velocity: <i>{controllerActions.Velocity.ReadValue<Vector3>().ToString("n2")}</i>\n");
+            strBuilder.Append($"AngularVelocity: <i>{controllerActions.AngularVelocity.ReadValue<Vector3>().ToString("n2")}</i>\n");
             strBuilder.Append($"Acceleration: <i>{controllerActions.Acceleration.ReadValue<Vector3>().ToString("n2")}</i>\n");
             strBuilder.Append($"AngularAcceleration: <i>{controllerActions.AngularAcceleration.ReadValue<Vector3>().ToString("n2")}</i>\n");
 

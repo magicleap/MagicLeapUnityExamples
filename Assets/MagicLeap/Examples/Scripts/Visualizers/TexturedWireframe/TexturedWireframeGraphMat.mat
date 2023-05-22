@@ -59,8 +59,8 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _HighConfidenceBackgroundColor: {r: 0, g: 0, b: 0.04, a: 1}
+    - _HighConfidenceBackgroundColor: {r: 0, g: 0, b: 0.04, a: 0}
     - _HighConfidenceLineColor: {r: 0.4, g: 0.4, b: 0.5, a: 1}
-    - _LowConfidenceBackgroundColor: {r: 0.04, g: 0, b: 0.04, a: 1}
+    - _LowConfidenceBackgroundColor: {r: 0.04, g: 0, b: 0.04, a: 0}
     - _LowConfidenceLineColor: {r: 0.5, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

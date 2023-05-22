@@ -212,25 +212,12 @@ namespace MagicLeap.Examples
         /// </summary>
         private void UpdateStatusText()
         {
-            _statusLabel.text = string.Format("<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {0}\n", ControllerStatus.Text);
+            _statusLabel.text = $"<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {ControllerStatus.Text}\n";
 
-            _statusLabel.text += string.Format(
-                "\n<color=#B7B7B8><b>{0} {1}</b></color>\n{2} {3}: {4}\n{5} {6}: {7}\n{8}: {9}",
-                "Meshing",
-                "Data",
-                "Render",
-                "Mode",
-                _renderMode.ToString(),
-                "Bounded",
-                "Extents",
-                _bounded.ToString(),
-                "LOD",
-#if UNITY_2019_3_OR_NEWER
-                MeshingSubsystemComponent.DensityToLevelOfDetail(_meshingSubsystemComponent.density).ToString()
-#else
-                _meshingSubsystemComponent.levelOfDetail.ToString()
-#endif
-                );
+            _statusLabel.text += $"\n<color=#B7B7B8><b>Meshing Data</b></color>\n" +
+                                 $"Render Mode: {_renderMode.ToString()}\n" +
+                                 $"Bounded Extents: {_bounded.ToString()}\n" +
+                                 $"LOD: {MeshingSubsystemComponent.FromDensityToLevelOfDetail(_meshingSubsystemComponent.density).ToString()}";
         }
 
         /// <summary>

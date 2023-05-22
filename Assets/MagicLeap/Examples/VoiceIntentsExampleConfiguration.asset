@@ -22,6 +22,8 @@ MonoBehaviour:
     Value: Hello Friend | Hello Buddy
   - Id: 104
     Value: Slot Test for ({Shape}|{Color})
+  - Id: 105
+    Value: The {Pet} has a {Color} {Shape} toy
   AutoAllowAllSystemIntents: 0
   SystemCommands: 2008
   SlotsForVoiceCommands:
@@ -35,3 +37,8 @@ MonoBehaviour:
     - Red
     - Green
     - Blue
+  - name: Pet
+    values:
+    - Cat
+    - Dog
+    - Fish
