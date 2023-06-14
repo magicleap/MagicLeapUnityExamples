@@ -107,7 +107,7 @@ namespace MagicLeap.Examples
                 $"Center:\n({eyes.leftEyePosition.x:F2}, {eyes.leftEyePosition.y:F2}, {eyes.leftEyePosition.z:F2})\n" +
                 $"Gaze:\n({leftEyeForwardGaze.x:F2}, {leftEyeForwardGaze.y:F2}, {leftEyeForwardGaze.z:F2})\n" +
                 $"Confidence:\n{trackingState.LeftCenterConfidence:F2}\n" +
-                $"Pupil Size:\n{eyes.leftEyeOpenAmount:F2}";
+                $"Openness:\n{eyes.leftEyeOpenAmount:F2}";
 
             leftEyeTextStatic.text = leftEyeText;
 
@@ -117,7 +117,7 @@ namespace MagicLeap.Examples
                 $"Center:\n({eyes.rightEyePosition.x:F2}, {eyes.rightEyePosition.y:F2}, {eyes.rightEyePosition.z:F2})\n" +
                 $"Gaze:\n({rightEyeForwardGaze.x:F2}, {rightEyeForwardGaze.y:F2}, {rightEyeForwardGaze.z:F2})\n" +
                 $"Confidence:\n{trackingState.RightCenterConfidence:F2}\n" +
-                $"Pupil Size:\n{eyes.rightEyeOpenAmount:F2}";
+                $"Openness:\n{eyes.rightEyeOpenAmount:F2}";
 
             rightEyeTextStatic.text = rightEyeText;
 

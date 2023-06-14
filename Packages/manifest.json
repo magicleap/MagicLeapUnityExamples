@@ -35,7 +35,7 @@
     "com.unity.modules.vehicles": "1.0.0",
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.magicleap.unitysdk": "1.7.0"
+    "com.magicleap.unitysdk": "1.8.0"
   },
   "scopedRegistries": [
     {

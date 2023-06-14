@@ -73,6 +73,7 @@ namespace MagicLeap.Examples
         private bool waitingForAnswer = false;
         private bool waitingForAnswerGetRequest = false;
         private bool remotePeerDisconnected = false;
+        private bool shouldBeConnected = false;
 
         private string serverAddress = "";
         private string serverURI = "";
@@ -230,6 +231,8 @@ namespace MagicLeap.Examples
                         uiRoot.SetParent(null);
                         DontDestroyOnLoad(uiRoot.gameObject);
                     }
+
+                    shouldBeConnected = true;
                 });
             }
             catch (UriFormatException)
@@ -893,6 +896,8 @@ namespace MagicLeap.Examples
 
             remoteId = "";
             localId = "";
+
+            shouldBeConnected = false;
         }
 
         private void LocalVideoSource_OnCaptureStatusChanged(bool destroyed)
@@ -927,6 +932,18 @@ namespace MagicLeap.Examples
             if (grantedPermissions.Count == requiredPermissions.Length)
             {
                 StartAfterPermissions();
+            }
+        }
+
+        private void OnApplicationPause(bool pause)
+        {
+            if(!pause && shouldBeConnected)
+            {
+                var result = connection.IsConnected(out bool isConnected);
+                if(result.IsOk && !isConnected)
+                {
+                    Connect(PlayerPrefs.GetString(PlayerPrefs_ServerAddress_Key));
+                }
             }
         }
     }

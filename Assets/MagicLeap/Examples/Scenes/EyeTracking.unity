@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18018606, g: 0.22559257, b: 0.30678663, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -941,12 +941,12 @@ PrefabInstance:
         tracking.\r\nThe example provides a EyeTrackingExample script that drives
         parameters of the eye tracking API and displays tracking points and details.\r\n\r\nThe
         scene detects where eyes are pointed and displays the cubes in your environment
-        as you look around. Details about eye tracking are displayed above. Bumper
-        is used to switch between tracking modes.\r\n\r\nTracking Modes:\r\nBoth
-        Eyes - Tracks each eye separately and displays for each eye it's focus point.\r\nFixation
-        Point - Displays both eyes approximate focus point.\r\n  \r\n<color=#B7B7B8><b>Mandatory
-        permissions required by this feature</b></color>\r\n\r\n<color=#B7B7B8><b>Permissions
-        required by this example</b></color>"
+        as you look around. Details about eye tracking are displayed above.\n\r\nTracking
+        Modes:\r\nBoth Eyes - Tracks each eye separately and displays for each eye
+        it's focus point.\r\nFixation Point - Displays both eyes approximate focus
+        point.\r\n  \r\n<color=#B7B7B8><b>Mandatory permissions required by this
+        feature</b></color>\r\n\r\n<color=#B7B7B8><b>Permissions required by this
+        example</b></color>"
       objectReference: {fileID: 0}
     - target: {fileID: 9144045081354614237, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
