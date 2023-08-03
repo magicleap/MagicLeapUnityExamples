@@ -70,7 +70,7 @@ public class DepthCameraExample : MonoBehaviour
     private Vector2 scale = new Vector2(1.0f, -1.0f);
 
 
-    private MLDepthCamera.Mode mode = MLDepthCamera.Mode.LongRange;
+    private MLDepthCamera.Stream stream = MLDepthCamera.Stream.LongRange;
     private MLDepthCamera.CaptureFlags captureFlag = MLDepthCamera.CaptureFlags.DepthImage;
 
     void Awake()
@@ -80,7 +80,7 @@ public class DepthCameraExample : MonoBehaviour
         permissionCallbacks.OnPermissionDeniedAndDontAskAgain += OnPermissionDenied;
 
         cameraModeDropdown.AddOptions(
-            MLDepthCamera.Mode.LongRange
+            MLDepthCamera.Stream.LongRange
         );
 
         captureFlagsDropdown.AddOptions(
@@ -193,11 +193,24 @@ public class DepthCameraExample : MonoBehaviour
         MLPluginLog.Debug($"Granted {permission}.");
         permissionGranted = true;
 
+        MLDepthCamera.StreamConfig[] config = new MLDepthCamera.StreamConfig[2];
+
+        int i = (int)MLDepthCamera.FrameType.LongRange;
+        config[i].Flags = (uint)captureFlag;
+        config[i].Exposure = 1600;
+        config[i].FrameRateConfig = MLDepthCamera.FrameRate.FPS_5;
+
+        i = (int)MLDepthCamera.FrameType.ShortRange;
+        config[i].Flags = (uint)captureFlag;
+        config[i].Exposure = 375;
+        config[i].FrameRateConfig = MLDepthCamera.FrameRate.FPS_5;
+
         var settings = new MLDepthCamera.Settings()
         {
-            Mode = mode,
-            Flags = captureFlag
+            Streams = stream,
+            StreamConfig = config
         };
+
         MLDepthCamera.SetSettings(settings);
 
         ConnectCamera();
@@ -210,7 +223,7 @@ public class DepthCameraExample : MonoBehaviour
         if (result.IsOk && MLDepthCamera.IsConnected)
         {
             isPerceptionSystemStarted = true;
-            Debug.Log($"Connected to new depth camera with mode = {MLDepthCamera.CurrentSettings.Mode} and flags = {MLDepthCamera.CurrentSettings.Flags}");
+            Debug.Log($"Connected to new depth camera with stream = {MLDepthCamera.CurrentSettings.Streams}");
         }
         else
         {
@@ -223,7 +236,7 @@ public class DepthCameraExample : MonoBehaviour
         var result = MLDepthCamera.Disconnect();
         if (result.IsOk && !MLDepthCamera.IsConnected)
         {
-            Debug.Log($"Disconnected depth camera with mode = {MLDepthCamera.CurrentSettings.Mode} and flags = {MLDepthCamera.CurrentSettings.Flags}");
+            Debug.Log($"Disconnected depth camera with stream = {MLDepthCamera.CurrentSettings.Streams}");
         }
         else
         {
@@ -233,7 +246,7 @@ public class DepthCameraExample : MonoBehaviour
 
     void UpdateUI(int _)
     {
-        mode = cameraModeDropdown.GetSelected<MLDepthCamera.Mode>();
+        stream = cameraModeDropdown.GetSelected<MLDepthCamera.Stream>();
         captureFlag = captureFlagsDropdown.GetSelected<MLDepthCamera.CaptureFlags>();
 
         bool showAmbientSlider = false;
@@ -296,10 +309,22 @@ public class DepthCameraExample : MonoBehaviour
 
     private void UpdateSettings()
     {
+        MLDepthCamera.StreamConfig[] config = new MLDepthCamera.StreamConfig[2];
+
+        int i = (int)MLDepthCamera.FrameType.LongRange;
+        config[i].Flags = (uint)captureFlag;
+        config[i].Exposure = 1600;
+        config[i].FrameRateConfig = MLDepthCamera.FrameRate.FPS_5;
+
+        i = (int)MLDepthCamera.FrameType.ShortRange;
+        config[i].Flags = (uint)captureFlag;
+        config[i].Exposure = 375;
+        config[i].FrameRateConfig = MLDepthCamera.FrameRate.FPS_5;
+
         var settings = new MLDepthCamera.Settings()
         {
-            Mode = mode,
-            Flags = captureFlag
+            Streams = stream,
+            StreamConfig = config
         };
 
         MLDepthCamera.UpdateSettings(settings);

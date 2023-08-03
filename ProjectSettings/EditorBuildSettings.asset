@@ -75,7 +75,7 @@ EditorBuildSettings:
     path: Assets/MagicLeap/Examples/Scenes/WacomTablet.unity
     guid: 858001671d830a34c8cb14f536bbdee1
   m_configObjects:
-    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 7d361085fa4a54255a6722b7e9ea2ed8,
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: cde6fcd122059494d8356e13afe94bbf,
       type: 2}
     com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: e74d74253eeaaee41a6792c8d86712a8,
       type: 2}

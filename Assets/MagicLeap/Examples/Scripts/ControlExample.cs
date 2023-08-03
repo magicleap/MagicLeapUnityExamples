@@ -13,6 +13,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR.MagicLeap;
+using UnityEngine.XR.MagicLeap.Native;
 
 namespace MagicLeap.Examples
 {
@@ -30,6 +31,8 @@ namespace MagicLeap.Examples
         [SerializeField, Tooltip("The text used to display status information for the example..")]
         private Text _statusText = null;
 
+        private bool enableSnapshotPrediction = false;
+
         /// <summary>
         /// Initialize variables, callbacks and check null references.
         /// </summary>
@@ -42,6 +45,7 @@ namespace MagicLeap.Examples
             // canceled event used to detect when bumper button is released
             controllerActions.Bumper.canceled += HandleOnBumper;
             controllerActions.Bumper.performed += HandleOnBumper;
+            controllerActions.Bumper.performed += ToggleSnapshotPrediction;
             controllerActions.Trigger.performed += HandleOnTrigger;
 
             InputSubsystem.Extensions.Controller.AttachTriggerListener(HandleOnTriggerEvent);
@@ -65,9 +69,12 @@ namespace MagicLeap.Examples
             controllerActions.TouchpadPosition.performed -= HandleOnTouchpad;
             controllerActions.Bumper.canceled -= HandleOnBumper;
             controllerActions.Bumper.performed -= HandleOnBumper;
+            controllerActions.Bumper.performed -= ToggleSnapshotPrediction;
             controllerActions.Trigger.performed -= HandleOnTrigger;
 
             InputSubsystem.Extensions.Controller.RemoveTriggerListener(HandleOnTriggerEvent);
+
+            MLGraphicsHooks.Shutdown();
 
             mlInputs.Dispose();
         }
@@ -94,9 +101,12 @@ namespace MagicLeap.Examples
                               $"{controllerActions.TouchpadPosition.ReadValue<Vector2>().y:n2})</i>\n");
             strBuilder.Append($"Pressure: <i>{controllerActions.TouchpadForce.ReadValue<float>()}</i>\n\n");
             strBuilder.Append($"<color=#B7B7B8><b>Gestures</b></color>\n<i></i>");
-            foreach (var touchpadEvent in gestureComponent.gestureSubsystem.touchpadGestureEvents)
+            if (gestureComponent != null && gestureComponent.gestureSubsystem != null)
             {
-                strBuilder.Append($"<i>{touchpadEvent.type} {touchpadEvent.state}</i>");
+                foreach (var touchpadEvent in gestureComponent.gestureSubsystem.touchpadGestureEvents)
+                {
+                    strBuilder.Append($"<i>{touchpadEvent.type} {touchpadEvent.state}</i>");
+                }
             }
 
             _statusText.text += strBuilder.ToString();
@@ -111,6 +121,12 @@ namespace MagicLeap.Examples
             bool bumperDown = obj.ReadValueAsButton();
 
             Debug.Log("Bumper was released this frame: " + obj.action.WasReleasedThisFrame());
+        }
+
+        private void ToggleSnapshotPrediction(InputAction.CallbackContext obj)
+        {
+            enableSnapshotPrediction = !enableSnapshotPrediction;
+            MLGraphicsHooks.RequestPredictedSnapshots(enableSnapshotPrediction);
         }
 
         private void HandleOnTrigger(InputAction.CallbackContext obj)

@@ -86,6 +86,7 @@ namespace MagicLeap.Examples
         private MLWebRTC.MLCameraVideoSource localVideoSource;
         private MLWebRTC.MediaStream localMediaStream = null;
         private MLWebRTC.MediaStream remoteMediaStream = null;
+        private DefinedAudioSourceExample localDefinedAudioSource;
 
         // The sample server can only handle concurrent requests. Maintain a queue to send only 1 request at a time.
         private ConcurrentWebRequestManager webRequestManager = new ConcurrentWebRequestManager();
@@ -210,6 +211,8 @@ namespace MagicLeap.Examples
                         Debug.LogFormat("MLWebRTCExample.Login failed to create a connection. Reason: {0}.", MLResult.CodeToString(result.Result));
                         return;
                     }
+                    
+                    shouldBeConnected = true;
 
                     disconnectUI.SetActive(true);
                     localVideoSourceDropdown.interactable = false;
@@ -218,6 +221,7 @@ namespace MagicLeap.Examples
 
                     SubscribeToConnection(connection);
                     await CreateLocalMediaStream();
+
                     InitTracks();
                     QueryOffers();
 
@@ -231,8 +235,6 @@ namespace MagicLeap.Examples
                         uiRoot.SetParent(null);
                         DontDestroyOnLoad(uiRoot.gameObject);
                     }
-
-                    shouldBeConnected = true;
                 });
             }
             catch (UriFormatException)
@@ -246,7 +248,7 @@ namespace MagicLeap.Examples
             localVideoSinkBehavior.gameObject.SetActive(true);
             localStatusText.text = "";
 
-            string id = "local";
+            string id = $"local{selectedFlag}";
 
             connectContext = new MLCamera.ConnectContext()
             {
@@ -257,31 +259,23 @@ namespace MagicLeap.Examples
                 {
                     MRBlendType = MLCamera.MRBlendType.Additive,
                     MRQuality = selectedMRQuality,
-                    FrameRate = MLCamera.CaptureFrameRate._60FPS
+                    FrameRate = MLCamera.CaptureFrameRate._30FPS
                 }
             };
 
-            var captureFrameRate = MLCamera.CaptureFrameRate._60FPS;
-            if (selectedVideoSize > VideoSize._1080p)
-            {
-                captureFrameRate = MLCamera.CaptureFrameRate._30FPS;
-            }
+            connectContext.MixedRealityConnectInfo.FrameRate = MLCamera.CaptureFrameRate._30FPS;
 
-            if (selectedFlag != MLCamera.ConnectFlag.CamOnly)
-            {
-                // these MR quality settings don't support 60 FPS, so lower framerate if one of them is being used
-                if (selectedMRQuality == MLCamera.MRQuality._1944x2160 || selectedMRQuality == MLCamera.MRQuality._2880x2160)
-                {
-                    captureFrameRate = connectContext.MixedRealityConnectInfo.FrameRate = MLCamera.CaptureFrameRate._30FPS;
-                }
-
-                connectContext.MixedRealityConnectInfo.FrameRate = captureFrameRate;
-            }
-
-            mlCamera = await MLCamera.CreateAndConnectAsync(connectContext);
             if (mlCamera == null)
             {
-                return;
+                mlCamera = await MLCamera.CreateAndConnectAsync(connectContext);
+                if (mlCamera == null)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                mlCamera.Connect(connectContext);
             }
 
             MLCamera.StreamCapability[] streamCapabilities = useHWBuffers ? MLCamera.GetImageStreamCapabilitiesForCamera(mlCamera, MLCamera.CaptureType.Video, MLCamera.CaptureType.Preview)
@@ -302,16 +296,14 @@ namespace MagicLeap.Examples
             // get stream configs based on available capabilities. Preview won't be available if capturing virtual content.
             var streamConfigs = new List<MLCamera.CaptureStreamConfig>();
 
-            if (MLCamera.TryGetBestFitStreamCapabilityFromCollection(streamCapabilities, captureWidth, captureHeight, MLCamera.CaptureType.Video,
-                out var videoStreamCapability))
+            if (MLCamera.TryGetBestFitStreamCapabilityFromCollection(streamCapabilities, captureWidth, captureHeight, MLCamera.CaptureType.Video, out var videoStreamCapability))
             {
                 streamConfigs.Add(MLCamera.CaptureStreamConfig.Create(videoStreamCapability, outputFormat));
             }
 
             if (MLCamera.IsCaptureTypeSupported(mlCamera, MLCamera.CaptureType.Preview) && useHWBuffers)
             {
-                if (MLCamera.TryGetBestFitStreamCapabilityFromCollection(streamCapabilities, captureWidth, captureHeight,
-                    MLCamera.CaptureType.Preview, out var previewStreamCapability))
+                if (MLCamera.TryGetBestFitStreamCapabilityFromCollection(streamCapabilities, captureWidth, captureHeight, MLCamera.CaptureType.Preview, out var previewStreamCapability))
                 {
                     streamConfigs.Add(MLCamera.CaptureStreamConfig.Create(previewStreamCapability, MLCamera.OutputFormat.YUV_420_888));
                 }
@@ -319,21 +311,25 @@ namespace MagicLeap.Examples
 
             MLCamera.CaptureConfig captureConfig = new MLCamera.CaptureConfig()
             {
-                CaptureFrameRate = captureFrameRate,
+                CaptureFrameRate = MLCamera.CaptureFrameRate._30FPS,
                 StreamConfigs = streamConfigs.ToArray()
             };
+
+            if (localVideoRenderer != null)
+            {
+                localVideoRenderer.enabled = useHWBuffers && connectContext.Flags == MLCameraBase.ConnectFlag.CamOnly;
+            }
 
             // Use factory methods to create a new media stream.
             if (localMediaStream == null)
             {
-                localVideoSource = await Task.Run(() =>
-                    MLWebRTC.MLCameraVideoSource.CreateLocal(mlCamera, captureConfig, out MLResult result, id, localVideoRenderer, useHWBuffers));
+                localVideoSource = await Task.Run(() => MLWebRTC.MLCameraVideoSource.CreateLocal(mlCamera, captureConfig, out MLResult result, id, localVideoRenderer, useHWBuffers));
 
                 localVideoSource.OnCaptureStatusChanged += LocalVideoSource_OnCaptureStatusChanged;
 
-                var localDefinedAudioSource = (audioType == MLWebRTC.MediaStream.Track.AudioType.Defined) ? new DefinedAudioSourceExample(id) : null;
+                localDefinedAudioSource = (audioType == MLWebRTC.MediaStream.Track.AudioType.Defined) ? new DefinedAudioSourceExample(id) : null;
 
-                localMediaStream = MLWebRTC.MediaStream.CreateWithAppDefinedVideoTrack(id, localVideoSource, audioType, "", localDefinedAudioSource);                
+                localMediaStream = MLWebRTC.MediaStream.CreateWithAppDefinedVideoTrack(id, localVideoSource, audioType, "", localDefinedAudioSource);
             }
         }
 
@@ -348,10 +344,15 @@ namespace MagicLeap.Examples
                 }
             }
 
-            connection.AddLocalTrack(localMediaStream.ActiveVideoTrack);
-            connection.AddLocalTrack(localMediaStream.ActiveAudioTrack);
+            if(!connection.ContainsTrack(localMediaStream.ActiveVideoTrack))
+                connection.AddLocalTrack(localMediaStream.ActiveVideoTrack);
+            if(!connection.ContainsTrack(localMediaStream.ActiveAudioTrack))
+                connection.AddLocalTrack(localMediaStream.ActiveAudioTrack);
 
-            localVideoSinkBehavior.VideoSink.SetStream(localMediaStream);
+            if (!useHWBuffers)
+            {
+                localVideoSinkBehavior.VideoSink.SetStream(localMediaStream);
+            }
         }
 
         void Update()
@@ -937,12 +938,15 @@ namespace MagicLeap.Examples
 
         private void OnApplicationPause(bool pause)
         {
-            if(!pause && shouldBeConnected)
+            if(!pause)
             {
-                var result = connection.IsConnected(out bool isConnected);
-                if(result.IsOk && !isConnected)
+                if (shouldBeConnected)
                 {
-                    Connect(PlayerPrefs.GetString(PlayerPrefs_ServerAddress_Key));
+                    var result = connection.IsConnected(out bool isConnected);
+                    if (result.IsOk && !isConnected)
+                    {
+                        Connect(PlayerPrefs.GetString(PlayerPrefs_ServerAddress_Key));
+                    }
                 }
             }
         }

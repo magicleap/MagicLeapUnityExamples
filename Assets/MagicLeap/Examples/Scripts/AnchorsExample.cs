@@ -77,8 +77,13 @@ namespace MagicLeap.Examples
             {
                 if (MLPermissions.CheckPermission(MLPermission.SpatialAnchors).IsOk)
                 {
-                    MLAnchors.Anchor.Create(new Pose(controllerActions.Position.ReadValue<Vector3>(), controllerActions.Rotation.ReadValue<Quaternion>()), 0, out MLAnchors.Anchor anchor);
-                    anchor.Publish();
+                    MLAnchors.Anchor.Create(new Pose(controllerActions.Position.ReadValue<Vector3>(), controllerActions.Rotation.ReadValue<Quaternion>()), 300, out MLAnchors.Anchor anchor);
+
+                    MLAnchors.GetLocalizationInfo(out MLAnchors.LocalizationInfo info);
+                    if (info.LocalizationStatus == MLAnchors.LocalizationStatus.Localized)
+                    {
+                        anchor.Publish();
+                    }
                 }
             }
         }

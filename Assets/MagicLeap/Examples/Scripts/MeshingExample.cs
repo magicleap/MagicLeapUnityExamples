@@ -145,14 +145,21 @@ namespace MagicLeap.Examples
         private void Start()
         {
             MLPermissions.RequestPermission(MLPermission.SpatialMapping, permissionCallbacks);
+            var xrMgrSettings = XRGeneralSettings.Instance.Manager;
+            if (xrMgrSettings != null)
+            {
+                var loader = xrMgrSettings.activeLoader;
+                if (loader != null)
+                {
+                    inputSubsystem = loader.GetLoadedSubsystem<XRInputSubsystem>();
+                    inputSubsystem.trackingOriginUpdated += OnTrackingOriginChanged;
 
-            inputSubsystem = XRGeneralSettings.Instance?.Manager?.activeLoader?.GetLoadedSubsystem<XRInputSubsystem>();
-            inputSubsystem.trackingOriginUpdated += OnTrackingOriginChanged;
+                    _meshingVisualizer.SetRenderers(_renderMode);
 
-            _meshingVisualizer.SetRenderers(_renderMode);
-
-            _meshingSubsystemComponent.gameObject.transform.position = _camera.gameObject.transform.position;
-            UpdateBounds();
+                    _meshingSubsystemComponent.gameObject.transform.position = _camera.gameObject.transform.position;
+                    UpdateBounds();
+                }
+            }
         }
 
         /// <summary>
@@ -285,11 +292,9 @@ namespace MagicLeap.Examples
                 touchpadGestureEvent.type == InputSubsystem.Extensions.TouchpadGesture.Type.Swipe &&
                 touchpadGestureEvent.direction == InputSubsystem.Extensions.TouchpadGesture.Direction.Up)
             {
-#if UNITY_2019_3_OR_NEWER
-                _meshingSubsystemComponent.density = MLSpatialMapper.LevelOfDetailToDensity((MLSpatialMapper.DensityToLevelOfDetail(_meshingSubsystemComponent.density) == MLSpatialMapper.LevelOfDetail.Maximum) ? MLSpatialMapper.LevelOfDetail.Minimum : (MLSpatialMapper.DensityToLevelOfDetail(_meshingSubsystemComponent.density) + 1));
-#else
-                _mlSpatialMapper.levelOfDetail = ((_mlSpatialMapper.levelOfDetail == MLSpatialMapper.LevelOfDetail.Maximum) ? MLSpatialMapper.LevelOfDetail.Minimum : (_mlSpatialMapper.levelOfDetail + 1));
-#endif
+                var currentLevel = MeshingSubsystem.Extensions.MLMeshing.DensityToLevelOfDetail(_meshingSubsystemComponent.density);
+                var newLevel = (currentLevel == MeshingSubsystem.Extensions.MLMeshing.LevelOfDetail.Maximum) ? MeshingSubsystem.Extensions.MLMeshing.LevelOfDetail.Minimum : currentLevel + 1;
+                _meshingSubsystemComponent.density = MeshingSubsystem.Extensions.MLMeshing.LevelOfDetailToDensity(newLevel);
             }
         }
 

@@ -150,7 +150,6 @@ namespace MagicLeap.Examples
 
         void OnDisable()
         {
-            worldCamera.Disconnect();
             controllerActions.Bumper.performed -= HandleOnBumper;
             mlInputs.Dispose();
         }
