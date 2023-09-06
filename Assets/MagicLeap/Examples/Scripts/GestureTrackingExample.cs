@@ -134,5 +134,10 @@ namespace MagicLeap.Examples
         {
             statusText.text = $"<color=#B7B7B8><b>Gesture Tracking Data</b></color>\n{statusStringBuilder}";
         }
+
+        private void OnDestroy()
+        {
+            GestureClassification.StopTracking();
+        }
     }
 }

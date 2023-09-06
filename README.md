@@ -7,7 +7,7 @@ The files in this project can change or even be removed from one release to anot
 
 ## Compatible with
 - Unity Editor 2022.2
-- Magic Leap Unity SDK 1.9.0
+- Magic Leap Unity SDK 1.10.0
 
 # Copyright
 Copyright (c) 2020-present Magic Leap, Inc. All Rights Reserved.

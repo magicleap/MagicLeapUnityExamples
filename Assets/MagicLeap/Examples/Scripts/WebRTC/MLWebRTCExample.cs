@@ -381,8 +381,8 @@ namespace MagicLeap.Examples
             // the browser client peer disconnected, so we disconnect too
             if (remotePeerDisconnected)
             {
-                remotePeerDisconnected = false;
                 Disconnect();
+                remotePeerDisconnected = false;
             }
         }
 
@@ -854,11 +854,10 @@ namespace MagicLeap.Examples
         public void Disconnect()
         {
             if (connection == null)
-            {
                 return;
-            }
-
-            webRequestManager.HttpPost(serverURI + "/logout/" + localId, string.Empty);
+            
+            if(!remotePeerDisconnected)
+                webRequestManager.HttpPost(serverURI + "/logout/" + localId, string.Empty);
 
             if (dataChannel != null)
             {
@@ -949,6 +948,12 @@ namespace MagicLeap.Examples
                     }
                 }
             }
+        }
+
+        private void OnApplicationQuit()
+        {
+            connection.Destroy();
+            localVideoSource.DestroyLocal();
         }
     }
 }

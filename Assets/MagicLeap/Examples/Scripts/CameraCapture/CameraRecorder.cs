@@ -79,6 +79,11 @@ namespace MagicLeap.Examples
         /// <param name="filePath">Path in which video will be saved</param>
         public MLResult StartRecording(string filePath, CameraRecorderConfig config)
         {
+            // This particular feature is not supported in AppSim. This sample uses the ml_media_recorder which is not implemented in AppSim. 
+#if UNITY_EDITOR
+            return MLResult.Create(MLResult.Code.NotImplemented);
+#endif
+            
             if (isRecording)
             {
                 return MLResult.Create(MLResult.Code.Ok);

@@ -109,6 +109,14 @@ namespace MagicLeap.Examples
             UpdateStatusText();
         }
 
+        private void OnApplicationPause(bool pause)
+        {
+            if (pause)
+            {
+                StopVideoCapture();
+            }
+        }
+
         /// <summary>
         /// Updates examples status text.
         /// </summary>

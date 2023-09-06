@@ -81,9 +81,9 @@ namespace MagicLeap.Examples
                 (rightConfidence * 100.0f).ToString("n0"), rightIsTracked.ToString());
         }
 
-
-        void OnDestroy()
+        private void OnDestroy()
         {
+            InputSubsystem.Extensions.MLHandTracking.StopTracking();
         }
     }
 }

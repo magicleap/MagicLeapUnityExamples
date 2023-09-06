@@ -9,14 +9,13 @@
 // %BANNER_END%
 
 using System;
-using System.Runtime.InteropServices;
+using System.Collections;
 using System.Text;
 using MagicLeap.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR.MagicLeap;
-using UnityEngine.XR.MagicLeap.Native;
 
 namespace MagicLeap.Examples
 {
@@ -89,6 +88,8 @@ namespace MagicLeap.Examples
                 nextButton.interactable = false;
 
                 CreateWebViewWindow();
+                
+                StartCoroutine(RegisterPopupEventsWhenReady());
             }
             else
             {
@@ -97,8 +98,19 @@ namespace MagicLeap.Examples
                 return;
             }
         }
+        
+        private IEnumerator RegisterPopupEventsWhenReady()
+        {
+            yield return new WaitUntil(() => webViewScreenBehavior.WebView != null);
+            
+            webViewScreenBehavior.WebView.OnPopupOpened += HandleOnPopupOpened;
+        }
 
-
+        private void HandleOnPopupOpened(MLWebView webView, ulong popupID, string url)
+        {
+            tabBar.CreatePopupTab(webView, popupID, url);
+        }
+        
         private void Update()
         {
             UpdateStatus();
@@ -169,12 +181,12 @@ namespace MagicLeap.Examples
         {
             // make sure the next time a page is loaded that it doesn't ignore cert errors
             webView.IgnoreCertificateError = false;
-            loadStatus = String.Format("Success - {0}", httpStatusCode.ToString());
+            loadStatus = $"Success - {httpStatusCode.ToString()}";
         }
 
         private void OnErrorLoaded(MLWebView webView, bool isMainFrame, int httpStatusCode, string errorStr, string failedUrl)
         {
-            loadStatus = String.Format("Failed - {0} - {1}", httpStatusCode.ToString(), errorStr);
+            loadStatus = $"Failed - {httpStatusCode.ToString()} - {errorStr}";
         }
 
         private void OnCertificateErrorLoaded(MLWebView webView, int errorCode, string url, string errorMessage, string details, bool certificateErrorIgnored)
@@ -187,7 +199,7 @@ namespace MagicLeap.Examples
                 }
             }
 
-            loadStatus = String.Format("Cert Error - {0} - {1}", errorCode.ToString(), errorMessage);
+            loadStatus = $"Cert Error - {errorCode.ToString()} - {errorMessage}";
         }
 
         private void OnKeyboardShown(MLWebView webView, MLWebView.InputFieldData keyboardShowData)
@@ -406,6 +418,11 @@ namespace MagicLeap.Examples
             {
                 virtualKeyboard.OnCharacterAdded.RemoveListener(OnCharacterAdded);
                 virtualKeyboard.OnCharacterDeleted.RemoveListener(OnCharacterDeleted);
+            }
+            
+            if (webViewScreenBehavior.WebView != null)
+            {
+                webViewScreenBehavior.WebView.OnPopupOpened -= HandleOnPopupOpened;
             }
         }
     }

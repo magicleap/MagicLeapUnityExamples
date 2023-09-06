@@ -59,6 +59,7 @@ namespace MagicLeap
         {
             // Use lastWebRequestCompleted instead of lastWebRequest.isDone because the latter can
             // cause race conditions resulting in the "completed" callback never being fired.
+
             if (pendingWebRequests.Count > 0 && lastWebRequestCompleted)
             {
                 lastWebRequestCompleted = false;
@@ -66,10 +67,10 @@ namespace MagicLeap
                 lastWebRequestAsyncOp = lastWebRequest.SendWebRequest();
                 lastWebRequestAsyncOp.completed += (AsyncOperation asyncOp) =>
                 {
-                    UnityWebRequestAsyncOperation webRequenstAsyncOp = asyncOp as UnityWebRequestAsyncOperation;
-                    if (webRequenstAsyncOp.webRequest.result != UnityWebRequest.Result.Success)
+                    UnityWebRequestAsyncOperation webRequestAsyncOp = asyncOp as UnityWebRequestAsyncOperation;
+                    if (webRequestAsyncOp.webRequest.result != UnityWebRequest.Result.Success)
                     {
-                        Debug.LogError($"MLWebRTCExample.Http{webRequenstAsyncOp.webRequest.method}({webRequenstAsyncOp.webRequest.url}) failed, Reason : {webRequenstAsyncOp.webRequest.error}");
+                        Debug.LogError($"MLWebRTCExample.Http{webRequestAsyncOp.webRequest.method}({webRequestAsyncOp.webRequest.url}) failed, Reason : {webRequestAsyncOp.webRequest.error}");
                     }
                     webRequestsToOnCompletedEvent[lastWebRequest]?.Invoke(asyncOp);
                     webRequestsToOnCompletedEvent.Remove(lastWebRequest);

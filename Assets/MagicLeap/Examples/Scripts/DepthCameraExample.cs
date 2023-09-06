@@ -80,7 +80,8 @@ public class DepthCameraExample : MonoBehaviour
         permissionCallbacks.OnPermissionDeniedAndDontAskAgain += OnPermissionDenied;
 
         cameraModeDropdown.AddOptions(
-            MLDepthCamera.Stream.LongRange
+            MLDepthCamera.Stream.LongRange,
+            MLDepthCamera.Stream.ShortRange
         );
 
         captureFlagsDropdown.AddOptions(
@@ -98,6 +99,7 @@ public class DepthCameraExample : MonoBehaviour
     private void OnEnable()
     {
         captureFlagsDropdown.onValueChanged.AddListener(UpdateUI);
+        cameraModeDropdown.onValueChanged.AddListener(UpdateUI);
     }
 
     void Update()
@@ -108,6 +110,7 @@ public class DepthCameraExample : MonoBehaviour
         }
 
         var result = MLDepthCamera.GetLatestDepthData(timeout, out MLDepthCamera.Data data);
+
         isFrameAvailable = result.IsOk;
         if (result.IsOk)
         {
