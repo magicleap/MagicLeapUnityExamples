@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using MagicLeap.Core;
 using UnityEngine;
@@ -105,11 +106,22 @@ namespace MagicLeap.Examples
 
         private bool skipFrame = false;
 
+        private List<Button> cameraCaptureButtons;
+
+        private StringBuilder status = new();
+
         private void Awake()
         {
             permissionCallbacks.OnPermissionGranted += OnPermissionGranted;
             permissionCallbacks.OnPermissionDenied += OnPermissionDenied;
             permissionCallbacks.OnPermissionDeniedAndDontAskAgain += OnPermissionDenied;
+            
+            cameraCaptureButtons = new()
+            {
+                captureButton,
+                connectButton, 
+                disconnectButton,
+            };
 
             connectionFlagDropdown.AddOptions(
                 MLCamera.ConnectFlag.CamOnly,
@@ -151,7 +163,10 @@ namespace MagicLeap.Examples
         {
             if (isPaused && IsCameraConnected)
             {
-                StopCoroutine(recordingRoutine);
+                if (recordingRoutine != null)
+                {
+                    StopCoroutine(recordingRoutine);
+                }
                 StopVideoCapture();
                 DisconnectCamera();
             }
@@ -229,6 +244,8 @@ namespace MagicLeap.Examples
             if (captureCamera != null)
             {
                 Debug.Log("Camera device connected");
+                captureCamera.OnCameraPaused += CameraPausedHandler;
+                captureCamera.OnCameraResumed += CameraResumedHandler;
                 if (GetImageStreamCapabilities())
                 {
                     Debug.Log("Camera device received stream caps");
@@ -238,6 +255,22 @@ namespace MagicLeap.Examples
             }
 
             RefreshUI();
+        }
+
+        private void CameraResumedHandler()
+        {
+            foreach (var button in cameraCaptureButtons)
+            {
+                button.interactable = true;
+            }
+        }
+
+        private void CameraPausedHandler()
+        {
+            foreach (var button in cameraCaptureButtons)
+            {
+                button.interactable = false;
+            }
         }
 
         /// <summary>
@@ -257,6 +290,9 @@ namespace MagicLeap.Examples
 
             captureCamera.OnRawVideoFrameAvailable -= OnCaptureRawVideoFrameAvailable;
             captureCamera.OnRawImageAvailable -= OnCaptureRawImageComplete;
+
+            captureCamera.OnCameraPaused -= CameraPausedHandler;
+            captureCamera.OnCameraResumed -= CameraResumedHandler;
 
             // media player not supported in Magic Leap App Simulator
 #if !UNITY_EDITOR
@@ -489,7 +525,8 @@ namespace MagicLeap.Examples
             captureConfig.CaptureFrameRate = FrameRate;
             captureConfig.StreamConfigs = new MLCamera.CaptureStreamConfig[1];
             captureConfig.StreamConfigs[0] = MLCamera.CaptureStreamConfig.Create(GetStreamCapability(), OutputFormat);
-            captureConfig.StreamConfigs[0].Surface = cameraRecorder.MediaRecorder.InputSurface;
+            //MediaRecorder can be null when used through Appsim, so adding a nullcheck
+            captureConfig.StreamConfigs[0].Surface = cameraRecorder.MediaRecorder?.InputSurface;
 
             MLResult result = captureCamera.PrepareCapture(captureConfig, out MLCamera.Metadata _);
 
@@ -701,13 +738,24 @@ namespace MagicLeap.Examples
         /// </summary>
         private void UpdateStatusText()
         {
-            statusText.text = $"<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {ControllerStatus.Text}\n";
-            statusText.text += $"\nCamera Available: {cameraDeviceAvailable}";
-            statusText.text += $"\nCamera Connected: {IsCameraConnected}";
+            status.Clear();
+            status.AppendLine($"<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {ControllerStatus.Text}");
+         
+            if (captureCamera is { IsPaused: true })
+            {
+                status.AppendLine($"Waiting for camera to resume");
+            }
+            else
+            {
+                status.AppendLine($"Camera Available: {cameraDeviceAvailable}");
+                status.AppendLine($"\nCamera Connected: {IsCameraConnected}");
+            }
             if (!isCapturingVideo && !isCapturingPreview && !string.IsNullOrEmpty(recordedFilePath))
             {
-                statusText.text += $"\nRecorded video file path:\n {recordedFilePath}";
+                status.AppendLine( $"Recorded video file path:\n {recordedFilePath}");
             }
+
+            statusText.text = status.ToString();
         }
 
         /// <summary>
@@ -718,11 +766,11 @@ namespace MagicLeap.Examples
             contentCanvasGroup.interactable = !isCapturingVideo && !isCapturingPreview;
 
             connectionFlagDropdown.interactable = !IsCameraConnected && !isCapturingVideo && !isCapturingPreview;
-            recordToggle.gameObject.SetActive(IsCameraConnected && (CaptureType == MLCamera.CaptureType.Video || OutputFormat == MLCamera.OutputFormat.JPEG));
+            recordToggle.gameObject.SetActive(IsCameraConnected && (CaptureType == MLCamera.CaptureType.Video || OutputFormat == MLCamera.OutputFormat.JPEG) && !Application.isEditor);
             captureButton.gameObject.SetActive(IsCameraConnected);
             connectButton.gameObject.SetActive(!IsCameraConnected);
             disconnectButton.gameObject.SetActive(IsCameraConnected);
-
+            
             SetupCapture();
             RefreshStreamCapabilitiesUI();
             SetupCaptureFormat();

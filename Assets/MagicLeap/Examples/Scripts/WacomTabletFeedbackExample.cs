@@ -209,19 +209,17 @@ namespace MagicLeap.Examples
             if (PenConnected)
             {
                 statusText.text +=
-                    $"<b><color=#B7B7B8>Pen</color></b>\n\tLocation:\t\t({Position.x}, {Position.y})\n" +
-                    $"\tDelta:\t\t\t\t\t({Delta.x}, {Delta.y})\n" +
-                    $"\tPressure:\t\t{Pressure}\n" +
-                    $"\tTilt:\t\t\t\t\t({PenTilt.x}, {PenTilt.y})\n" +
-                    $"\tTwist:\t\t\t\t\t({PenTwist}\n" +
-                    $"\tTouching:\t\t{Pressing}\n" +
-                    $"\tTool Type:\t{(Eraser ? "Eraser" : "Tip")}\n " +
-                    $"\tTouch Ring: {Radius}\n" +
-                    $"\n<b><color=#B7B7B8>Events</color></b>\n" +
-                    $"\tFirstBarrel Button pressed:\t\t\t {(FirstBarrel ? "Yes" : "No")}" +
-                    $"\tSecondBarrel Button pressed:\t\t\t {(SecondBarrel ? "Yes" : "No")}" +
-                    $"\tThirdBarrel Button pressed:\t\t\t {(ThirdBarrel ? "Yes" : "No")}" +
-                    $"\tForthBarrel Button pressed:\t\t\t {(ForthBarrel ? "Yes" : "No")}";
+                    $"Location:\n({Position.x}, {Position.y})\n" +
+                    $"Delta:\n({Delta.x}, {Delta.y})\n" +
+                    $"Pressure:\n{Pressure}\n" +
+                    $"Tilt:\n({PenTilt.x}, {PenTilt.y})\n" +
+                    $"Touching:\t\t{Pressing}\n" +
+                    $"Tool Type:\t\t{(Eraser ? "Eraser" : "Tip")}\n " +
+                    $"\n<b><color=#B7B7B8>Button Press Events</color></b>\n" +
+                    $"\tPen Button 1:\t\t {(FirstBarrel ? "Yes" : "No")}\n" +
+                    $"\tPen Button 2:\t\t {(SecondBarrel ? "Yes" : "No")}\n" +
+                    $"\tPen Button 3:\t\t {(ThirdBarrel ? "Yes" : "No")}\n" +
+                    $"\tPen Button 4:\t\t {(ForthBarrel ? "Yes" : "No")}";
             }
         }
 

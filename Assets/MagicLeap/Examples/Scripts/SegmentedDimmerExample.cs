@@ -136,9 +136,10 @@ namespace MagicLeap.Examples
                 }
             }
         }
-
+        
         public bool DimmerModeEnabled()
         {
+#if !UNITY_EDITOR
             // Get context
             using (var actClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
             {
@@ -150,6 +151,8 @@ namespace MagicLeap.Examples
                 Debug.Log("Dimmer Mode is set to : " + dimmerMode);
                 return dimmerMode > 0;
             }
+#endif
+            return true;
         }
 
         public void OnSegmentedDimmerSettingsPopupOpen()

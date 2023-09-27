@@ -840,6 +840,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9144045080598716609, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9144045080755800258, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -860,27 +865,43 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9144045080803666704, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144045080803666704, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144045080803666704, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144045080803666704, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144045080803666704, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144045080803666704, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<color=#B7B7B8><b>Hometap</b></color>
+      value: '<color=#B7B7B8><b>Controller Menu Button</b></color>
 
-        Toggle the tablet following
-        head pose.
-
-
-
-        <color=#B7B7B8><b>Tablet Touch Ring</b></color>
-
-        Rotate
-        through a list of 16 pre-defined colors.
-
-
-
-        <color=#B7B7B8><b>Tablet
-        Touch Ring - Button</b></color>
-
-        Clear the canvas.
+        Toggle
+        the tablet following head pose.
 
 
 
@@ -894,10 +915,13 @@ PrefabInstance:
         <color=#B7B7B8><b>Erasing</b></color>
 
         -
-        Default Pen:  Use the opposite end of the pen while drawing to erase content.
+        Button 1: Clear
+
+
+        <color=#B7B7B8><b>Change Color</b></color>
 
         -
-        Both Pens:    Hold the [Back] button on the pen while drawing to erase content.
+        Button 2: Change color, will cycle through the rainbow.
 
 '
       objectReference: {fileID: 0}
@@ -955,13 +979,14 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: "The example demonstrates  how to visualize information from the Wacom
-        Intuos tablet using the MLInput Tablet API.\r\n\r\nOnce connected, the tablet
-        will display which buttons are being pressed and the pen will respond by
-        indicating position and pressure on the tablet. \r\n\r\nAs you begin to draw
-        the line thickness will change based on applied pressure and the color will
-        reflect the selection from the color wheel.\r\n\r\nWith the tablet turned
-        on, hold the center ring button until a blue light flashes on the right,
-        to the right of the Wacom logo.\r\n\r\n<i>Visible in Settings/Connectivity/Bluetooth.</i>\r\n\r\n<color=#B7B7B8><b>Permissions
+        Intuos tablet on the ML2 Device. Currently there is limited support for Wacom
+        Tablet.\n\nTo connect, with the tablet turned on, hold the center ring button
+        until a blue light flashes on the right, to the right of the Wacom logo.\r\n\nGo
+        To <i>Settings/Connectivity/Bluetooth.</i>\r and select the Blurtooth device
+        to connect.\n\r\nOnce connected, the pen will respond by indicating position
+        and pressure on the tablet. \rDifferent pens will have different button behavior.\n\r\nAs
+        you begin to draw the line thickness will change based on applied pressure
+        and the color will reflect the selected color.\n\r\n<color=#B7B7B8><b>Permissions
         required by this example</b></color>\r\n- ControllerPose"
       objectReference: {fileID: 0}
     - target: {fileID: 9144045081096290919, guid: 6906f74934047d24e9a47bbdd1afb57a,
@@ -1022,6 +1047,21 @@ PrefabInstance:
     - target: {fileID: 9144045081354614237, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144045081524275821, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144045081524275821, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9144045081617561596, guid: 6906f74934047d24e9a47bbdd1afb57a,
+        type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

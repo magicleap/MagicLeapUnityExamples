@@ -16,7 +16,7 @@ namespace MagicLeap.Examples
         private void OnMediaPlayerStopped()
         {
             //Prepare player to reduce buffer delay
-            mediaPlayerBehavior.MediaPlayer.PreparePlayer();
+            mediaPlayerBehavior.MediaPlayer.PreparePlayerAsync();
         }
     }
 }

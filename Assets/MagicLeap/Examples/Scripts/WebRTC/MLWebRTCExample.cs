@@ -10,12 +10,12 @@
 
 namespace MagicLeap.Examples
 {
+    using MagicLeap.Core;
+    using SimpleJson;
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using MagicLeap.Core;
-    using SimpleJson;
     using UnityEngine;
     using UnityEngine.Networking;
     using UnityEngine.SceneManagement;
@@ -938,16 +938,21 @@ namespace MagicLeap.Examples
         private void OnApplicationPause(bool pause)
         {
             if(!pause)
+                StartCoroutine(Reconnect());
+        }
+
+        private IEnumerator Reconnect() 
+        {
+            //We wait a second just in case the peer disconnected and we need 
+            //acknowledge that.
+            yield return new WaitForSeconds(1);
+            if(shouldBeConnected) 
             {
-                if (shouldBeConnected)
-                {
-                    var result = connection.IsConnected(out bool isConnected);
-                    if (result.IsOk && !isConnected)
-                    {
-                        Connect(PlayerPrefs.GetString(PlayerPrefs_ServerAddress_Key));
-                    }
-                }
+                var result = connection.IsConnected(out bool isConnected);
+                if (result.IsOk && !isConnected)
+                    Connect(PlayerPrefs.GetString(PlayerPrefs_ServerAddress_Key));
             }
+
         }
 
         private void OnApplicationQuit()

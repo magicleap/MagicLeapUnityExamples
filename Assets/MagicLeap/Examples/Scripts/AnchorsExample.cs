@@ -21,6 +21,14 @@ namespace MagicLeap.Examples
 
         void Start()
         {
+#if UNITY_EDITOR
+            Debug.LogError("Spatial Anchors is not supported on Application Simulator; please see the Application Simulator documentation for more info.");
+            this.enabled = false;
+            AnchorVisualizer vis = FindObjectOfType<AnchorVisualizer>();
+            if (vis)
+                vis.enabled = false;
+            return;
+#endif
             magicLeapInputs = new MagicLeapInputs();
             magicLeapInputs.Enable();
             controllerActions = new MagicLeapInputs.ControllerActions(magicLeapInputs);
@@ -32,6 +40,7 @@ namespace MagicLeap.Examples
 
         private void Update()
         {
+            
             if (localizationInfoUpdateTimer.LimitPassed)
             {
                 localizationInfoUpdateTimer.Reset();
@@ -47,11 +56,14 @@ namespace MagicLeap.Examples
             }
 
         }
+
+#if !UNITY_EDITOR
         private void OnDestroy()
         {
             controllerActions.Bumper.performed -= HandleOnBumper;
             controllerActions.Trigger.performed -= HandleOnTrigger;
         }
+#endif
 
         private void HandleOnBumper(InputAction.CallbackContext obj)
         {

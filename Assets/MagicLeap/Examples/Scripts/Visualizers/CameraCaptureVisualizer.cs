@@ -9,6 +9,7 @@
 // %BANNER_END%
 
 using System;
+using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.XR.MagicLeap;
@@ -48,6 +49,8 @@ namespace MagicLeap.Examples
         private static readonly string[] samplerNamesYUV = new string[] { "_MainTex", "_UTex", "_VTex" };
 
         private float currentAspectRatio;
+
+        private bool alreadyCapturedDataThisFrame;
 
         /// <summary>
         /// Check for all required variables to be initialized.
@@ -152,6 +155,9 @@ namespace MagicLeap.Examples
         /// <param name="frameMetadata">Unused.</param>
         public void OnCaptureDataReceived(MLCamera.ResultExtras extras, MLCamera.CameraOutput frameData)
         {
+            if (alreadyCapturedDataThisFrame)
+                return;
+
             if (frameData.Format == MLCamera.OutputFormat.JPEG)
             {
                 UpdateJPGTexture(frameData.Planes[0], _screenRendererJPEG);
@@ -166,9 +172,15 @@ namespace MagicLeap.Examples
             }
             else if (frameData.Format == MLCamera.OutputFormat.RGBA_8888)
             {
-                MLCamera.FlipFrameVertically(ref frameData);
                 UpdateRGBTexture(ref rawVideoTexturesRGBA, frameData.Planes[0], _screenRendererRGB);
+
+                // Flip texture vertically since the image data is reversed
+                _screenRendererRGB.material.mainTextureScale = new Vector2(1.0f, -1.0f);
             }
+
+            StartCoroutine(ResetCapturedDataFlagAtEndOfFrame());
+
+            alreadyCapturedDataThisFrame = true;
         }
 
         private void UpdateJPGTexture(MLCamera.PlaneInfo imagePlane, Renderer renderer)
@@ -299,6 +311,13 @@ namespace MagicLeap.Examples
             var localScale = renderer.transform.localScale;
             localScale = new Vector3(currentAspectRatio * localScale.y, localScale.y, 1);
             renderer.transform.localScale = localScale;
+        }
+
+        private IEnumerator ResetCapturedDataFlagAtEndOfFrame()
+        {
+            yield return new WaitForEndOfFrame();
+
+            alreadyCapturedDataThisFrame = false;
         }
     }
 }

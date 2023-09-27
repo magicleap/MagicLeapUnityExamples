@@ -51,6 +51,8 @@ namespace MagicLeap.Examples
 
         private readonly MLPermissions.Callbacks permissionCallbacks = new MLPermissions.Callbacks();
 
+        private StringBuilder statusText = new();
+
         /// <summary>
         /// Using Awake so that Permissions is set before PermissionRequester Start.
         /// </summary>
@@ -109,29 +111,29 @@ namespace MagicLeap.Examples
             UpdateStatusText();
         }
 
-        private void OnApplicationPause(bool pause)
-        {
-            if (pause)
-            {
-                StopVideoCapture();
-            }
-        }
-
         /// <summary>
         /// Updates examples status text.
         /// </summary>
         private void UpdateStatusText()
         {
-            _statusText.text = string.Format("<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {0}\n", ControllerStatus.Text);
-            _statusText.text += $"\nCamera Available: {cameraDeviceAvailable}";
+            statusText.Clear();
+            statusText.AppendLine($"<color=#B7B7B8><b>Controller Data</b></color>\nStatus: {ControllerStatus.Text}");
+            statusText.AppendLine($"\nCamera Available: {cameraDeviceAvailable}");
             if (isCameraConnected)
             {
-                _statusText.text += $"\nStream width: {selectedCapability.Width} \nStream height{selectedCapability.Height}";
+                statusText.AppendLine($"\nStream width: {selectedCapability.Width} \nStream height{selectedCapability.Height}");
             }
             if (!string.IsNullOrEmpty(poseText))
             {
-                _statusText.text += "\n" + poseText;
+                statusText.AppendLine(poseText);
             }
+
+            if (colorCamera is {IsPaused: true})
+            {
+                statusText.AppendLine("Waiting for camera to resume");
+            }
+
+            _statusText.text = statusText.ToString();
         }
 
         /// <summary>
@@ -242,6 +244,7 @@ namespace MagicLeap.Examples
                 colorCamera = null;
             }
         }
+        
 
         /// <summary>
         /// Handles the event for button down.
@@ -250,6 +253,11 @@ namespace MagicLeap.Examples
         /// <param name="button">The button that is being pressed.</param>
         private void OnButtonDown(InputAction.CallbackContext obj)
         {
+            if (colorCamera.IsPaused)
+            {
+                return;
+            }
+            
             if (!isCapturing)
             {
                 StartVideoCapture();
