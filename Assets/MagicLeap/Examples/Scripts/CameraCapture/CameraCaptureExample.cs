@@ -8,6 +8,9 @@
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
+// Disabling MLMedia deprecated warning for the internal project
+#pragma warning disable 618
+
 using System;
 using System.Collections;
 using System.Collections.Generic;

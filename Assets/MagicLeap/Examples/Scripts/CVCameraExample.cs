@@ -52,7 +52,8 @@ namespace MagicLeap.Examples
         private readonly MLPermissions.Callbacks permissionCallbacks = new MLPermissions.Callbacks();
 
         private StringBuilder statusText = new();
-
+        private Coroutine enableCameraCoroutine;
+        
         /// <summary>
         /// Using Awake so that Permissions is set before PermissionRequester Start.
         /// </summary>
@@ -75,6 +76,8 @@ namespace MagicLeap.Examples
             mlInputs = new MagicLeapInputs();
             mlInputs.Enable();
             controllerActions = new MagicLeapInputs.ControllerActions(mlInputs);
+            
+            controllerActions.Bumper.performed += OnButtonDown;
 
             isCapturing = false;
 
@@ -93,14 +96,13 @@ namespace MagicLeap.Examples
             permissionCallbacks.OnPermissionGranted -= OnPermissionGranted;
             permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
             permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
-
-            controllerActions.Bumper.performed -= OnButtonDown;
-            mlInputs.Dispose();
-
             if (colorCamera != null && isCameraConnected)
             {
                 DisableMLCamera();
             }
+            controllerActions.Bumper.performed -= OnButtonDown;
+            mlInputs.Dispose();
+
         }
 
         /// <summary>
@@ -123,6 +125,10 @@ namespace MagicLeap.Examples
             {
                 statusText.AppendLine($"\nStream width: {selectedCapability.Width} \nStream height{selectedCapability.Height}");
             }
+            else
+            {
+                statusText.AppendLine("Camera Disconnected");
+            }
             if (!string.IsNullOrEmpty(poseText))
             {
                 statusText.AppendLine(poseText);
@@ -134,6 +140,25 @@ namespace MagicLeap.Examples
             }
 
             _statusText.text = statusText.ToString();
+        }
+
+        private void CheckAndStopPreviousCoroutine()
+        {
+            if (enableCameraCoroutine == null) return;
+            StopCoroutine(enableCameraCoroutine);
+            enableCameraCoroutine = null;
+        }
+        
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            if (pauseStatus)
+            {
+                colorCamera.OnRawVideoFrameAvailable -= OnCaptureRawVideoFrameAvailable;
+            }
+            else
+            {
+                colorCamera.OnRawVideoFrameAvailable += OnCaptureRawVideoFrameAvailable;
+            }
         }
 
         /// <summary>
@@ -173,7 +198,7 @@ namespace MagicLeap.Examples
                 colorCamera.CaptureVideoStop();
                 cameraCaptureVisualizer.HideRenderer();
             }
-
+            
             isCapturing = false;
         }
 
@@ -226,7 +251,6 @@ namespace MagicLeap.Examples
 
                 Debug.Log("Camera device received stream caps");
                 colorCamera.OnRawVideoFrameAvailable += OnCaptureRawVideoFrameAvailable;
-                controllerActions.Bumper.performed += OnButtonDown;
             }
         }
 
@@ -253,7 +277,7 @@ namespace MagicLeap.Examples
         /// <param name="button">The button that is being pressed.</param>
         private void OnButtonDown(InputAction.CallbackContext obj)
         {
-            if (colorCamera.IsPaused)
+            if (colorCamera is { IsPaused: true } || !isCameraConnected)
             {
                 return;
             }
@@ -274,6 +298,10 @@ namespace MagicLeap.Examples
         /// <param name="imageData">The raw data of the image.</param>
         private void OnCaptureRawVideoFrameAvailable(MLCamera.CameraOutput capturedFrame, MLCamera.ResultExtras resultExtras, MLCamera.Metadata metadataHandle)
         {
+            if (colorCamera is { IsPaused: true })
+            {
+                return;
+            }
             cameraCaptureVisualizer.OnCaptureDataReceived(resultExtras, capturedFrame);
 
             if (MLCVCamera.GetFramePose(resultExtras.VCamTimestamp, out Matrix4x4 cameraTransform).IsOk)
@@ -293,7 +321,7 @@ namespace MagicLeap.Examples
 
         private void OnPermissionGranted(string permission)
         {
-            StartCoroutine(EnableMLCamera());
+            enableCameraCoroutine = StartCoroutine(EnableMLCamera());
         }
     }
 }

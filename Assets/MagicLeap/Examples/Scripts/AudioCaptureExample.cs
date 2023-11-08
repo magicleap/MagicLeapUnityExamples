@@ -69,7 +69,7 @@ namespace MagicLeap.Examples
         
         private bool hasPermission;
 
-        private MLAudioInput.MicCaptureType micCaptureType = MLAudioInput.MicCaptureType.VoiceCapture;
+        private MLAudioInput.MicCaptureType micCaptureType = MLAudioInput.MicCaptureType.VoiceComm;
         private MLAudioInput.BufferClip mlAudioBufferClip;
         private MLAudioInput.StreamingClip mlAudioStreamingClip;
 
@@ -204,33 +204,22 @@ namespace MagicLeap.Examples
             }
 
             playbackAudioSource.Stop();
-            switch (captureMode)
+            if (captureMode != CaptureMode.Realtime)
             {
-                case CaptureMode.Realtime:
-                    if (mlAudioStreamingClip == null)
-                    {
-                        mlAudioStreamingClip = new MLAudioInput.StreamingClip(micCaptureType, 3, MLAudioInput.GetSampleRate(micCaptureType));
-                        playbackAudioSource.pitch = 1;
-                    }
-
-                    playbackAudioSource.clip = mlAudioStreamingClip.UnityAudioClip;
-                    playbackAudioSource.loop = true;
-                    playbackAudioSource.Play();
-                    break;
-                case CaptureMode.Interactive:
-                    CreateInteractiveAudioBuffer();
-                    playbackAudioSource.pitch = 1;
-                    playbackAudioSource.clip = null;
-                    playbackAudioSource.loop = false;
-                    break;
+                return;
             }
-        }
+            
+            if (mlAudioStreamingClip == null)
+            {
+                mlAudioStreamingClip = new MLAudioInput.StreamingClip(micCaptureType, 3, MLAudioInput.GetSampleRate(micCaptureType));
+                playbackAudioSource.pitch = 1;
+            }
 
-        private void CreateInteractiveAudioBuffer()
-        {
-            mlAudioBufferClip = new MLAudioInput.BufferClip(micCaptureType, AudioClipLengthSeconds, MLAudioInput.GetSampleRate(micCaptureType));
+            playbackAudioSource.clip = mlAudioStreamingClip.UnityAudioClip;
+            playbackAudioSource.loop = true;
+            playbackAudioSource.Play();
         }
-
+        
         private void VisualizeRecording()
         {
             rmsVisualizerMaterial.color = isCapturingInteractiveAudio ? Color.green : Color.white;
@@ -257,9 +246,10 @@ namespace MagicLeap.Examples
         private void StopCapture()
         {
             isCapturingInteractiveAudio = false;
+            currentRecordedAudioLength = 0;
 
             mlAudioStreamingClip?.ClearBuffer();
-
+            
             mlAudioBufferClip?.Dispose();
             mlAudioBufferClip = null;
             
@@ -295,10 +285,7 @@ namespace MagicLeap.Examples
         {
             playbackAudioSource.Stop();
             isCapturingInteractiveAudio = true;
-            if (mlAudioBufferClip == null)
-            {
-                CreateInteractiveAudioBuffer();
-            }
+            mlAudioBufferClip = new MLAudioInput.BufferClip(micCaptureType, AudioClipLengthSeconds, MLAudioInput.GetSampleRate(micCaptureType));
         }
 
         private void StopInteractiveCapture()

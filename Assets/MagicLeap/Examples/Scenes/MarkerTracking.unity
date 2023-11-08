@@ -312,12 +312,12 @@ PrefabInstance:
     - target: {fileID: 1359980009267695964, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1359980009267695964, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5355557165450182212, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
@@ -567,10 +567,10 @@ PrefabInstance:
     - target: {fileID: 9144045080803666705, guid: 6906f74934047d24e9a47bbdd1afb57a,
         type: 3}
       propertyPath: m_Text
-      value: '<color=#B7B7B8><b>Trigger</b></color>
+      value: '<color=#B7B7B8><b>Bumper</b></color>
 
-        If tracking was not
-        set to enabled in the inspector settings, holding the trigger will toggle
+        If Always On was not
+        set to enabled in the inspector settings, holding the bumper will toggle
         the tracker to be enabled.'
       objectReference: {fileID: 0}
     - target: {fileID: 9144045080852108117, guid: 6906f74934047d24e9a47bbdd1afb57a,
@@ -2722,12 +2722,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 907428589}
   m_CullTransparentMesh: 0
---- !u!1 &920891312 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5589497132891496769, guid: fe799b2d0a84dfe43b001b56276fd2fb,
-    type: 3}
-  m_PrefabInstance: {fileID: 957753390}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &957632325
 GameObject:
   m_ObjectHideFlags: 0
@@ -3785,16 +3779,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c42b3ea8c3b2f41add049147d57601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AlwaysOn: 0
   statusText: {fileID: 80860511}
   markerVisualPrefab: {fileID: 1901461232108414532, guid: f442d62da6611e44cb6847b0cfe52aa1,
     type: 3}
-  markersRoot: {fileID: 920891312}
   removeMarkersUsingTimeStamps: 0
   markerTrackerTimeout: 0.5
   MarkerTypes: -1
   ArucoDicitonary: 0
   ArucoMarkerSize: 0.1
-  ArucoTrackingCamera: 1
   QRCodeSize: 0.1
   TrackerProfile: 0
   EnableMarkerScanning: 1

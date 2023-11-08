@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace UnityEngine.XR.MagicLeap
 {
+    //Disabling WebRTC deprecated warning for the examples project
+    #pragma warning disable 618
     public class DefinedAudioSourceExample : MLWebRTC.AppDefinedAudioSource
     {
         public DefinedAudioSourceExample(string trackId)

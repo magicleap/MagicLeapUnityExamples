@@ -8,6 +8,9 @@
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
+// Disabling MLMedia deprecated warning for the internal project
+#pragma warning disable 618
+
 using System;
 using MagicLeap.Core;
 using UnityEngine;
@@ -47,6 +50,11 @@ namespace MagicLeap.Examples
         /// </summary>
         void Start()
         {
+            // This particular feature is not supported in AppSim. This sample uses the ml_media_player which is not implemented in AppSim. 
+#if UNITY_EDITOR
+            return;
+#endif
+            
             MLResult result = MLPermissions.RequestPermission(UnityEngine.Android.Permission.ExternalStorageRead, permissionCallbacks);
         }
 

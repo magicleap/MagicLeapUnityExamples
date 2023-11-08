@@ -21,7 +21,9 @@ namespace MagicLeap.Examples
     using UnityEngine.SceneManagement;
     using UnityEngine.UI;
     using UnityEngine.XR.MagicLeap;
-
+    
+    //Disabling WebRTC deprecated warning for the examples project
+    #pragma warning disable 618
     public class MLWebRTCExample : MonoBehaviour
     {
         private static readonly string PlayerPrefs_ServerAddress_Key = "MLWebRTC_Example_Server";

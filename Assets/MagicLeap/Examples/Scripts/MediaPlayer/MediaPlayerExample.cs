@@ -1,3 +1,6 @@
+// Disabling MLMedia deprecated warning for the internal project
+#pragma warning disable 618
+
 using MagicLeap.Core;
 using UnityEngine;
 

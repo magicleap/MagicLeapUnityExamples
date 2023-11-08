@@ -23,6 +23,11 @@ namespace MagicLeap.Examples
 {
     public class MarkerTrackingExample : MonoBehaviour
     {
+        [Tooltip("If <c> true </c>, Marker Scanner will begin scanning on start and not require controller input.")]
+        public bool AlwaysOn = false;
+
+        private bool wasAlwaysOn = false;
+
         [SerializeField, Tooltip("The status text for the UI.")]
         private Text statusText = null;
 
@@ -57,12 +62,6 @@ namespace MagicLeap.Examples
         public float ArucoMarkerSize = 0.1f;
 
         /// <summary>
-        ///     Camera to use when tracking aruco markers.
-        /// </summary>
-        [HideInInspector]
-        public int ArucoTrackingCamera = 0;
-
-        /// <summary>
         ///     The physical size of the QR code that shall be tracked (in meters). The physical size is
         ///     important to know, because once a QR code is detected we can only determine its
         ///     3D position when we know its correct size. The size of the QR code is given in
@@ -83,9 +82,8 @@ namespace MagicLeap.Examples
         public Profile TrackerProfile = Profile.Default;
 
         /// <summary>
-        ///     If <c> true </c>, Marker Scanner will detect markers and track QR codes.
-        ///     Marker Scanner should be disabled when app is paused and enabled when app
-        ///     resumes. When enabled, Marker Scanner will gain access to the camera and start
+        ///     Obsolete: If <c> true </c>, Marker Scanner will detect markers and track QR codes.
+        ///     When enabled, Marker Scanner will gain access to the camera and start
         ///     scanning markers. When disabled Marker Scanner will release the camera and
         ///     stop scanning markers. Internal state of the scanner will be maintained.
         /// </summary>
@@ -142,6 +140,11 @@ namespace MagicLeap.Examples
         private MagicLeapInputs mlInputs;
         private MagicLeapInputs.ControllerActions controllerActions;
 
+        void Awake()
+        {
+            wasAlwaysOn = AlwaysOn;
+        }
+
         void Start()
         {
             mlInputs = new MagicLeapInputs();
@@ -154,9 +157,9 @@ namespace MagicLeap.Examples
         private void Update()
         {
             // If scanning is enabled from start don't clear flag by input.
-            if (!EnableMarkerScanning)
+            if (!AlwaysOn)
             {
-                if (controllerActions.Trigger.ReadValue<float>() > .1f)
+                if (controllerActions.Bumper.IsPressed())
                     _ = MLMarkerTracker.StartScanningAsync();
                 else
                     _ = MLMarkerTracker.StopScanningAsync();
@@ -168,16 +171,28 @@ namespace MagicLeap.Examples
 
         private void OnEnable()
         {
+            AlwaysOn = wasAlwaysOn;
             MLMarkerTracker.OnMLMarkerTrackerResultsFoundArray += OnMLMarkerTrackerResultsFoundArray;
         }
 
         private void OnDisable()
         {
+            wasAlwaysOn = AlwaysOn;
+            AlwaysOn = false;
+            if (MLMarkerTracker.IsScanning)
+            {
+                _ = MLMarkerTracker.StopScanningAsync();
+            }
             MLMarkerTracker.OnMLMarkerTrackerResultsFoundArray -= OnMLMarkerTrackerResultsFoundArray;
         }
 
         private void OnDestroy()
         {
+            AlwaysOn = false;
+            if (MLMarkerTracker.IsScanning)
+            {
+                _ = MLMarkerTracker.StopScanningAsync();
+            }
             mlInputs.Dispose();
         }
 
@@ -241,20 +256,12 @@ namespace MagicLeap.Examples
             }
         }
 
-        private void EnableMarkerTrackerExample()
+        private async void EnableMarkerTrackerExample()
         {
-            try
-            {
-                // Unity has it's own value for Enum called Everything and sets it to -1
-                MarkerTypes = (int)MarkerTypes == -1 ? MarkerType.All : MarkerTypes;
-                var customProfile = TrackerProfile == Profile.Custom ? TrackerSettings.CustomProfile.Create(FPSHint, ResolutionHint, CameraHint, FullAnalysisIntervalHint, CornerRefineMethod, UseEdgeRefinement) : default;
-                markerSettings = TrackerSettings.Create(EnableMarkerScanning, MarkerTypes, QRCodeSize, ArucoDicitonary, ArucoMarkerSize, TrackerProfile, customProfile);
-                SetSettingsAsync(markerSettings).GetAwaiter().GetResult();
-            }
-            catch (Exception e)
-            {
-                Debug.Log($"CombinedTrackingExample.EnableMarkerTrackerExample() => error: {e.Message}");
-            }
+            MarkerTypes = (int)MarkerTypes == -1 ? MarkerType.All : MarkerTypes;
+            var customProfile = TrackerProfile == Profile.Custom ? TrackerSettings.CustomProfile.Create(FPSHint, ResolutionHint, CameraHint, FullAnalysisIntervalHint, CornerRefineMethod, UseEdgeRefinement) : default;
+            markerSettings = TrackerSettings.Create(AlwaysOn, MarkerTypes, QRCodeSize, ArucoDicitonary, ArucoMarkerSize, TrackerProfile, customProfile);
+            MLResult res = await SetSettingsAsync(markerSettings);
         }
 
         private void UpdateVisibleTrackers()
@@ -315,12 +322,12 @@ namespace MagicLeap.Examples
             StringBuilder builder = new StringBuilder();
 
             builder.Append($"<color=#B7B7B8><b>ControllerData</b></color>\nStatus: {ControllerStatus.Text}\n\n");
-            builder.Append($"<color=#B7B7B8><b>Controller Input</b></color>\nTrigger status: {controllerActions.Trigger.ReadValue<float>()}\n");
+            builder.Append($"<color=#B7B7B8><b>Controller Input</b></color>\nBumper status: {controllerActions.Bumper.IsPressed()}\n");
 
             builder.Append($"Marker Tracker running: {MLMarkerTracker.IsStarted} \n\n");
-            builder.Append($"Scanning status: {EnableMarkerScanning || controllerActions.Trigger.ReadValue<float>() > .1f} \n\n");
+            builder.Append($"Scanning status: {AlwaysOn || controllerActions.Bumper.IsPressed()} \n\n");
             builder.Append($"<color=#B7B7B8><b>Marker Settings</b></color>\nScan Types: {MarkerTypes}\n");
-            builder.Append($"Enable Marker Scanning: {EnableMarkerScanning}\n");
+            builder.Append($"Always Scanning: {AlwaysOn}\n");
             builder.Append($"QR Code Size: {QRCodeSize}\n\n");
             builder.Append($"Aruco Size: {ArucoMarkerSize}\n\n");
 

@@ -8,6 +8,9 @@
 // ---------------------------------------------------------------------
 // %BANNER_END%
 
+// Disabling MLMedia deprecated warning for the internal project
+#pragma warning disable 618
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -469,17 +472,15 @@ namespace MagicLeap.Examples
 
         private string GetTrackLanguage(MLMedia.Player.Track track)
         {
-            // TODO: Add support for more captions track languages
-            if (track.Language == "en")
-                return "English";
-            else if (track.Language == "es")
-                return "Español";
-            else if (track.Language == "fr")
-                return "Français";
-            else if (track.Language == "de")
-                return "Deutsch";
-            else
-                return track.Language.ToString();
+            return track.Language switch
+            {
+                // TODO: Add support for more captions track languages
+                "en" => "English",
+                "es" => "Español",
+                "fr" => "Français",
+                "de" => "Deutsch",
+                _ => track.Language.ToString()
+            };
         }
     }
 }
