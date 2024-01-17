@@ -1,0 +1,1246 @@
+{
+    "name": "MagicLeapInput",
+    "maps": [
+        {
+            "name": "HMD",
+            "id": "f06df3d1-7563-401e-a388-449fa45c5a00",
+            "actions": [
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "312f2bb0-41e6-46af-8878-b39a309cfdef",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "797be00a-c167-4802-b73c-29e1ba649aaf",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Status",
+                    "type": "Value",
+                    "id": "99f29b0f-2292-4973-aa34-8526884993ab",
+                    "expectedControlType": "Integer",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "611c6104-9555-4b98-bd0c-21345fd9e1ed",
+                    "path": "<OpenXRHmd>/devicePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b17993f6-42a5-4c0d-8008-c3e4c051a4fc",
+                    "path": "<OpenXRHmd>/deviceRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b142fd70-6768-4fa2-8175-03d8482a0a3c",
+                    "path": "<OpenXRHmd>/trackingState",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Status",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Controller",
+            "id": "b477cd7c-2f77-4ce2-950f-4649605e45ac",
+            "actions": [
+                {
+                    "name": "PointerPosition",
+                    "type": "PassThrough",
+                    "id": "57c374bf-a9c3-4c30-a9d2-12d4387b19a7",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PointerRotation",
+                    "type": "PassThrough",
+                    "id": "7289b128-4230-4cf1-bba4-743cc92f2ee3",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Velocity",
+                    "type": "PassThrough",
+                    "id": "e8501d82-59bf-489b-96e9-409ebba0c027",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "AngularVelocity",
+                    "type": "PassThrough",
+                    "id": "89324b00-75a2-4c92-91e8-3add774ac5b4",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MenuButton",
+                    "type": "Button",
+                    "id": "ef46d924-78ad-4e18-98f0-b1d05ad4649d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Bumper",
+                    "type": "Button",
+                    "id": "8a82fc41-c7bb-47e9-90cf-6b508eb9ec38",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Trigger",
+                    "type": "Button",
+                    "id": "1fa3608e-6202-4454-a93b-48c342dd01bb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TriggerValue",
+                    "type": "Value",
+                    "id": "a3d1103c-8976-4e71-a889-4110ba92cb35",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Trackpad",
+                    "type": "PassThrough",
+                    "id": "65af3c68-5988-45e8-b42d-d0bb1b7f7b4f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TrackpadClick",
+                    "type": "PassThrough",
+                    "id": "c786f758-f16b-4091-a9ee-b739f9a1c707",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TrackpadTouch",
+                    "type": "PassThrough",
+                    "id": "0a6ad199-7d10-45a3-87e9-06839edbf8e7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TrackpadForce",
+                    "type": "PassThrough",
+                    "id": "41d8fd8f-dca5-407a-abc8-8b945c8f7a3f",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Haptics",
+                    "type": "PassThrough",
+                    "id": "bab4b5f6-4398-4486-adf6-1523ae70dd66",
+                    "expectedControlType": "Haptic",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "a8c79e98-f254-4736-b548-d06b06ce8566",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "074466ed-6925-49cb-aa95-9b269b87567a",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "IsTracked",
+                    "type": "Value",
+                    "id": "b4aa4314-d7d0-4266-b667-25e31fd39dff",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Status",
+                    "type": "PassThrough",
+                    "id": "6d22750d-63bf-439a-a40c-7ebf72a6acd3",
+                    "expectedControlType": "Integer",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "c2b03674-dafa-444c-8620-3280c282adf9",
+                    "path": "<MagicLeapController>{RightHand}/pointerPosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "PointerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "807f91c0-0511-4b5a-8873-55fff6b2dd78",
+                    "path": "<MagicLeapController>{LeftHand}/pointerPosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "PointerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "123b83cc-1670-4b3c-8f11-e5b34719c3e9",
+                    "path": "<MagicLeapController>{RightHand}/pointerRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "PointerRotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5d664175-4eb6-4001-80ea-caabb83d96c1",
+                    "path": "<MagicLeapController>{LeftHand}/pointerRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "PointerRotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ed720ad1-1591-42c9-8fea-f67b6cbd71b4",
+                    "path": "<MagicLeapController>{RightHand}/devicePose/velocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Velocity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1899de22-a04e-4e70-9097-9a43f53a7c76",
+                    "path": "<MagicLeapController>{LeftHand}/devicePose/velocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Velocity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e4bd4782-41da-47ad-8af6-7488a2b1b65c",
+                    "path": "<MagicLeapController>{RightHand}/devicePose/angularVelocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "AngularVelocity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2503a0b3-63e5-436b-847f-2d7c5c754c90",
+                    "path": "<MagicLeapController>{LeftHand}/devicePose/angularVelocity",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "AngularVelocity",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bb2117c2-c605-4d16-a2b4-821ee5c48b64",
+                    "path": "<MagicLeapController>{RightHand}/menu",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "MenuButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2d31f5b0-6f06-4700-8d01-1a16b02dd70a",
+                    "path": "<MagicLeapController>{LeftHand}/menu",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "MenuButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f07aae71-8fda-4cd6-80ba-834356c0194b",
+                    "path": "<MagicLeapController>{RightHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Bumper",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9cb79fde-ac33-4ef1-846c-e7bf44ac1091",
+                    "path": "<MagicLeapController>{LeftHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Bumper",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "746677a3-c8ea-4d81-bbb3-1f2acbddc396",
+                    "path": "<MagicLeapController>{RightHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Trigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a465f9aa-6f2b-4305-93d7-e1c36952d511",
+                    "path": "<MagicLeapController>{LeftHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Trigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d99730b6-e38d-46da-a526-7501ab529be8",
+                    "path": "<MagicLeapController>{RightHand}/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "TriggerValue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f36a4761-b7a0-4eeb-84ac-cc7e22b30aaa",
+                    "path": "<MagicLeapController>{LeftHand}/trigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "TriggerValue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7cffb6d5-9a32-43bb-b0a0-342f33259b43",
+                    "path": "<MagicLeapController>{RightHand}/trackpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Trackpad",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cc9468c7-8e48-4157-a153-833863a23000",
+                    "path": "<MagicLeapController>{LeftHand}/trackpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Trackpad",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7c6eed82-abf6-49df-8fe0-0fa2bdf24f6f",
+                    "path": "<MagicLeapController>{RightHand}/trackpadClicked",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "TrackpadClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0e0a128a-6ee0-43cd-bb23-639cfd6833bf",
+                    "path": "<MagicLeapController>{LeftHand}/trackpadClicked",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "TrackpadClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6dd3ddf5-3520-41e1-9d77-c3ccfd93f61a",
+                    "path": "<MagicLeapController>{RightHand}/trackpadTouched",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "TrackpadTouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4f3af52d-7a6a-4821-9512-9ece9362448d",
+                    "path": "<MagicLeapController>{LeftHand}/trackpadTouched",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "TrackpadTouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fe55468c-a237-4002-89f1-3413e4d314ae",
+                    "path": "<MagicLeapController>{RightHand}/trackpadForce",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "TrackpadForce",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4b2bd206-1cca-4567-a54c-d2ea6988fbd5",
+                    "path": "<MagicLeapController>{LeftHand}/trackpadForce",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "TrackpadForce",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7aa68ee3-4038-4959-97fc-ed97ebd3fd46",
+                    "path": "<MagicLeapController>{RightHand}/haptic",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Haptics",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4c399e39-f2ab-4273-9b8e-c2897c239f39",
+                    "path": "<MagicLeapController>{LeftHand}/haptic",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Haptics",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cf127877-5ef7-484c-9b4c-a86fc1923873",
+                    "path": "<MagicLeapController>/isTracked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "IsTracked",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3708fef9-50be-430a-990e-bccd04ba249a",
+                    "path": "<MagicLeapController>/deviceRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "977183e8-1622-4bd1-afdb-aa6db23ab77e",
+                    "path": "<MagicLeapController>/devicePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e1648f80-d831-4a40-8de2-2c1839366c36",
+                    "path": "<MagicLeapController>/trackingState",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Status",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Eyes",
+            "id": "2e2163e2-56d9-44eb-bb53-4b535937481b",
+            "actions": [
+                {
+                    "name": "GazePosition",
+                    "type": "Value",
+                    "id": "687960d6-6d03-4dbd-a62b-29045de4f6cb",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "GazeRotation",
+                    "type": "Button",
+                    "id": "dcb2fa2b-c09d-4687-a543-4431a28faa23",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6390e165-496e-4f29-ac20-11b145574467",
+                    "path": "<EyeGaze>/pose/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "GazePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2284e93c-7b24-4832-9a43-10412ddcf76e",
+                    "path": "<EyeGaze>/pose/rotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "GazeRotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "LeftHand",
+            "id": "bcbc6924-fbf3-43bf-a104-ba61f6873c62",
+            "actions": [
+                {
+                    "name": "IsTracked",
+                    "type": "Button",
+                    "id": "d48df476-c910-46a9-bfa3-1bc4c43c2974",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TrackingState",
+                    "type": "Value",
+                    "id": "eec7468c-2ead-4e17-ab3d-01b99a7a9dab",
+                    "expectedControlType": "Integer",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "ce6ca085-76f8-4a64-95c4-ee128dd2e299",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "f8a8331b-630b-4262-ab58-f751a9aaf617",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Grip",
+                    "type": "Value",
+                    "id": "bb4bd861-be22-42cf-be26-5d897d0e3032",
+                    "expectedControlType": "Pose",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "GraspValue",
+                    "type": "Value",
+                    "id": "779a4681-1901-42b6-a50f-291e2bcf8f59",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "GraspReady",
+                    "type": "Button",
+                    "id": "7771c877-7d15-4148-884e-1b1130aa7549",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Aim",
+                    "type": "Value",
+                    "id": "79a455fa-8da0-4f96-9e90-913dcff1cfc0",
+                    "expectedControlType": "Pose",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "AimValue",
+                    "type": "Value",
+                    "id": "d30f4335-68a5-47bb-9653-99f2a18e9111",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "AimReady",
+                    "type": "Button",
+                    "id": "be171016-4c90-45fb-b0c7-0cb457c80f52",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pinch",
+                    "type": "Value",
+                    "id": "46edfea0-66d6-4ebf-b0fa-1b462dd96f49",
+                    "expectedControlType": "Pose",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "PinchValue",
+                    "type": "Value",
+                    "id": "5a74b193-161c-4fbb-b0af-5db830890c78",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "PinchReady",
+                    "type": "Button",
+                    "id": "42fa798f-ce55-453e-ba88-d66a0118d498",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Poke",
+                    "type": "Value",
+                    "id": "50d9c5e2-ff42-4a66-97f0-85339c16a06f",
+                    "expectedControlType": "Pose",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Palm",
+                    "type": "Value",
+                    "id": "b7a099c0-6433-4be8-8ecf-12d742b7c037",
+                    "expectedControlType": "Pose",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e59fa7b5-5900-456e-a9b5-ee729fdabeb9",
+                    "path": "<HandInteraction>{LeftHand}/isTracked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "IsTracked",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c0ced977-6bd4-40af-ba4d-e4616d346f23",
+                    "path": "<HandInteraction>{LeftHand}/isTracked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "TrackingState",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fcc0bb59-d9ec-4d5b-a2e5-0264f0dd3d4f",
+                    "path": "<HandInteraction>{LeftHand}/devicePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "58cd6caf-dac7-4ed2-8872-3a133917d36a",
+                    "path": "<HandInteraction>{LeftHand}/deviceRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "74f32727-4adc-448b-b6b4-0b3f7516d957",
+                    "path": "<HandInteraction>{LeftHand}/devicePose",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Grip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aafae2f9-b1f9-4db3-bcc3-062eba03769c",
+                    "path": "<HandInteraction>{LeftHand}/{GraspValue}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "GraspValue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "63951142-ae71-4c26-85c5-28444d5e7436",
+                    "path": "<HandInteraction>{LeftHand}/{GraspReady}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "GraspReady",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "049dce84-8569-412d-9d2f-3b906ebeab1a",
+                    "path": "<HandInteraction>{LeftHand}/pointer",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e7a3f590-1b14-47cd-8a70-50f78e3474b8",
+                    "path": "<HandInteraction>{LeftHand}/{PointerActivateValue}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "AimValue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "be90f058-beee-43fe-b998-87cf060e8920",
+                    "path": "<HandInteraction>{RightHand}/{PointerActivateReady}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "AimReady",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e56cc7c6-b723-4d6c-8b43-6bcc6cd6a9bf",
+                    "path": "<HandInteraction>{LeftHand}/pinchPose",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Pinch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "95204779-5ed0-409b-8755-41914fcba0aa",
+                    "path": "<HandInteraction>{LeftHand}/{PinchValue}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "PinchValue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ec04c63f-6372-42f7-a7e0-6408bf77f7ad",
+                    "path": "<HandInteraction>{LeftHand}/{PinchReady}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "PinchReady",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "50ee253a-3dfc-4f88-8cba-fc674f4d603e",
+                    "path": "<HandInteraction>{LeftHand}/pokePose",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Poke",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f12e713c-9a85-4d40-a9e8-ecd94e65057d",
+                    "path": "<PalmPose>{LeftHand}/palmPose",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Palm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "RightHand",
+            "id": "ca139212-1ffe-4abe-b28b-aa10e0be9608",
+            "actions": [
+                {
+                    "name": "IsTracked",
+                    "type": "Button",
+                    "id": "d52f7aad-a612-4136-a9fc-833aa36c726c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TrackingState",
+                    "type": "Value",
+                    "id": "66338c42-293a-4149-8823-56cdd8a33e34",
+                    "expectedControlType": "Integer",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "7a9b0f0f-fbb8-4c01-a271-6d09328b4fc4",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "a79e759a-2de8-4b45-ab03-8af26942e76d",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Grip",
+                    "type": "Value",
+                    "id": "8b4a27b9-af8b-41ad-baba-2b25d3f89139",
+                    "expectedControlType": "Pose",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "GraspValue",
+                    "type": "Value",
+                    "id": "61e9b30f-3206-4ba1-b95c-a561e1ef6bf9",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "GraspReady",
+                    "type": "Button",
+                    "id": "aaaa0013-0ad6-4ef9-8ee6-8918b6657637",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Aim",
+                    "type": "Value",
+                    "id": "ff68cd6c-5620-4ebc-8a57-c0ea9812eb6b",
+                    "expectedControlType": "Pose",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "AimValue",
+                    "type": "Value",
+                    "id": "c9e00f40-000d-44f6-8802-eed4a6b771cb",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "AimReady",
+                    "type": "Button",
+                    "id": "43ce69a3-c011-4394-a9e8-b8f7268cc28c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pinch",
+                    "type": "Value",
+                    "id": "22d2d247-cfee-4b61-a292-2c337d11b15a",
+                    "expectedControlType": "Pose",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "PinchValue",
+                    "type": "Value",
+                    "id": "a333ac52-e118-4d79-b9ea-9d570e73ff1d",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "PinchReady",
+                    "type": "Button",
+                    "id": "d9522aab-34a8-40fb-98e9-8b64d9410075",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Poke",
+                    "type": "Value",
+                    "id": "e0d99913-8d73-454e-ab3a-420805bad552",
+                    "expectedControlType": "Pose",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Palm",
+                    "type": "Value",
+                    "id": "ebf43886-e8f8-4c0c-994e-88789a5ae851",
+                    "expectedControlType": "Pose",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "895d8da8-c65f-445b-bc41-0025c093727c",
+                    "path": "<HandInteraction>{RightHand}/isTracked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "IsTracked",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a2d9086c-939c-442a-9610-9b78ddf79009",
+                    "path": "<HandInteraction>{RightHand}/isTracked",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "TrackingState",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f3a0d39-ca07-4f43-9f85-30a0f4e451c9",
+                    "path": "<HandInteraction>{RightHand}/devicePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a40552bf-0b81-4daf-a989-a675ed86a4ab",
+                    "path": "<HandInteraction>{RightHand}/deviceRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "59697a33-44a8-4062-9b5f-8d12084b5450",
+                    "path": "<HandInteraction>{RightHand}/devicePose",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Grip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "06fd1729-7226-4afc-a1af-87dd6ade8bf9",
+                    "path": "<HandInteraction>{RightHand}/{GraspValue}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "GraspValue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "074292bb-defb-43d3-98a8-aa8c08651e61",
+                    "path": "<HandInteraction>{RightHand}/{GraspReady}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "GraspReady",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dbe2f153-e83e-418e-8721-8cda924acf86",
+                    "path": "<HandInteraction>{RightHand}/pointer",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a76123b4-a8a4-4a4c-89d7-c829c9fb4553",
+                    "path": "<HandInteraction>{RightHand}/{PointerActivateValue}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "AimValue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ddf46582-bc8f-4e37-8fa5-8a7e4c49dacc",
+                    "path": "<HandInteraction>{RightHand}/{PointerActivateReady}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "AimReady",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a85611b4-4258-46e9-baa6-8b55c403cab5",
+                    "path": "<HandInteraction>{RightHand}/pinchPose",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Pinch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f4f9e855-7c4f-4ddd-8816-daae6e91bda9",
+                    "path": "<HandInteraction>{RightHand}/{PinchValue}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "PinchValue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8962fa11-f71b-4838-95cf-8474db448ba2",
+                    "path": "<HandInteraction>{RightHand}/{PinchReady}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "PinchReady",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "50d9bd6f-ebb1-463b-990c-c20167f5b595",
+                    "path": "<HandInteraction>{RightHand}/pokePose",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Poke",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9e98f6d9-c244-4df7-80ce-4f2df4fee8c4",
+                    "path": "<PalmPose>{RightHand}/palmPose",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Magic Leap 2",
+                    "action": "Palm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Magic Leap 2",
+            "bindingGroup": "Magic Leap 2",
+            "devices": [
+                {
+                    "devicePath": "<OpenXRHmd>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<MagicLeapController>",
+                    "isOptional": true,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

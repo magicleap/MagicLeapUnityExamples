@@ -17,14 +17,14 @@ MonoBehaviour:
     m_MinimumRescanTime: 0.15
     m_DeltaCameraDistanceToRescan: 0.025
     m_DeltaCameraAngleToRescan: 4
-    m_RaysPerCast: 256
+    m_RaysPerCast: 10
     m_MaximumHitDistance: 2
     m_MinimumHitDistance: 0.05
   m_TrackedImageDiscoveryParams:
     m_TrackingUpdateInterval: 0.1
   m_PlaneFindingParams:
     m_MinimumPlaneUpdateTime: 0.2
-    m_MinPointsPerSqMeter: 600
+    m_MinPointsPerSqMeter: 30
     m_MinSideLength: 0.15
     m_InLayerMergeDistance: 0.2
     m_CrossLayerMergeDistance: 0.05

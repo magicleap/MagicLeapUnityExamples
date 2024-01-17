@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: 1cda365f4c2b42e42a0faa140091b39e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _workspace: {instanceID: 0}
+  - _lockButton: {instanceID: 0}
+  - _sideMenu: {instanceID: 0}
+  - _title: {instanceID: 0}
+  - _overviewTab: {instanceID: 0}
+  - _statusTab: {instanceID: 0}
+  - _SceneTab: {instanceID: 0}
+  - _issuesTab: {instanceID: 0}
+  - _issuesContent: {instanceID: 0}
+  - _textEntryPrefab: {instanceID: 0}
+  - sceneSelectionButtonPrefab: {instanceID: 0}
+  - scenesListTransform: {instanceID: 0}
+  - openSceneButton: {instanceID: 0}
+  - listScrollRect: {instanceID: 0}
+  - exampleData: {fileID: 11400000, guid: 21ad0b59de5244e2bafe096991277b0f, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

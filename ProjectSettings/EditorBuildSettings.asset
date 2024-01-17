@@ -6,80 +6,32 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/HelloCube.unity
-    guid: bb62d4c1f57c2464c91843ac2fcd932f
+    path: Assets/Scenes/HelloCube.unity
+    guid: 632da66fa8e084e389d4b6c7d0d5adfb
   - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/AudioCapture.unity
-    guid: ff47925fa63e39e438c7db235b18fff9
+    path: Assets/Scenes/Control.unity
+    guid: 62f5da9d93d5d42789547f2c2367679b
   - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/Control.unity
-    guid: 62a07dca92e019646a2932bacb6d4387
+    path: Assets/Scenes/EyeGaze.unity
+    guid: be0730d8152f07243a6419a17374987b
   - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/HandTracking.unity
-    guid: c027f118f9ccd4979b8795eb3900db70
+    path: Assets/Scenes/Hands.unity
+    guid: 4bdebd4a6695037459f74c984b95648f
   - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/Meshing.unity
-    guid: 867506c3cbb29bc42a71d236fbd415c2
+    path: Assets/Scenes/Planes.unity
+    guid: da43ec37134c45348a4756e41a6c9efb
   - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/MarkerTracking.unity
-    guid: 9197470ccd4bc5c45bffdce5bf2393a3
+    path: Assets/Scenes/GlobalDimmer.unity
+    guid: 5e9efe3bff7dda0448c15712a1b7c942
   - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/Planes.unity
-    guid: 5fca2d94f0384ff42b981955c16012ef
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/CVCamera.unity
-    guid: 3b99d607be8b91a4a8f8a3be35b17ba2
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/CameraCapture.unity
-    guid: d0d2ac29dad0fd845aba141868f496b1
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/WebRTC.unity
-    guid: 045c1e8ebe1715949a4fa2b840283c7a
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/MediaPlayer.unity
-    guid: b08c428ac5e0b41158b0d405bc436f75
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/WebView.unity
-    guid: 134d209b9c8b9b64a8fdf406b676d9ea
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/EyeTracking.unity
-    guid: 8c42276b0dad50c4299bf5b3060f6a1f
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/Anchors.unity
-    guid: 32a2371653e072c4ab330c60c7b536f2
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/VoiceIntents.unity
-    guid: 9d2913c83afa9c44e9c6826cd0d0f6a0
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/GlobalDimmer.unity
-    guid: b9d3e3440ac9341498954b22dcd760da
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/SegmentedDimmer.unity
-    guid: 69ac0fa060cc14f46a289b6471ce2cb7
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/GestureClassification.unity
-    guid: 18ccf73e115339e458baab3fe378628f
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/CustomFit.unity
-    guid: 1194c80d5712ae34394e225f93332021
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/Haptics.unity
-    guid: cc5bc9245138756488e5a7a49ad43ac7
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/WorldCamera.unity
-    guid: d95f285ede08f2d4a9620b54707a2946
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/DepthCamera.unity
-    guid: 6cb7f27304ffa402b98fed685b981b47
-  - enabled: 1
-    path: Assets/MagicLeap/Examples/Scenes/WacomTablet.unity
-    guid: 858001671d830a34c8cb14f536bbdee1
+    path: Assets/Scenes/SegmentedDimmer.unity
+    guid: e1b7aaae0d2e64e49b97ff567513f019
   m_configObjects:
-    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: cde6fcd122059494d8356e13afe94bbf,
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: e3e2ec0a2d235bf4e88abaa1456abb78,
       type: 2}
-    com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: e74d74253eeaaee41a6792c8d86712a8,
+    com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: 6e20867dde86cc2438d1330d6afd1b3a,
       type: 2}
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 59ceb475d0dbca0478340e450c5339b6,
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 583a29f9e3f74304d869096f91238eb6,
       type: 2}
-    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: ddd03f61c06e74620ac31c3d47307a7c,
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: e4ae437abe86a174ea3ff1b10ccf223a,
       type: 2}
