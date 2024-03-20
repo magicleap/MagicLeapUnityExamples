@@ -26,6 +26,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SegmentedDimmer.unity
     guid: e1b7aaae0d2e64e49b97ff567513f019
+  - enabled: 1
+    path: Assets/Scenes/Meshing.unity
+    guid: 78b13fb8fbee78240b9a262605b27651
+  - enabled: 1
+    path: Assets/Scenes/SpatialAnchors.unity
+    guid: b2453f3e5761a1f46a6c258cdf805fb6
   m_configObjects:
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: e3e2ec0a2d235bf4e88abaa1456abb78,
       type: 2}

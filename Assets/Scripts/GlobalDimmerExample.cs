@@ -17,7 +17,7 @@ namespace MagicLeap.Examples
         private Text toggleText;
 
         [SerializeField]
-        private Text instructions;
+        private Text status;
 
         private MagicLeapRenderingExtensionsFeature renderFeature;
 
@@ -25,7 +25,7 @@ namespace MagicLeap.Examples
         {
             if (!OpenXRRuntime.IsExtensionEnabled("XR_ML_global_dimmer"))
             {
-                instructions.text = $"The OpenXR extension \"XR_ML_global_dimmer\" is not enabled so this example will not function!\n\n" +
+                status.text = $"The OpenXR extension \"XR_ML_global_dimmer\" is not enabled so this example will not function!\n\n" +
                     $"You must enable the OpenXR Feature \"Magic Leap 2 Rendering Extensions\" in Project Settings to use the Global Dimmer.";
                 gameObject.SetActive(false);
                 return;
@@ -34,6 +34,8 @@ namespace MagicLeap.Examples
             renderFeature = OpenXRSettings.Instance.GetFeature<MagicLeapRenderingExtensionsFeature>();
             slider.value = startingValue;
             renderFeature.GlobalDimmerEnabled = true;
+
+            status.text = $"Global Dimmer Value: {renderFeature.GlobalDimmerValue:P}\n\nGlobal Dimmer Enabled: {renderFeature.GlobalDimmerEnabled}";
         }
 
         private void OnDestroy()
@@ -46,13 +48,16 @@ namespace MagicLeap.Examples
         {
             if (renderFeature != null)
                 renderFeature.GlobalDimmerValue = value;
+
+            status.text = $"Global Dimmer Value: {renderFeature.GlobalDimmerValue:P}\n\nGlobal Dimmer Enabled: {renderFeature.GlobalDimmerEnabled}";
         }
 
         public void ToggleDimmer()
         {
             renderFeature.GlobalDimmerEnabled = !renderFeature.GlobalDimmerEnabled;
-            string status = renderFeature.GlobalDimmerEnabled ? "On" : "Off";
-            toggleText.text = $"Dimmer {status}";
+            string val = renderFeature.GlobalDimmerEnabled ? "On" : "Off";
+            toggleText.text = $"Dimmer {val}";
+            status.text = $"Global Dimmer Value: {renderFeature.GlobalDimmerValue:P}\n\nGlobal Dimmer Enabled: {renderFeature.GlobalDimmerEnabled}";
         }
     }
 }

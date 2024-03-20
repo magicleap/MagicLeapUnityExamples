@@ -1,3 +1,4 @@
+using MagicLeap.Android;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +7,7 @@ using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.MagicLeap;
 using UnityEngine.XR.Management;
 using UnityEngine.XR.OpenXR.Features.MagicLeapSupport;
+using Utils = MagicLeap.Examples.Utils;
 
 public class PlaneExample : MonoBehaviour
 {
@@ -20,28 +22,13 @@ public class PlaneExample : MonoBehaviour
     [SerializeField]
     private Text status;
 
-    private readonly MLPermissions.Callbacks permissionCallbacks = new MLPermissions.Callbacks();
     private Camera mainCamera;
     private bool permissionGranted = false;
-
-    private void Awake()
-    {
-        permissionCallbacks.OnPermissionGranted += OnPermissionGranted;
-        permissionCallbacks.OnPermissionDenied += OnPermissionDenied;
-        permissionCallbacks.OnPermissionDeniedAndDontAskAgain += OnPermissionDenied;
-    }
-
-    private void OnDestroy()
-    {
-        permissionCallbacks.OnPermissionGranted -= OnPermissionGranted;
-        permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
-        permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
-    }
 
     private IEnumerator Start()
     {
         mainCamera = Camera.main;
-        yield return new WaitUntil(AreSubsystemsLoaded);
+        yield return new WaitUntil(Utils.AreSubsystemsLoaded<XRPlaneSubsystem>);
         planeManager = FindObjectOfType<ARPlaneManager>();
         if (planeManager == null)
         {
@@ -55,18 +42,9 @@ public class PlaneExample : MonoBehaviour
         }
 
         permissionGranted = false;
-        MLPermissions.RequestPermission(MLPermission.SpatialMapping, permissionCallbacks);
+        Permissions.RequestPermission(MLPermission.SpatialMapping, OnPermissionGranted, OnPermissionDenied);
     }
     
-    private bool AreSubsystemsLoaded()
-    {
-        if (XRGeneralSettings.Instance == null) return false;
-        if (XRGeneralSettings.Instance.Manager == null) return false;
-        var activeLoader = XRGeneralSettings.Instance.Manager.activeLoader;
-        if (activeLoader == null) return false;
-        return activeLoader.GetLoadedSubsystem<XRPlaneSubsystem>() != null;
-    }
-
     private void Update()
     {
         UpdateQuery();

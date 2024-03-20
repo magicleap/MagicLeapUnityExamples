@@ -19,9 +19,6 @@ public class PinchGesture : MonoBehaviour
     [SerializeField]
     private GameObject markerPrefab;
 
-    [SerializeField]
-    private float minPinchDistance = 10f;
-
     protected InputActionMap actionMap;
 
     public enum Hands

@@ -19,28 +19,25 @@ using UnityEngine.XR.ARFoundation;
 
 namespace MagicLeap.Examples
 {
-    [RequireComponent(typeof(PlaceFromCamera))]
+    [ExecuteInEditMode]
     public class UserInterface : MonoBehaviour
     {
         private const float SIDE_MENU_DEFAULT_WIDTH = 175;
         private const float SIDE_MENU_MAX_WIDTH = 475;
 
         [Header("Settings")]
-        [SerializeField, Tooltip("The default and closest distance for the canvas.")]
-        private float _minDistance = 1.0f;
-
-        [SerializeField, Tooltip("The furthest distance for the canvas.")]
-        private float _maxDistance = 1.5f;
-
         [SerializeField, Tooltip("The primary workspace, this area will be collapsed in the minimized view.")]
         private GameObject _workspace = null;
-
-        [SerializeField, Tooltip("The button that maintains the canvas lock for the interface.")]
-        private UIButton _lockButton = null;
 
         [Header("Interface")]
         [SerializeField, Tooltip("The transform of the side menu.")]
         private RectTransform _sideMenu = null;
+
+        [SerializeField]
+        private CanvasGroup dragInstructions;
+
+        [SerializeField]
+        private bool enableDragInstructions = false;
 
         [Header("Button & Text Fields")]
 
@@ -96,21 +93,11 @@ namespace MagicLeap.Examples
         [SerializeField, TextArea(4, 8)]
         private string controls;
 
-        private PlaceFromCamera _placeFromCamera = null;
-        private float _canvasDistance = 0f;
         private string selectedScene;
         private Canvas _canvas;
 
         private void Awake()
-        {
-            // Canvas Initialization
-            _placeFromCamera = GetComponent<PlaceFromCamera>();
-
-            _canvasDistance = _minDistance;
-            _placeFromCamera.Distance = _canvasDistance;
-
-            _title.text = GetTitle();
-
+        {  
             // Open the these two tabs by default.
             _overviewTab.Pressed();
             if (_statusTab.gameObject.activeSelf)
@@ -121,6 +108,16 @@ namespace MagicLeap.Examples
             {
                 _SceneTab.Pressed();
             }
+
+            if (dragInstructions == null)
+            {
+                enableDragInstructions = false;
+            }
+
+            if (!enableDragInstructions && dragInstructions != null)
+            {
+                dragInstructions.alpha = 0f;
+            }
         }
 
         private void Start()
@@ -130,12 +127,20 @@ namespace MagicLeap.Examples
 
         private void OnEnable()
         {
-            Application.logMessageReceived += HandleOnLogMessageReceived;
+            _title.text = GetTitle();
+
+            if (Application.isPlaying)
+            {
+                Application.logMessageReceived += HandleOnLogMessageReceived;
+            }
         }
 
         private void OnDisable()
         {
-            Application.logMessageReceived -= HandleOnLogMessageReceived;
+            if (Application.isPlaying)
+            {
+                Application.logMessageReceived -= HandleOnLogMessageReceived;
+            }
         }
 
         private void OnValidate()
@@ -194,28 +199,12 @@ namespace MagicLeap.Examples
             }
         }
 
-        /// <summary>
-        /// Toggle the lock state of the canvas.
-        /// </summary>
-        public void ToggleCanvasLock()
+        public void DismissDragInstruction()
         {
-            _placeFromCamera.PlaceOnUpdate = !_placeFromCamera.PlaceOnUpdate;
-        }
-
-        /// <summary>
-        /// Toggle the canvas distance between the min and max distance.
-        /// </summary>
-        public void ToggleCanvasDistance()
-        {
-            if (_lockButton.IsActive)
+            if (dragInstructions != null)
             {
-                return;
+                dragInstructions.alpha = 0f;
             }
-
-            _canvasDistance = (_canvasDistance == _minDistance) ? _maxDistance : _minDistance;
-            _placeFromCamera.Distance = _canvasDistance;
-
-            _placeFromCamera.ForceUpdate();
         }
 
         /// <summary>
@@ -283,6 +272,11 @@ namespace MagicLeap.Examples
 
         private void CreateSceneButtons()
         {
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+
             int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
             for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
             {
@@ -303,11 +297,6 @@ namespace MagicLeap.Examples
 
         private string GetTitle()
         {
-            if (!string.IsNullOrWhiteSpace(title))
-            {
-                return title;
-            }
-            
             var words =
                     Regex.Matches(SceneManager.GetActiveScene().name, @"([A-Z][a-z]+)")
                     .Cast<Match>()

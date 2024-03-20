@@ -231,7 +231,7 @@
                 {
                     "name": "",
                     "id": "c2b03674-dafa-444c-8620-3280c282adf9",
-                    "path": "<MagicLeapController>{RightHand}/pointerPosition",
+                    "path": "<MagicLeapController>{RightHand}/pointer/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "Magic Leap 2",
@@ -242,7 +242,7 @@
                 {
                     "name": "",
                     "id": "807f91c0-0511-4b5a-8873-55fff6b2dd78",
-                    "path": "<MagicLeapController>{LeftHand}/pointerPosition",
+                    "path": "<MagicLeapController>{LeftHand}/pointer/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "Magic Leap 2",
@@ -253,7 +253,7 @@
                 {
                     "name": "",
                     "id": "123b83cc-1670-4b3c-8f11-e5b34719c3e9",
-                    "path": "<MagicLeapController>{RightHand}/pointerRotation",
+                    "path": "<MagicLeapController>{RightHand}/pointer/rotation",
                     "interactions": "",
                     "processors": "",
                     "groups": "Magic Leap 2",
@@ -264,7 +264,7 @@
                 {
                     "name": "",
                     "id": "5d664175-4eb6-4001-80ea-caabb83d96c1",
-                    "path": "<MagicLeapController>{LeftHand}/pointerRotation",
+                    "path": "<MagicLeapController>{LeftHand}/pointer/rotation",
                     "interactions": "",
                     "processors": "",
                     "groups": "Magic Leap 2",
@@ -851,7 +851,7 @@
                 {
                     "name": "",
                     "id": "be90f058-beee-43fe-b998-87cf060e8920",
-                    "path": "<HandInteraction>{RightHand}/{PointerActivateReady}",
+                    "path": "<HandInteraction>{LeftHand}/{PointerActivateReady}",
                     "interactions": "",
                     "processors": "",
                     "groups": "Magic Leap 2",

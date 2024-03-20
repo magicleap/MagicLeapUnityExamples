@@ -1,3 +1,4 @@
+using MagicLeap.Android;
 using MagicLeap.Examples;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +20,10 @@ public class GazeTrackingExample : MonoBehaviour
     private Camera mainCamera;
 
     private bool permissionGranted;
-    private readonly MLPermissions.Callbacks permissionCallbacks = new();
 
     private void Awake()
     {
-        permissionCallbacks.OnPermissionGranted += OnPermissionGranted;
-        permissionCallbacks.OnPermissionDenied += OnPermissionDenied;
-        permissionCallbacks.OnPermissionDeniedAndDontAskAgain += OnPermissionDenied;
-
-        MLPermissions.RequestPermission(MLPermission.EyeTracking, permissionCallbacks);
+        Permissions.RequestPermission(MLPermission.EyeTracking, OnPermissionGranted, OnPermissionDenied);
     }
 
     void Update()
@@ -65,13 +61,6 @@ public class GazeTrackingExample : MonoBehaviour
         {
             visualizer.Hide();
         }
-    }
-
-    private void OnDestroy()
-    {
-        permissionCallbacks.OnPermissionGranted -= OnPermissionGranted;
-        permissionCallbacks.OnPermissionDenied -= OnPermissionDenied;
-        permissionCallbacks.OnPermissionDeniedAndDontAskAgain -= OnPermissionDenied;
     }
 
     void OnPermissionGranted(string permission) 
