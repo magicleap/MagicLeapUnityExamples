@@ -55,9 +55,9 @@ public class UserCalibrationExample : MonoBehaviour
             userCalibrationFeature.GetLastHeadsetFit(out var headsetFitData);
             userCalibrationFeature.GetLastEyeCalibration(out var eyeCalibrationData);
             
-            userCalibrationText.AppendLine($"{GetTextWithColor("Headset fit status", fieldTitleColor)} : {GetTextWithColor(headsetFitData.status, fieldValueColor)}");
-            userCalibrationText.AppendLine($"{GetTextWithColor("Headset fit time", fieldTitleColor)} :  {GetTextWithColor(DateTimeOffset.FromUnixTimeMilliseconds((long)(headsetFitData.time * 1e-6)).DateTime.ToString("d/M/y HH:mm"), fieldValueColor)}");
-            userCalibrationText.AppendLine($"{GetTextWithColor("Eye Calibration Status", fieldTitleColor)} : {GetTextWithColor(eyeCalibrationData.status, fieldValueColor)}");
+            userCalibrationText.AppendLine($"{GetTextWithColor("Headset fit status", fieldTitleColor)} : {GetTextWithColor(headsetFitData.Status, fieldValueColor)}");
+            userCalibrationText.AppendLine($"{GetTextWithColor("Headset fit time", fieldTitleColor)} :  {GetTextWithColor(DateTimeOffset.FromUnixTimeMilliseconds((long)(headsetFitData.Time * 1e-6)).DateTime.ToString("d/M/y HH:mm"), fieldValueColor)}");
+            userCalibrationText.AppendLine($"{GetTextWithColor("Eye Calibration Status", fieldTitleColor)} : {GetTextWithColor(eyeCalibrationData.Status, fieldValueColor)}");
 
             statusText.text = userCalibrationText.ToString();
         }

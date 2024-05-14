@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8893c58a68b4ff98668b47e5c935e57, type: 3}
   m_Name: MagicLeapMeshingFeature Standalone
   m_EditorClassIdentifier: 
-  m_enabled: 0
-  nameUi: Magic Leap 2 Meshing
+  m_enabled: 1
+  nameUi: Magic Leap 2 Meshing Subsystem
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2_mesh_detection
   openxrExtensionStrings: XR_ML_world_mesh_detection XR_EXT_future
@@ -32,8 +32,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f7fbc139c144e69b4a0b0fb5139683f, type: 3}
   m_Name: MagicLeapPlanesFeature Standalone
   m_EditorClassIdentifier: 
-  m_enabled: 0
-  nameUi: Magic Leap 2 Plane Detection
+  m_enabled: 1
+  nameUi: Magic Leap 2 Planes Subsystem
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2_planes
   openxrExtensionStrings: XR_EXT_plane_detection
@@ -76,7 +76,7 @@ MonoBehaviour:
   nameUi: Magic Leap 2 Spatial Anchors Storage
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2_spatialanchorstorage
-  openxrExtensionStrings: XR_ML_spatial_anchors_storage XR_EXT_future
+  openxrExtensionStrings: XR_ML_spatial_anchors_storage XR_EXT_future XR_KHR_locate_spaces
   company: Magic Leap
   priority: 0
   required: 0
@@ -106,6 +106,26 @@ MonoBehaviour:
   GlobalDimmerEnabled: 0
   GlobalDimmerValue: 0
   BlendMode: 3
+--- !u!114 &-8489532526687126521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0898445048444aca849c32d97d461dbf, type: 3}
+  m_Name: MagicLeapPixelSensorFeature Android
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Magic Leap 2 Pixel Sensor
+  version: 1.0.0
+  featureIdInternal: com.magicleap.openxr.feature.ml2_pixel_sensor
+  openxrExtensionStrings: XR_ML_pixel_sensor XR_EXT_future
+  company: Magic Leap
+  priority: -2
+  required: 0
 --- !u!114 &-8217236356019934588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,7 +231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 839b445bcefe86e4c850a6223d8e213f, type: 3}
   m_Name: MagicLeapMarkerUnderstandingFeature Standalone
   m_EditorClassIdentifier: 
-  m_enabled: 0
+  m_enabled: 1
   nameUi: Magic Leap 2 Marker Understanding
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2_markerunderstanding
@@ -272,7 +292,7 @@ MonoBehaviour:
   m_Name: MagicLeapPlanesFeature Android
   m_EditorClassIdentifier: 
   m_enabled: 1
-  nameUi: Magic Leap 2 Plane Detection
+  nameUi: Magic Leap 2 Planes Subsystem
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2_planes
   openxrExtensionStrings: XR_EXT_plane_detection
@@ -291,17 +311,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37d4a9b48c08843ee9943e71ecb47034, type: 3}
   m_Name: MagicLeapFeature Standalone
   m_EditorClassIdentifier: 
-  m_enabled: 0
+  m_enabled: 1
   nameUi: Magic Leap 2 Support
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2
   openxrExtensionStrings: XR_ML_compat XR_KHR_convert_timespec_time XR_EXT_view_configuration_depth_range
+    XR_ML_view_configuration_depth_range_change
   company: Magic Leap
   priority: 0
   required: 0
   perceptionSnapshots: 1
   farClipPolicy: 2
   nearClipPolicy: 1
+--- !u!114 &-5225949494257937122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0898445048444aca849c32d97d461dbf, type: 3}
+  m_Name: MagicLeapPixelSensorFeature Standalone
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Magic Leap 2 Pixel Sensor
+  version: 1.0.0
+  featureIdInternal: com.magicleap.openxr.feature.ml2_pixel_sensor
+  openxrExtensionStrings: XR_ML_pixel_sensor XR_EXT_future
+  company: Magic Leap
+  priority: -2
+  required: 0
 --- !u!114 &-5152167639727490702
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,7 +438,7 @@ MonoBehaviour:
   m_Name: MagicLeapSpatialAnchorsFeature Android
   m_EditorClassIdentifier: 
   m_enabled: 1
-  nameUi: Magic Leap 2 Spatial Anchors
+  nameUi: Magic Leap 2 Spatial Anchor Subsystem
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2_spatialanchor
   openxrExtensionStrings: XR_ML_spatial_anchors XR_EXT_future
@@ -479,6 +520,7 @@ MonoBehaviour:
   forceRemoveInternetPermission: 1
   symmetricProjection: 0
   systemSplashScreen: {fileID: 0}
+  optimizeBufferDiscards: 1
   lateLatchingMode: 0
   lateLatchingDebug: 0
 --- !u!114 &-2940789578277834322
@@ -526,7 +568,47 @@ MonoBehaviour:
   UseVignetteMode: 0
   GlobalDimmerEnabled: 0
   GlobalDimmerValue: 0
-  BlendMode: 2
+  BlendMode: 3
+--- !u!114 &-2529785352854466456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c53e7f5c52084141900efe09f71fe0f, type: 3}
+  m_Name: MagicLeapLightEstimationFeature Android
+  m_EditorClassIdentifier: 
+  m_enabled: 1
+  nameUi: Magic Leap 2 Light Estimation
+  version: 1.0.0
+  featureIdInternal: com.magicleap.openxr.feature.ml2_lightestimation
+  openxrExtensionStrings: XR_ML_light_estimation
+  company: Magic Leap
+  priority: -1
+  required: 0
+--- !u!114 &-2489033365821530703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74ecfbe7bc16a2e41a36f3c8e26f111c, type: 3}
+  m_Name: MagicLeapFacialExpressionFeature Standalone
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Magic Leap 2 Facial Expression
+  version: 1.0.0
+  featureIdInternal: com.magicleap.openxr.feature.ml2_facialexpression
+  openxrExtensionStrings: XR_ML_facial_expression
+  company: Magic Leap
+  priority: -1
+  required: 0
 --- !u!114 &-1545244977878108075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -584,10 +666,11 @@ MonoBehaviour:
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2
   openxrExtensionStrings: XR_ML_compat XR_KHR_convert_timespec_time XR_EXT_view_configuration_depth_range
+    XR_ML_view_configuration_depth_range_change
   company: Magic Leap
   priority: 0
   required: 0
-  perceptionSnapshots: 1
+  perceptionSnapshots: 0
   farClipPolicy: 2
   nearClipPolicy: 0
 --- !u!114 &-1083669616266877667
@@ -630,6 +713,26 @@ MonoBehaviour:
   company: Magic Leap
   priority: 0
   required: 0
+--- !u!114 &-99109230403170828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74ecfbe7bc16a2e41a36f3c8e26f111c, type: 3}
+  m_Name: MagicLeapFacialExpressionFeature Android
+  m_EditorClassIdentifier: 
+  m_enabled: 1
+  nameUi: Magic Leap 2 Facial Expression
+  version: 1.0.0
+  featureIdInternal: com.magicleap.openxr.feature.ml2_facialexpression
+  openxrExtensionStrings: XR_ML_facial_expression
+  company: Magic Leap
+  priority: -1
+  required: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -646,6 +749,26 @@ MonoBehaviour:
   Values:
   - {fileID: 7348664843942314774}
   - {fileID: 8030997032970591316}
+--- !u!114 &323105193989787279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74ecfbe7bc16a2e41a36f3c8e26f111c, type: 3}
+  m_Name: MagicLeapFacialExpressionFeature Android
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: 
+  version: 
+  featureIdInternal: 
+  openxrExtensionStrings: 
+  company: 
+  priority: 0
+  required: 0
 --- !u!114 &335993042326811989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -848,6 +971,26 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+--- !u!114 &2814378898403811976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c53e7f5c52084141900efe09f71fe0f, type: 3}
+  m_Name: MagicLeapLightEstimationFeature Standalone
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Magic Leap 2 Light Estimation
+  version: 1.0.0
+  featureIdInternal: com.magicleap.openxr.feature.ml2_lightestimation
+  openxrExtensionStrings: XR_ML_light_estimation
+  company: Magic Leap
+  priority: -1
+  required: 0
 --- !u!114 &3100433018150569940
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -884,7 +1027,7 @@ MonoBehaviour:
   nameUi: Magic Leap 2 Spatial Anchors Storage
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2_spatialanchorstorage
-  openxrExtensionStrings: XR_ML_spatial_anchors_storage XR_EXT_future
+  openxrExtensionStrings: XR_ML_spatial_anchors_storage XR_EXT_future XR_KHR_locate_spaces
   company: Magic Leap
   priority: 0
   required: 0
@@ -1155,8 +1298,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b263bfa84f8e34d46bc7293680ad3d82, type: 3}
   m_Name: MagicLeapSpatialAnchorsFeature Standalone
   m_EditorClassIdentifier: 
-  m_enabled: 0
-  nameUi: Magic Leap 2 Spatial Anchors
+  m_enabled: 1
+  nameUi: Magic Leap 2 Spatial Anchor Subsystem
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2_spatialanchor
   openxrExtensionStrings: XR_ML_spatial_anchors XR_EXT_future
@@ -1186,17 +1329,17 @@ MonoBehaviour:
   - {fileID: -3605184427467036068}
   - {fileID: 907590339889897164}
   - {fileID: 7899272573656591547}
+  - {fileID: -2489033365821530703}
   - {fileID: -5489380293707147867}
+  - {fileID: 2814378898403811976}
   - {fileID: -116203726075496234}
   - {fileID: -7297698061041626291}
   - {fileID: -9127151421362204620}
+  - {fileID: -5225949494257937122}
   - {fileID: -8885336380981880298}
   - {fileID: -6902252369633504668}
-  - {fileID: -8516777374984985800}
   - {fileID: 7308653493679718427}
   - {fileID: 3406295072034425503}
-  - {fileID: 492090129330734589}
-  - {fileID: 5004284972040931718}
   - {fileID: -8001699165715000939}
   - {fileID: 3853697488310507554}
   - {fileID: -8065693076440768310}
@@ -1206,8 +1349,9 @@ MonoBehaviour:
   - {fileID: 5191203998635605222}
   - {fileID: 1224577952413960796}
   - {fileID: -5700238823825327871}
-  m_renderMode: 1
+  m_renderMode: 0
   m_depthSubmissionMode: 0
+  m_optimizeBufferDiscards: 0
   m_symmetricProjection: 0
 --- !u!114 &7899272573656591547
 MonoBehaviour:
@@ -1221,7 +1365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8a068fd8a4144443b50d06f6f964824, type: 3}
   m_Name: MagicLeapControllerProfile Standalone
   m_EditorClassIdentifier: 
-  m_enabled: 0
+  m_enabled: 1
   nameUi: Magic Leap 2 Controller Interaction Profile
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.input.ml2controllerprofile
@@ -1250,10 +1394,13 @@ MonoBehaviour:
   - {fileID: 6820731574762089390}
   - {fileID: -1545244977878108075}
   - {fileID: 5947821235551304236}
+  - {fileID: -99109230403170828}
   - {fileID: -1299058085490809813}
+  - {fileID: -2529785352854466456}
   - {fileID: 574557893622445879}
   - {fileID: -8681096913472781357}
   - {fileID: 9220015755769188804}
+  - {fileID: -8489532526687126521}
   - {fileID: -5636897427397999952}
   - {fileID: 8534016256030746993}
   - {fileID: -2794497197733208451}
@@ -1272,6 +1419,7 @@ MonoBehaviour:
   - {fileID: -3929737776174081137}
   m_renderMode: 1
   m_depthSubmissionMode: 0
+  m_optimizeBufferDiscards: 0
   m_symmetricProjection: 0
 --- !u!114 &8534016256030746993
 MonoBehaviour:
@@ -1326,7 +1474,7 @@ MonoBehaviour:
   m_Name: MagicLeapMeshingFeature Android
   m_EditorClassIdentifier: 
   m_enabled: 1
-  nameUi: Magic Leap 2 Meshing
+  nameUi: Magic Leap 2 Meshing Subsystem
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2_mesh_detection
   openxrExtensionStrings: XR_ML_world_mesh_detection XR_EXT_future

@@ -26,6 +26,7 @@ public class MeshingExample : MonoBehaviour
         [SerializeField] public Vector3 meshBoundsRotation;
         [SerializeField] public Vector3 meshBoundsScale;
         [SerializeField] public MagicLeapMeshingFeature.MeshingMode renderMode;
+        [SerializeField] public MeshFilter meshPrefab;
     }
     
     [SerializeField] private ARMeshManager meshManager;
@@ -49,6 +50,7 @@ public class MeshingExample : MonoBehaviour
     private MagicLeapMeshingFeature.MeshDetectorFlags[] allFlags;
     private ObjectPool<MeshingProjectile> projectilePool;
     private MagicLeapMeshingFeature.MeshingMode previousRenderMode;
+    private MeshTexturedWireframeAdapter wireframeAdapter;
 
     private void Awake()
     {
@@ -62,6 +64,7 @@ public class MeshingExample : MonoBehaviour
         pointCloudManager.enabled = false;
         yield return new WaitUntil(Utils.AreSubsystemsLoaded<XRMeshSubsystem>);
         meshingFeature = OpenXRSettings.Instance.GetFeature<MagicLeapMeshingFeature>();
+        wireframeAdapter = GetComponent<MeshTexturedWireframeAdapter>();
         if (!meshingFeature.enabled)
         {
             Debug.LogError($"{nameof(MagicLeapMeshingFeature)} was not enabled. Disabling script");
@@ -74,8 +77,8 @@ public class MeshingExample : MonoBehaviour
         }, (meshProjectile) => meshProjectile.gameObject.SetActive(false), defaultCapacity: 20);
         mlInputs = new();
         mlInputs.Enable();
-        mlInputs.Controller.Trigger.performed += TriggerHandler;
-        mlInputs.Controller.Bumper.performed += BumperHandler;
+        mlInputs.Controller.Trigger.performed += FireProjectile;
+        mlInputs.Controller.Bumper.performed += CycleSettings;
         Permissions.RequestPermission(MLPermission.SpatialMapping, OnPermissionGranted, OnPermissionDenied);
     }
 
@@ -110,22 +113,22 @@ public class MeshingExample : MonoBehaviour
         {
             return;
         }
-        mlInputs.Controller.Trigger.performed -= TriggerHandler;
-        mlInputs.Controller.Bumper.performed -= BumperHandler;
+        mlInputs.Controller.Trigger.performed -= FireProjectile;
+        mlInputs.Controller.Bumper.performed -= CycleSettings;
     }
 
-    private void TriggerHandler(InputAction.CallbackContext obj)
+    private void CycleSettings(InputAction.CallbackContext obj)
+    {
+        currentIndex = (currentIndex + 1) % allSettings.Length;
+        UpdateSettings();
+    }
+
+    private void FireProjectile(InputAction.CallbackContext obj)
     {
         if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
-        currentIndex = (currentIndex + 1) % allSettings.Length;
-        UpdateSettings();
-    }
-
-    private void BumperHandler(InputAction.CallbackContext obj)
-    {
         var projectile = projectilePool.Get();
         projectile.Initialize(projectilePool, ProjectileLifetime);
         projectile.transform.position = mainCamera.transform.position;
@@ -143,6 +146,13 @@ public class MeshingExample : MonoBehaviour
         if (currentRenderMode == MagicLeapMeshingFeature.MeshingMode.Triangles)
         {
             meshManager.density = meshSettings.meshDensity;
+            meshManager.meshPrefab = meshSettings.meshPrefab;
+            if (wireframeAdapter != null)
+            {
+                wireframeAdapter.ComputeConfidences = meshSettings.meshQuerySettings.meshDetectorFlags.HasFlag(MagicLeapMeshingFeature.MeshDetectorFlags.ComputeConfidence);
+                wireframeAdapter.ComputeNormals = meshSettings.meshQuerySettings.meshDetectorFlags.HasFlag(MagicLeapMeshingFeature.MeshDetectorFlags.ComputeNormals);
+                wireframeAdapter.enabled = currentIndex == 0;
+            }
         }
         else
         {
@@ -182,13 +192,13 @@ public class MeshingExample : MonoBehaviour
     private void OnPermissionGranted(string permission)
     {
         meshManager.enabled = true;
-        previousRenderMode = allSettings[0].renderMode;
+        previousRenderMode = MagicLeapMeshingFeature.MeshingMode.Triangles;
         UpdateSettings();
     }
 
     private void OnPermissionDenied(string permission)
     {
-        Debug.LogError($"Failed to create Planes Subsystem due to missing or denied {MLPermission.SpatialMapping} permission. Please add to manifest. Disabling script.");
+        Debug.LogError($"Failed to create Meshing Subsystem due to missing or denied {permission} permission. Please add to manifest. Disabling script.");
         enabled = false;
     }
 }

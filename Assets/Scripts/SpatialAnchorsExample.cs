@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
@@ -155,13 +154,13 @@ public class SpatialAnchorsExample : MonoBehaviour
         // delete most recent local anchor first
         if (localAnchors.Count > 0)
         {
-            Destroy(localAnchors[localAnchors.Count - 1].gameObject);
+            Destroy(localAnchors[^1].gameObject);
             localAnchors.RemoveAt(localAnchors.Count - 1);
         }
         //Deleting the last published anchor.
         else if (publishedAnchors.Count > 0)
         {
-            storageFeature.DeleteStoredSpatialAnchor(new List<string> { publishedAnchors[publishedAnchors.Count - 1].AnchorMapPositionId });
+            storageFeature.DeleteStoredSpatialAnchor(new List<string> { publishedAnchors[^1].AnchorMapPositionId });
         }
     }
 
@@ -270,7 +269,7 @@ public class SpatialAnchorsExample : MonoBehaviour
         if (permissionGranted == false || localizationMapFeature == null || mapList.Length == 0)
             return;
         string uuid = mapList[mapsDropdown.value].MapUUID;
-        var res = localizationMapFeature.ExportLocalizatioMap(uuid, out byte[] mapData);
+        var res = localizationMapFeature.ExportLocalizationMap(uuid, out byte[] mapData);
         if (res != XrResult.Success)
         {
             Debug.LogError("Failed to export map: " + res);
@@ -335,16 +334,45 @@ public class SpatialAnchorsExample : MonoBehaviour
 
             if (localizationMapFeature != null)
             {
-                localizationMapFeature.GetLatestLocalizationMapData(out mapData);
-                localizationText.text = string.Format("Localization info:\nName:{0}\nUUID:{1}\nType:{2}\nState:{3}\nConfidence:{4}\nErrors:{5}",
-                    mapData.Map.Name, mapData.Map.MapUUID, mapData.Map.MapType, mapData.State, mapData.Confidence, (mapData.Errors.Length > 0) ? string.Join(",", mapData.Errors) : "None");
-
+                localizationMapFeature.GetLatestLocalizationMapData(out MagicLeapLocalizationMapFeature.LocalizationEventData mapData);
+                string localizationInfo = string.Format("Localization info:\nState:{0}\nConfidence:{1}", mapData.State, mapData.Confidence);
+                if (mapData.State == MagicLeapLocalizationMapFeature.LocalizationMapState.Localized)
+                {
+                    localizationInfo += string.Format("\nName:{0}\nUUID:{1}\nType:{2}\nErrors:{3}",
+                        mapData.Map.Name, mapData.Map.MapUUID, mapData.Map.MapType, (mapData.Errors.Length > 0) ? string.Join(",", mapData.Errors) : "None");
+                }
+                localizationText.text = localizationInfo;
                 publishButton.interactable = mapData.State == MagicLeapLocalizationMapFeature.LocalizationMapState.Localized;
             }
             else
             {
                 publishButton.interactable = false;
             }
+
+            UpdateStoredAnchorTransforms();
+        }
+    }
+
+    private void UpdateStoredAnchorTransforms()
+    {
+        if (activeSubsystem == null)
+        {
+            return;
+        }
+        foreach (var anchor in publishedAnchors)
+        {
+            var anchorObject = anchor.AnchorObject.gameObject;
+            var pose = activeSubsystem.GetAnchorPoseFromID(anchor.AnchorId);
+            anchorObject.transform.position = pose.position;
+            anchorObject.transform.rotation = pose.rotation;
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (localizationMapFeature != null)
+        {
+            localizationMapFeature.EnableLocalizationEvents(false);
         }
     }
 
@@ -354,11 +382,6 @@ public class SpatialAnchorsExample : MonoBehaviour
         {
             controllerMap.FindAction("Bumper").performed -= OnBumper;
             controllerMap.FindAction("MenuButton").performed -= OnMenu;
-        }
-
-        if (localizationMapFeature != null)
-        {
-            localizationMapFeature.EnableLocalizationEvents(false);
         }
 
         storageFeature.OnCreationCompleteFromStorage -= OnCreateFromStorageComplete;

@@ -67,7 +67,7 @@ public class PlaneExample : MonoBehaviour
             MLXrPlaneSubsystem.Query = newQuery;
             status.text = $"Detection Mode:\n<B>{planeManager.requestedDetectionMode}</B>\n\n" +
                           $"Query Flags:\n<B>{newQuery.Flags.ToString().Replace(" ", "\n")}</B>\n\n" +
-                          $"Query MaxResultss:\n<B>{newQuery.MaxResults}</B>\n\n" +
+                          $"Query MaxResults:\n<B>{newQuery.MaxResults}</B>\n\n" +
                           $"Query MinPlaneArea:\n<B>{newQuery.MinPlaneArea}</B>\n\n" +
                           $"Plane GameObjects:\n<B>{PlanePrefabExample.Count}</B>";
         }

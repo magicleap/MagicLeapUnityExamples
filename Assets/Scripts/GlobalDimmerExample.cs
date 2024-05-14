@@ -7,9 +7,6 @@ namespace MagicLeap.Examples
 {
     public class GlobalDimmerExample : MonoBehaviour
     {
-        [SerializeField, Range(0f, 1f)]
-        private float startingValue = 0.2f;
-
         [SerializeField]
         private Slider slider;
 
@@ -32,10 +29,10 @@ namespace MagicLeap.Examples
             }
 
             renderFeature = OpenXRSettings.Instance.GetFeature<MagicLeapRenderingExtensionsFeature>();
-            slider.value = startingValue;
             renderFeature.GlobalDimmerEnabled = true;
 
             status.text = $"Global Dimmer Value: {renderFeature.GlobalDimmerValue:P}\n\nGlobal Dimmer Enabled: {renderFeature.GlobalDimmerEnabled}";
+            slider.value = renderFeature.GlobalDimmerValue;
         }
 
         private void OnDestroy()

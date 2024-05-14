@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 203844589}
   - component: {fileID: 203844588}
+  - component: {fileID: 203844590}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -217,6 +218,79 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -13, z: 0}
+--- !u!114 &203844590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 203844586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+--- !u!1 &208343789 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 427083769265065177, guid: 2ad7d02c3ee2a447abc9de300646685d,
+    type: 3}
+  m_PrefabInstance: {fileID: 401676249}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &208343796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 208343789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!1001 &401676249
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -297,6 +371,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 401676253}
+    - targetCorrespondingSourceObject: {fileID: 427083769265065177, guid: 2ad7d02c3ee2a447abc9de300646685d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 208343796}
   m_SourcePrefab: {fileID: 100100000, guid: 2ad7d02c3ee2a447abc9de300646685d, type: 3}
 --- !u!4 &401676251 stripped
 Transform:
@@ -520,6 +598,41 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3638083915130247541, guid: e11acd7e824adcc43a4715c4f5daa2ba,
+        type: 3}
+      propertyPath: m_Text
+      value: 'This example demonstrates and prescribes preferred methods for using
+        the meshing functionality.
+
+        Provided is a MeshingExample script that
+        drives parameters of the meshing API through the MeshingSubsystemComponent.
+
+
+        This
+        example provides a use case of the MapEvents functionality, clearing all
+        fragments and refreshing the mesh when a new map is detected.
+
+        It
+        uses Unity''s default ARMeshManager to drive the meshing subsystem.
+
+
+        The
+        scene provides several examples of changing the way rendering and physics
+        interact with the meshing results. You can:
+
+        - Visualize the mesh
+        results. Each setting demonstrates the different parameters used for tweaking
+        the mesh detector
+
+        - Shoot prefab spheres into the scene for physics
+        interaction.
+
+
+        <color=#B7B7B8><b>Mandatory permissions required by
+        this feature</b></color>
+
+        - SpatialMapping'
+      objectReference: {fileID: 0}
     - target: {fileID: 3981727701387534120, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -548,10 +661,10 @@ PrefabInstance:
     - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
       propertyPath: controls
-      value: '- Use Bumper to shoot a ball to demonstrate physics.
+      value: '- Use Trigger to shoot a ball to demonstrate physics.
 
         - Use
-        Trigger to cycle between different settings.'
+        Bumper to cycle between different settings.'
       objectReference: {fileID: 0}
     - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
@@ -561,7 +674,6 @@ PrefabInstance:
 
         Provided is a MeshingExample script that
         drives parameters of the meshing API through the MeshingSubsystemComponent.
-
 
 
         This
@@ -653,6 +765,14 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.r
       value: 0.46666667
+      objectReference: {fileID: 0}
+    - target: {fileID: 5351382177260800096, guid: e11acd7e824adcc43a4715c4f5daa2ba,
+        type: 3}
+      propertyPath: m_Text
+      value: '- Use Trigger to shoot a ball to demonstrate physics.
+
+        - Use
+        Bumper to cycle between different settings.'
       objectReference: {fileID: 0}
     - target: {fileID: 6069143674600871185, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
@@ -791,6 +911,7 @@ GameObject:
   m_Component:
   - component: {fileID: 871066119}
   - component: {fileID: 871066120}
+  - component: {fileID: 871066121}
   m_Layer: 0
   m_Name: Example
   m_TagString: Untagged
@@ -831,25 +952,29 @@ MonoBehaviour:
     type: 3}
   allSettings:
   - meshQuerySettings:
-      fillHoleLength: 0.25
+      fillHoleLength: 1
       appliedDisconnectedComponentArea: 0.25
-      meshDetectorFlags: 30
-      useIonAllocator: 0
-    meshDensity: 0.5
+      meshDetectorFlags: 20
+      useIonAllocator: 1
+    meshDensity: 1
     meshBoundsOrigin: {x: 0, y: 0, z: 0}
     meshBoundsRotation: {x: 0, y: 0, z: 0}
     meshBoundsScale: {x: 20, y: 20, z: 20}
     renderMode: 0
+    meshPrefab: {fileID: 96118017305851066, guid: 325f6e6feaccd47449b3c7e810321b91,
+      type: 3}
   - meshQuerySettings:
       fillHoleLength: 0.75
       appliedDisconnectedComponentArea: 0.75
       meshDetectorFlags: 24
-      useIonAllocator: 1
+      useIonAllocator: 0
     meshDensity: 1
     meshBoundsOrigin: {x: 0, y: 0, z: 0}
     meshBoundsRotation: {x: 45, y: 0, z: 50}
     meshBoundsScale: {x: 5, y: 5, z: 5}
     renderMode: 0
+    meshPrefab: {fileID: 365674155905057593, guid: d5a32c043f3d36143a98c673c271573a,
+      type: 3}
   - meshQuerySettings:
       fillHoleLength: 1
       appliedDisconnectedComponentArea: 1
@@ -860,6 +985,7 @@ MonoBehaviour:
     meshBoundsRotation: {x: 0, y: 0, z: 0}
     meshBoundsScale: {x: 10, y: 10, z: 10}
     renderMode: 1
+    meshPrefab: {fileID: 0}
   - meshQuerySettings:
       fillHoleLength: 1
       appliedDisconnectedComponentArea: 1
@@ -870,7 +996,22 @@ MonoBehaviour:
     meshBoundsRotation: {x: 0, y: 0, z: 0}
     meshBoundsScale: {x: 3, y: 3, z: 3}
     renderMode: 1
+    meshPrefab: {fileID: 0}
   updateText: {fileID: 685605692}
+--- !u!114 &871066121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871066118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6520a75da7336d4aaa16e60d021c3e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshManager: {fileID: 1217813612}
+  wireframeMaterial: {fileID: 2100000, guid: f8e8a8256fbb931448893bebcc68daa0, type: 2}
 --- !u!1 &1217813610
 GameObject:
   m_ObjectHideFlags: 0
@@ -922,7 +1063,7 @@ MonoBehaviour:
   m_Normals: 1
   m_Tangents: 0
   m_TextureCoordinates: 0
-  m_Colors: 0
+  m_Colors: 1
   m_ConcurrentQueueSize: 4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

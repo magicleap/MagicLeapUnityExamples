@@ -32,6 +32,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SpatialAnchors.unity
     guid: b2453f3e5761a1f46a6c258cdf805fb6
+  - enabled: 1
+    path: Assets/Scenes/MarkerTracking.unity
+    guid: 66abf3f55417c4017baf4c57c231b55a
+  - enabled: 1
+    path: Assets/Scenes/FacialExpression.unity
+    guid: 88695a78fb9151d438b3bf640299d816
   m_configObjects:
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: e3e2ec0a2d235bf4e88abaa1456abb78,
       type: 2}
