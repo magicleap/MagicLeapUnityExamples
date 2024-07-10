@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028377, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -440,6 +440,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Version: 3
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_RenderingLayers: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_ShadowRenderingLayers: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
 --- !u!108 &203844588
 Light:
   m_ObjectHideFlags: 0
@@ -1238,8 +1249,6 @@ MonoBehaviour:
   localizationText: {fileID: 1959327966}
   mapsDropdown: {fileID: 251739720}
   exportedDropdown: {fileID: 1825565810}
-  inputActions: {fileID: -944628639613478452, guid: bb4daeceea261404d9e9069323220d1b,
-    type: 3}
   anchorPrefab: {fileID: 3125165527598978782, guid: 779f5eab1277241d6b58ee2c44909b20,
     type: 3}
   controllerObject: {fileID: 520749154}
@@ -3869,7 +3878,7 @@ PrefabInstance:
     - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
       propertyPath: title
-      value: Spatial Anchors
+      value: Spatial Anchors [Experimental Feature]
       objectReference: {fileID: 0}
     - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
@@ -3897,8 +3906,13 @@ PrefabInstance:
     - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
       propertyPath: overview
-      value: This is an example usage of the localization maps and spatial anchors
+      value: 'This is an example usage of the localization maps and spatial anchors
         features. Grant permission to test the maps import and export feature.
+
+
+        Spatial
+        Anchors makes use of one or more OpenXR Extensions not yet part of the OpenXR
+        Specification.'
       objectReference: {fileID: 0}
     - target: {fileID: 4627555857488981045, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}

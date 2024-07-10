@@ -1151,6 +1151,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
+      propertyPath: title
+      value: Hand Tracking & Interaction
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
+        type: 3}
       propertyPath: controls
       value: Hand Interactions, Hand Tracking
       objectReference: {fileID: 0}

@@ -4,8 +4,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.OpenXR;
-using UnityEngine.XR.OpenXR.Features.MagicLeapSupport;
 using UnityEngine.XR.OpenXR.NativeTypes;
+using MagicLeap.OpenXR.Features;
 
 public class SegmentedDimmerExample : MonoBehaviour
 {

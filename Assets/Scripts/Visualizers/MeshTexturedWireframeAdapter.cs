@@ -1,22 +1,26 @@
-using System.Collections;
+// %BANNER_BEGIN%
+// ---------------------------------------------------------------------
+// %COPYRIGHT_BEGIN%
+// Copyright (c) (2024) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
+// %COPYRIGHT_END%
+// ---------------------------------------------------------------------
+// %BANNER_END%
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.MagicLeap;
 using System.Linq;
 using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.OpenXR.Features.MagicLeapSupport;
 using UnityEngine.XR.OpenXR;
-using UnityEngine.XR;
 using UnityEngine.XR.ARSubsystems;
-using UnityEngine.Rendering;
-
-// Somewhat based on the texture-based wireframe technique described in
-// http://sibgrapi.sid.inpe.br/col/sid.inpe.br/sibgrapi/2010/09.15.18.18/doc/texture-based_wireframe_rendering.pdf
-// See Figure 5c and related description
-
+using MagicLeap.OpenXR.Features.Meshing;
+using UnityEngine.XR;
 
 /// <summary>
 /// Adapts and prepares meshes from ARMeshManager to use the TexturedWireframe material and shader.
+/// <para>Somewhat based on the texture-based wireframe technique described in
+/// http://sibgrapi.sid.inpe.br/col/sid.inpe.br/sibgrapi/2010/09.15.18.18/doc/texture-based_wireframe_rendering.pdf
+/// See Figure 5c and related description</para>
 /// </summary>
 public class MeshTexturedWireframeAdapter : MonoBehaviour
 {
@@ -99,17 +103,15 @@ public class MeshTexturedWireframeAdapter : MonoBehaviour
         }
     }
 
-    private TrackableId GetMeshIdForMesh(Mesh mesh)
+    private MeshId GetMeshIdForMesh(Mesh mesh)
     {
         var meshName = mesh.name;
         var splitResult = meshName.Split(" ").LastOrDefault();
         if (string.IsNullOrEmpty(splitResult))
         {
-            return TrackableId.invalidId;
+            return MeshId.InvalidId;
         }
-
-        var trackableId = new TrackableId(splitResult);
-        return trackableId;
+        return MeshingFeature.CreateMeshId(splitResult);
     }
 
     private void OnMeshUpdatedOrAdded(ARMeshesChangedEventArgs args)
@@ -129,10 +131,8 @@ public class MeshTexturedWireframeAdapter : MonoBehaviour
             meshReference = meshFilter.mesh;
 
             var meshId = GetMeshIdForMesh(meshReference);
-            if (meshId == TrackableId.invalidId)
+            if (meshId == MeshId.InvalidId)
                 return;
-
-            bool validConfidences = ComputeConfidences && MeshingFeature != null && MeshingFeature.GetMeshData(in meshId, out _, out _, out confidenceData);
 
             meshReference.GetVertices(vertices);
             uvs.Clear();
@@ -141,6 +141,10 @@ public class MeshTexturedWireframeAdapter : MonoBehaviour
                 uvs.Add(Vector3.forward);
             }
             meshReference.GetTriangles(indices, 0);
+
+            bool validConfidences = ComputeConfidences && MeshingFeature != null
+                && MeshingFeature.GetMeshData(in meshId, out _, out _, out confidenceData)
+                && uvs.Count == confidenceData.Length;
 
             // Encode confidence in uv.z
             for (int i = 0; i < uvs.Count; i++)

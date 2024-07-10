@@ -1,17 +1,30 @@
+// %BANNER_BEGIN%
+// ---------------------------------------------------------------------
+// %COPYRIGHT_BEGIN%
+// Copyright (c) (2024) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
+// %COPYRIGHT_END%
+// ---------------------------------------------------------------------
+// %BANNER_END%
 using MagicLeap.Android;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
-using UnityEngine.XR.MagicLeap;
-using UnityEngine.XR.Management;
-using UnityEngine.XR.OpenXR.Features.MagicLeapSupport;
+using MagicLeap.Examples;
+using MagicLeap.OpenXR.Features.Planes;
+using MagicLeap.OpenXR.Subsystems;
+using UnityEngine.InputSystem;
 using Utils = MagicLeap.Examples.Utils;
 
 public class PlaneExample : MonoBehaviour
 {
     private ARPlaneManager planeManager;
+
+    private MagicLeapPlanesFeature planeFeature;
 
     [SerializeField, Tooltip("Maximum number of planes to return each query")]
     private uint maxResults = 100;
@@ -23,7 +36,8 @@ public class PlaneExample : MonoBehaviour
     private Text status;
 
     private Camera mainCamera;
-    private bool permissionGranted = false;
+    private bool permissionGranted;
+    private MagicLeapController Controller => MagicLeapController.Instance;
 
     private IEnumerator Start()
     {
@@ -41,10 +55,27 @@ public class PlaneExample : MonoBehaviour
             planeManager.enabled = false;
         }
 
+        Controller.BumperPressed += ToggleScanning;
         permissionGranted = false;
-        Permissions.RequestPermission(MLPermission.SpatialMapping, OnPermissionGranted, OnPermissionDenied);
+        Permissions.RequestPermission(Permissions.SpatialMapping, OnPermissionGranted, OnPermissionDenied);
     }
-    
+
+    private IEnumerator StopPlanesScanning()
+    {
+        if (planeFeature != null && planeFeature.enabled)
+        {
+            planeFeature.InvalidateCurrentPlanes();
+        }
+        // Skip a frame for the changes to take effect and prefabs get removed.
+        yield return new WaitForEndOfFrame();
+        planeManager.enabled = false;
+    }
+
+    private void OnDisable()
+    {
+        Controller.BumperPressed -= ToggleScanning;
+    }
+
     private void Update()
     {
         UpdateQuery();
@@ -77,12 +108,23 @@ public class PlaneExample : MonoBehaviour
     {
         planeManager.enabled = true;
         permissionGranted = true;
+        planeFeature = OpenXRSettings.Instance.GetFeature<MagicLeapPlanesFeature>();
     }
 
     private void OnPermissionDenied(string permission)
     {
-        Debug.LogError($"Failed to create Planes Subsystem due to missing or denied {MLPermission.SpatialMapping} permission. Please add to manifest. Disabling script.");
+        Debug.LogError($"Failed to create Planes Subsystem due to missing or denied {Permissions.SpatialMapping} permission. Please add to manifest. Disabling script.");
         enabled = false;
     }
 
+    private void ToggleScanning(InputAction.CallbackContext obj)
+    {
+        if (!permissionGranted)
+            return;
+
+        if (planeManager.enabled)
+            StartCoroutine(StopPlanesScanning());
+        else
+            planeManager.enabled = true;
+    }
 }

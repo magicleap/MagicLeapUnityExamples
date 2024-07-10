@@ -1,4 +1,14 @@
+// %BANNER_BEGIN%
+// ---------------------------------------------------------------------
+// %COPYRIGHT_BEGIN%
+// Copyright (c) (2024) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
+// %COPYRIGHT_END%
+// ---------------------------------------------------------------------
+// %BANNER_END%
 using MagicLeap.Android;
+using MagicLeap.Examples;
 using System;
 using System.Collections;
 using System.Text;
@@ -9,9 +19,8 @@ using UnityEngine.Pool;
 using UnityEngine.UI;
 using UnityEngine.XR;
 using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.MagicLeap;
 using UnityEngine.XR.OpenXR;
-using UnityEngine.XR.OpenXR.Features.MagicLeapSupport;
+using MagicLeap.OpenXR.Features.Meshing;
 using Random = UnityEngine.Random;
 using Utils = MagicLeap.Examples.Utils;
 
@@ -20,12 +29,12 @@ public class MeshingExample : MonoBehaviour
     [Serializable]
     private class MeshQuerySetting
     {
-        [SerializeField] public MagicLeapMeshingFeature.MeshingQuerySettings meshQuerySettings;
+        [SerializeField] public MeshingQuerySettings meshQuerySettings;
         [SerializeField] public float meshDensity;
         [SerializeField] public Vector3 meshBoundsOrigin;
         [SerializeField] public Vector3 meshBoundsRotation;
         [SerializeField] public Vector3 meshBoundsScale;
-        [SerializeField] public MagicLeapMeshingFeature.MeshingMode renderMode;
+        [SerializeField] public MeshingMode renderMode;
         [SerializeField] public MeshFilter meshPrefab;
     }
     
@@ -39,7 +48,6 @@ public class MeshingExample : MonoBehaviour
     private const float MinScale = 0.1f;
     private const float MaxScale = 0.3f;
     private MagicLeapMeshingFeature meshingFeature;
-    private MagicLeapInput mlInputs;
     private int currentIndex;
 
     [SerializeField] private MeshQuerySetting[] allSettings;
@@ -47,14 +55,16 @@ public class MeshingExample : MonoBehaviour
     [SerializeField] private Text updateText;
 
     private StringBuilder statusText = new();
-    private MagicLeapMeshingFeature.MeshDetectorFlags[] allFlags;
+    private MeshDetectorFlags[] allFlags;
     private ObjectPool<MeshingProjectile> projectilePool;
-    private MagicLeapMeshingFeature.MeshingMode previousRenderMode;
+    private MeshingMode previousRenderMode;
     private MeshTexturedWireframeAdapter wireframeAdapter;
+
+    private MagicLeapController Controller => MagicLeapController.Instance;
 
     private void Awake()
     {
-        allFlags = (MagicLeapMeshingFeature.MeshDetectorFlags[])Enum.GetValues(typeof(MagicLeapMeshingFeature.MeshDetectorFlags));
+        allFlags = (MeshDetectorFlags[])Enum.GetValues(typeof(MeshDetectorFlags));
     }
 
     IEnumerator Start()
@@ -75,11 +85,9 @@ public class MeshingExample : MonoBehaviour
         {
             meshProjectile.gameObject.SetActive(true);
         }, (meshProjectile) => meshProjectile.gameObject.SetActive(false), defaultCapacity: 20);
-        mlInputs = new();
-        mlInputs.Enable();
-        mlInputs.Controller.Trigger.performed += FireProjectile;
-        mlInputs.Controller.Bumper.performed += CycleSettings;
-        Permissions.RequestPermission(MLPermission.SpatialMapping, OnPermissionGranted, OnPermissionDenied);
+        Controller.TriggerPressed += FireProjectile;
+        Controller.BumperPressed += CycleSettings;
+        Permissions.RequestPermission(Permissions.SpatialMapping, OnPermissionGranted, OnPermissionDenied);
     }
 
     private void Update()
@@ -109,12 +117,8 @@ public class MeshingExample : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (mlInputs == null)
-        {
-            return;
-        }
-        mlInputs.Controller.Trigger.performed -= FireProjectile;
-        mlInputs.Controller.Bumper.performed -= CycleSettings;
+        Controller.TriggerPressed -= FireProjectile;
+        Controller.BumperPressed -= CycleSettings;
     }
 
     private void CycleSettings(InputAction.CallbackContext obj)
@@ -143,14 +147,14 @@ public class MeshingExample : MonoBehaviour
         meshManager.transform.localScale = meshSettings.meshBoundsScale;
         meshManager.transform.rotation = Quaternion.Euler(meshSettings.meshBoundsRotation);
         meshManager.transform.localPosition = meshSettings.meshBoundsOrigin;
-        if (currentRenderMode == MagicLeapMeshingFeature.MeshingMode.Triangles)
+        if (currentRenderMode == MeshingMode.Triangles)
         {
             meshManager.density = meshSettings.meshDensity;
             meshManager.meshPrefab = meshSettings.meshPrefab;
             if (wireframeAdapter != null)
             {
-                wireframeAdapter.ComputeConfidences = meshSettings.meshQuerySettings.meshDetectorFlags.HasFlag(MagicLeapMeshingFeature.MeshDetectorFlags.ComputeConfidence);
-                wireframeAdapter.ComputeNormals = meshSettings.meshQuerySettings.meshDetectorFlags.HasFlag(MagicLeapMeshingFeature.MeshDetectorFlags.ComputeNormals);
+                wireframeAdapter.ComputeConfidences = meshSettings.meshQuerySettings.meshDetectorFlags.HasFlag(MeshDetectorFlags.ComputeConfidence);
+                wireframeAdapter.ComputeNormals = meshSettings.meshQuerySettings.meshDetectorFlags.HasFlag(MeshDetectorFlags.ComputeNormals);
                 wireframeAdapter.enabled = currentIndex == 0;
             }
         }
@@ -172,7 +176,7 @@ public class MeshingExample : MonoBehaviour
         pointCloudManager.SetTrackablesActive(false);
         pointCloudManager.enabled = false;
         meshingFeature.MeshRenderMode = currentRenderMode;
-        var isPointCloud = currentRenderMode == MagicLeapMeshingFeature.MeshingMode.PointCloud;
+        var isPointCloud = currentRenderMode == MeshingMode.PointCloud;
         switch (isPointCloud)
         {
             case true:
@@ -192,7 +196,7 @@ public class MeshingExample : MonoBehaviour
     private void OnPermissionGranted(string permission)
     {
         meshManager.enabled = true;
-        previousRenderMode = MagicLeapMeshingFeature.MeshingMode.Triangles;
+        previousRenderMode = MeshingMode.Triangles;
         UpdateSettings();
     }
 

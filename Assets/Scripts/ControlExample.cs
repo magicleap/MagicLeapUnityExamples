@@ -1,83 +1,58 @@
-using System;
-using System.Collections.Generic;
+// %BANNER_BEGIN%
+// ---------------------------------------------------------------------
+// %COPYRIGHT_BEGIN%
+// Copyright (c) (2024) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
+// %COPYRIGHT_END%
+// ---------------------------------------------------------------------
+// %BANNER_END%
 using System.Text;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using UnityEngine.XR;
-using CommonUsages = UnityEngine.XR.CommonUsages;
-using Utils = UnityEngine.XR.OpenXR.Utils;
 
-public class ControlExample : MonoBehaviour
+namespace MagicLeap.Examples
 {
-    [SerializeField, Tooltip("The text used to display status information for the example.")]
-    private Text statusText;
-    
-    /// <summary>
-    /// Provided by Assets/MagicLeapInput.inputactions
-    /// </summary>
-    private MagicLeapInput inputs;
-
-    private readonly StringBuilder strBuilder = new();
-
-    private void Start()
+    public class ControlExample : MonoBehaviour
     {
-        inputs = new MagicLeapInput();
-        inputs.Enable();
-    }
+        [SerializeField, Tooltip("The text used to display status information for the example.")]
+        private Text statusText;
 
-    private void OnDestroy()
-    {
-        inputs.Dispose();
-    }
+        private readonly StringBuilder strBuilder = new();
 
-    private void Update()
-    {
-        strBuilder.Clear();
-
-        var isTracked = inputs.Controller.IsTracked.IsPressed();
-        strBuilder.AppendLine($"<b>IsTracked:</b> {isTracked}");
-        
-        if (isTracked)
+        private void Update()
         {
-            var pointerPos = inputs.Controller.PointerPosition.ReadValue<Vector3>();
-            var pointerRot = inputs.Controller.PointerRotation.ReadValue<Quaternion>();
-            var position = inputs.Controller.Position.ReadValue<Vector3>();
-            var rotation = inputs.Controller.Rotation.ReadValue<Quaternion>();
-            var velocity = inputs.Controller.Velocity.ReadValue<Vector3>();
-            var angularVelocity = inputs.Controller.AngularVelocity.ReadValue<Vector3>();
-            var menuPressed = inputs.Controller.MenuButton.IsPressed();
-            var triggerAmount = inputs.Controller.TriggerValue.ReadValue<float>();
-            var triggerPressed = inputs.Controller.Trigger.IsPressed();
-            var bumperPressed = inputs.Controller.Bumper.IsPressed();
-            var touchPosition = inputs.Controller.Trackpad.ReadValue<Vector2>();
-            var pressure = inputs.Controller.TrackpadForce.ReadValue<float>();
+            strBuilder.Clear();
 
-            strBuilder.AppendLine();
-            strBuilder.AppendLine("<b>Pointer:</b>");
-            strBuilder.AppendLine($"Position: {pointerPos}");
-            strBuilder.AppendLine($"Rotation: {pointerRot}");
+            var controller = MagicLeapController.Instance;
 
-            //strBuilder.AppendLine();
-            strBuilder.AppendLine("<b>Device</b>");
-            strBuilder.AppendLine($"Position: {position}");
-            strBuilder.AppendLine($"Rotation: {rotation}");
-            strBuilder.AppendLine($"Velocity: {velocity}");
-            strBuilder.AppendLine($"Angular Velocity:\n {angularVelocity}");
-            
-            //strBuilder.AppendLine();
-            strBuilder.AppendLine("<b>Buttons</b>");
-            strBuilder.AppendLine($"Menu: {menuPressed}");
-            strBuilder.AppendLine($"Trigger: {triggerPressed}");
-            strBuilder.AppendLine($"Trigger Amount: {triggerAmount}");
-            strBuilder.AppendLine($"Bumper: {bumperPressed}");
+            strBuilder.AppendLine($"<b>IsTracked:</b> {controller.IsTracked}");
 
-            //strBuilder.AppendLine();
-            strBuilder.AppendLine("<b>Touchpad</b>");
-            strBuilder.AppendLine($"Touchpad: {touchPosition}");
-            strBuilder.AppendLine($"Touchpad Pressure: {pressure}");
+            if (controller.IsTracked)
+            {
+                strBuilder.AppendLine();
+                strBuilder.AppendLine("<b>Pointer:</b>");
+                strBuilder.AppendLine($"Position: {controller.PointerPosition}");
+                strBuilder.AppendLine($"Rotation: {controller.PointerRotation}");
+
+                strBuilder.AppendLine("<b>Device</b>");
+                strBuilder.AppendLine($"Position: {controller.Position}");
+                strBuilder.AppendLine($"Rotation: {controller.Rotation}");
+                strBuilder.AppendLine($"Velocity: {controller.Velocity}");
+                strBuilder.AppendLine($"Angular Velocity: {controller.AngularVelocity}");
+
+                strBuilder.AppendLine("<b>Buttons</b>");
+                strBuilder.AppendLine($"Menu: {controller.MenuIsPressed}");
+                strBuilder.AppendLine($"Trigger: {controller.TriggerIsPressed}");
+                strBuilder.AppendLine($"Trigger Amount: {controller.TriggerValue}");
+                strBuilder.AppendLine($"Bumper: {controller.BumperIsPressed}");
+
+                strBuilder.AppendLine("<b>Touchpad</b>");
+                strBuilder.AppendLine($"Touchpad: {controller.TouchPosition}");
+                strBuilder.AppendLine($"Touchpad Pressure: {controller.TouchPressure}");
+            }
+
+            statusText.text = strBuilder.ToString();
         }
-
-        statusText.text = strBuilder.ToString();
     }
 }

@@ -1,58 +1,68 @@
+// %BANNER_BEGIN%
+// ---------------------------------------------------------------------
+// %COPYRIGHT_BEGIN%
+// Copyright (c) (2024) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
+// %COPYRIGHT_END%
+// ---------------------------------------------------------------------
+// %BANNER_END%
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.OpenXR.Features.MagicLeapSupport;
+using MagicLeap.OpenXR.Features.FacialExpressions;
 
 public class FacialExpressionUtil
 {
-    public static readonly Dictionary<MagicLeapFacialExpressionFeature.FacialBlendShape, string> FacialBlendShapes
-        = new Dictionary<MagicLeapFacialExpressionFeature.FacialBlendShape, string>()
+    public static readonly Dictionary<FacialBlendShape, string> FacialBlendShapes
+        = new Dictionary<FacialBlendShape, string>()
     {
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.BrowLowererL, "Left Brow Lowerer" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.BrowLowererR, "Right Brow Lowerer "},
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.CheekRaiserL, "Left Cheek Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.CheekRaiserR, "Right Cheek Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.ChinRaiser, "Chin Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.DimplerL, "Left Dimpler" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.DimplerR, "Right Dimpler" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.EyesClosedL, "Left Eye Closed" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.EyesClosedR, "Right Eye Closed" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.InnerBrowRaiserL, "Left Inner Brow Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.InnerBrowRaiserR, "Right Inner Brow Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.JawDrop, "Jaw Drop" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LidTightenerL, "Left Lid Tightener" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LidTightenerR, "Right Lid Tightener" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipCornerDepressorL, "Left Lip Corner Depressor" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipCornerDepressorR, "Right Lip Corner Depressor" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipCornerPullerL, "Left Corner Puller" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipCornerPullerR, "Right Corner Puller" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipFunnelerLB, "Left Bottom Lip Funneler" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipFunnelerLT, "Left Top Lip Funneler" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipFunnelerRB, "Right Bottom Lip Funneler" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipFunnelerRT, "Right Top Lip Funneler" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipPressorL, "Left Lip Pressor" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipPressorR, "Right Lip Pressor" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipPuckerL, "Left Lip Pucker" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipPuckerR, "Right Lip Pucker" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipStretcherL, "Left Lip Stretcher" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipStretcherR, "Right Lip Stretcher" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipSuckLB, "Left Bottom Lip Suck" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipSuckLT, "Left Top Lip Suck" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipSuckRB, "Right Bottom Lip Suck" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipSuckRT, "Right Top Lip Suck" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipTightenerL, "Left Lip Tightener" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipTightenerR, "Right Lip Tightener" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LipsToward, "Lips Toward" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LowerLipDepressorL, "Left Lower Lip Depressor" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.LowerLipDepressorR, "Right Lower Lip Depressor" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.NoseWrinklerL, "Left Nose Wrinkler" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.NoseWrinklerR, "Right Nose Wrinkler" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.OuterBrowRaiserL, "Left Outer Brow Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.OuterBrowRaiserR, "Right Outer Brow Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.UpperLidRaiserL, "Left Upper Lid Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.UpperLidRaiserR, "Right Upper Lid Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.UpperLipRaiserL, "Left Upper Lip Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.UpperLipRaiserR, "Right Upper Lip Raiser" },
-        { MagicLeapFacialExpressionFeature.FacialBlendShape.TongueOut, "Tongue Out" }
+        { FacialBlendShape.BrowLowererL, "Left Brow Lowerer" },
+        { FacialBlendShape.BrowLowererR, "Right Brow Lowerer "},
+        { FacialBlendShape.CheekRaiserL, "Left Cheek Raiser" },
+        { FacialBlendShape.CheekRaiserR, "Right Cheek Raiser" },
+        { FacialBlendShape.ChinRaiser, "Chin Raiser" },
+        { FacialBlendShape.DimplerL, "Left Dimpler" },
+        { FacialBlendShape.DimplerR, "Right Dimpler" },
+        { FacialBlendShape.EyesClosedL, "Left Eye Closed" },
+        { FacialBlendShape.EyesClosedR, "Right Eye Closed" },
+        { FacialBlendShape.InnerBrowRaiserL, "Left Inner Brow Raiser" },
+        { FacialBlendShape.InnerBrowRaiserR, "Right Inner Brow Raiser" },
+        { FacialBlendShape.JawDrop, "Jaw Drop" },
+        { FacialBlendShape.LidTightenerL, "Left Lid Tightener" },
+        { FacialBlendShape.LidTightenerR, "Right Lid Tightener" },
+        { FacialBlendShape.LipCornerDepressorL, "Left Lip Corner Depressor" },
+        { FacialBlendShape.LipCornerDepressorR, "Right Lip Corner Depressor" },
+        { FacialBlendShape.LipCornerPullerL, "Left Corner Puller" },
+        { FacialBlendShape.LipCornerPullerR, "Right Corner Puller" },
+        { FacialBlendShape.LipFunnelerLB, "Left Bottom Lip Funneler" },
+        { FacialBlendShape.LipFunnelerLT, "Left Top Lip Funneler" },
+        { FacialBlendShape.LipFunnelerRB, "Right Bottom Lip Funneler" },
+        { FacialBlendShape.LipFunnelerRT, "Right Top Lip Funneler" },
+        { FacialBlendShape.LipPressorL, "Left Lip Pressor" },
+        { FacialBlendShape.LipPressorR, "Right Lip Pressor" },
+        { FacialBlendShape.LipPuckerL, "Left Lip Pucker" },
+        { FacialBlendShape.LipPuckerR, "Right Lip Pucker" },
+        { FacialBlendShape.LipStretcherL, "Left Lip Stretcher" },
+        { FacialBlendShape.LipStretcherR, "Right Lip Stretcher" },
+        { FacialBlendShape.LipSuckLB, "Left Bottom Lip Suck" },
+        { FacialBlendShape.LipSuckLT, "Left Top Lip Suck" },
+        { FacialBlendShape.LipSuckRB, "Right Bottom Lip Suck" },
+        { FacialBlendShape.LipSuckRT, "Right Top Lip Suck" },
+        { FacialBlendShape.LipTightenerL, "Left Lip Tightener" },
+        { FacialBlendShape.LipTightenerR, "Right Lip Tightener" },
+        { FacialBlendShape.LipsToward, "Lips Toward" },
+        { FacialBlendShape.LowerLipDepressorL, "Left Lower Lip Depressor" },
+        { FacialBlendShape.LowerLipDepressorR, "Right Lower Lip Depressor" },
+        { FacialBlendShape.NoseWrinklerL, "Left Nose Wrinkler" },
+        { FacialBlendShape.NoseWrinklerR, "Right Nose Wrinkler" },
+        { FacialBlendShape.OuterBrowRaiserL, "Left Outer Brow Raiser" },
+        { FacialBlendShape.OuterBrowRaiserR, "Right Outer Brow Raiser" },
+        { FacialBlendShape.UpperLidRaiserL, "Left Upper Lid Raiser" },
+        { FacialBlendShape.UpperLidRaiserR, "Right Upper Lid Raiser" },
+        { FacialBlendShape.UpperLipRaiserL, "Left Upper Lip Raiser" },
+        { FacialBlendShape.UpperLipRaiserR, "Right Upper Lip Raiser" },
+        { FacialBlendShape.TongueOut, "Tongue Out" }
     };
 }

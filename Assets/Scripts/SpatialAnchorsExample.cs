@@ -1,3 +1,12 @@
+// %BANNER_BEGIN%
+// ---------------------------------------------------------------------
+// %COPYRIGHT_BEGIN%
+// Copyright (c) (2024) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
+// %COPYRIGHT_END%
+// ---------------------------------------------------------------------
+// %BANNER_END%
 using System;
 using System.Linq;
 using System.Collections;
@@ -8,11 +17,13 @@ using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.Management;
-using UnityEngine.XR.MagicLeap;
 using UnityEngine.XR.OpenXR;
-using UnityEngine.XR.OpenXR.Features.MagicLeapSupport;
 using UnityEngine.XR.OpenXR.NativeTypes;
 using MagicLeap.Android;
+using MagicLeap.OpenXR.Features.SpatialAnchors;
+using MagicLeap.OpenXR.Features.LocalizationMaps;
+using MagicLeap.OpenXR.Subsystems;
+using MagicLeap.Examples;
 
 public class SpatialAnchorsExample : MonoBehaviour
 {
@@ -20,29 +31,18 @@ public class SpatialAnchorsExample : MonoBehaviour
     [SerializeField] private Text localizationText;
     [SerializeField] private Dropdown mapsDropdown;
     [SerializeField] private Dropdown exportedDropdown;
-    [SerializeField] private InputActionAsset inputActions;
     [SerializeField] private GameObject anchorPrefab;
     [SerializeField] private GameObject controllerObject;
     [SerializeField] private ARAnchorManager anchorManager;
     [SerializeField] private Button publishButton;
-    private InputActionMap controllerMap;
     private MagicLeapSpatialAnchorsFeature spatialAnchorsFeature;
     private MagicLeapLocalizationMapFeature localizationMapFeature;
     private MagicLeapSpatialAnchorsStorageFeature storageFeature;
-    private MagicLeapLocalizationMapFeature.LocalizationMap[] mapList = Array.Empty<MagicLeapLocalizationMapFeature.LocalizationMap>();
-    private MagicLeapLocalizationMapFeature.LocalizationEventData mapData;
+    private LocalizationMap[] mapList = Array.Empty<LocalizationMap>();
+    private LocalizationEventData mapData;
 
-    private struct PublishedAnchor
-    {
-        public ulong AnchorId;
-        public string AnchorMapPositionId;
-        public ARAnchor AnchorObject;
-    }
-
-    private List<PublishedAnchor> publishedAnchors = new();
-    private List<ARAnchor> activeAnchors = new();
-    private List<ARAnchor> pendingPublishedAnchors = new();
     private List<ARAnchor> localAnchors = new();
+    private List<ARAnchor> storedAnchors = new();
     private Dictionary<string, byte[]> exportedMaps = new();
     private bool permissionGranted;
     private MLXrAnchorSubsystem activeSubsystem;
@@ -60,29 +60,16 @@ public class SpatialAnchorsExample : MonoBehaviour
             enabled = false;
         }
 
-        if (inputActions != null)
-        {
-            controllerMap = inputActions.FindActionMap("Controller");
-            if (controllerMap == null)
-            {
-                Debug.LogError("Couldn't find Controller action map");
-                enabled = false;
-            }
-            else
-            {
-                controllerMap.FindAction("Bumper").performed += OnBumper;
-                controllerMap.FindAction("MenuButton").performed += OnMenu;
-            }
-        }
+        MagicLeapController.Instance.BumperPressed += OnBumper;
+        MagicLeapController.Instance.MenuPressed += OnMenu;
 
         mapsDropdown.ClearOptions();
         exportedDropdown.ClearOptions();
-        storageFeature.OnCreationCompleteFromStorage += OnCreateFromStorageComplete;
-        storageFeature.OnPublishComplete += OnPublishComplete;
         storageFeature.OnQueryComplete += OnQueryComplete;
-        storageFeature.OnDeletedComplete += OnDeletedComplete;
 
-        Permissions.RequestPermission(MLPermission.SpaceImportExport, OnPermissionGranted, OnPermissionDenied);
+        anchorManager.anchorsChanged += OnAnchorsChanged;
+
+        Permissions.RequestPermission(Permissions.SpaceImportExport, OnPermissionGranted, OnPermissionDenied);
     }
 
     private bool AreSubsystemsLoaded()
@@ -115,26 +102,6 @@ public class SpatialAnchorsExample : MonoBehaviour
             Debug.LogError("EnableLocalizationEvents failed: " + res);
     }
 
-    private void OnPublishComplete(ulong anchorId, string anchorMapPositionId)
-    {
-        for (int i = activeAnchors.Count - 1; i >= 0; i--)
-        {
-            if (activeSubsystem.GetAnchorId(activeAnchors[i]) == anchorId)
-            {
-                PublishedAnchor newPublishedAnchor;
-                newPublishedAnchor.AnchorId = anchorId;
-                newPublishedAnchor.AnchorMapPositionId = anchorMapPositionId;
-                newPublishedAnchor.AnchorObject = activeAnchors[i];
-
-                activeAnchors[i].GetComponent<MeshRenderer>().material.color = Color.white;
-
-                publishedAnchors.Add(newPublishedAnchor);
-                activeAnchors.RemoveAt(i);
-                break;
-            }
-        }
-    }
-
     private void OnBumper(InputAction.CallbackContext _)
     {
         Pose currentPose = new Pose(controllerObject.transform.position, controllerObject.transform.rotation);
@@ -145,98 +112,70 @@ public class SpatialAnchorsExample : MonoBehaviour
 
         newAnchorComponent.GetComponent<MeshRenderer>().material.color = Color.grey;
 
-        activeAnchors.Add(newAnchorComponent);
         localAnchors.Add(newAnchorComponent);
     }
 
     private void OnMenu(InputAction.CallbackContext _)
     {
-        // delete most recent local anchor first
+        // Delete most recent local anchor first
         if (localAnchors.Count > 0)
         {
             Destroy(localAnchors[^1].gameObject);
             localAnchors.RemoveAt(localAnchors.Count - 1);
         }
-        //Deleting the last published anchor.
-        else if (publishedAnchors.Count > 0)
+        // Deleting the last published anchor.
+        else if (storedAnchors.Count > 0)
         {
-            storageFeature.DeleteStoredSpatialAnchor(new List<string> { publishedAnchors[^1].AnchorMapPositionId });
+            storageFeature.DeleteStoredSpatialAnchors(new List<ARAnchor> { storedAnchors[^1] });
         }
     }
 
     private void OnQueryComplete(List<string> anchorMapPositionIds)
     {
-        if (publishedAnchors.Count == 0)
-        {
-            if (!storageFeature.CreateSpatialAnchorsFromStorage(anchorMapPositionIds))
-                Debug.LogError("Couldn't create spatial anchors from storage");
-            return;
-        }
+        List<string> trackedanchorMapPositionIds = new List<string>();
 
-        foreach (string anchorMapPositionId in anchorMapPositionIds)
+        // Check for expired anchors
+        foreach (ARAnchor storedAnchor in storedAnchors)
         {
-            var matches = publishedAnchors.Where(p => p.AnchorMapPositionId == anchorMapPositionId);
-            if (matches.Count() == 0)
+            string anchorMapPositionId = activeSubsystem.GetAnchorMapPositionId(storedAnchor);
+
+            if (!string.IsNullOrEmpty(anchorMapPositionId))
             {
-                if (!storageFeature.CreateSpatialAnchorsFromStorage(new List<string>() { anchorMapPositionId }))
-                    Debug.LogError("Couldn't create spatial anchors from storage");
-            }
-        }
+                // Store the anchorMapPositionId to check for new anchors below.
+                trackedanchorMapPositionIds.Add(anchorMapPositionId);
 
-        for (int i = publishedAnchors.Count - 1; i >= 0; i--)
-        {
-            if (!anchorMapPositionIds.Contains(publishedAnchors[i].AnchorMapPositionId))
-            {
-                GameObject.Destroy(publishedAnchors[i].AnchorObject.gameObject);
-                publishedAnchors.RemoveAt(i);
-            }
-        }
-
-    }
-
-    private void OnDeletedComplete(List<string> anchorMapPositionIds)
-    {
-        foreach (string anchorMapPositionId in anchorMapPositionIds)
-        {
-            for (int i = publishedAnchors.Count - 1; i >= 0; i--)
-            {
-                if (publishedAnchors[i].AnchorMapPositionId == anchorMapPositionId)
+                if (!anchorMapPositionIds.Contains(anchorMapPositionId))
                 {
-                    GameObject.Destroy(publishedAnchors[i].AnchorObject.gameObject);
-                    publishedAnchors.RemoveAt(i);
-                    break;
+                    Destroy(storedAnchor.gameObject);
                 }
             }
         }
-    }
 
-    private void OnCreateFromStorageComplete(Pose pose, ulong anchorId, string anchorMapPositionId, XrResult result)
-    {
-        if (result != XrResult.Success)
+        // Check for new stored anchors
+        IEnumerable<string> newAnchors = anchorMapPositionIds.Except(trackedanchorMapPositionIds);
+
+        if (newAnchors.Count() > 0)
         {
-            Debug.LogError("Could not create anchor from storage: " + result);
-            return;
+            if (!storageFeature.CreateSpatialAnchorsFromStorage(newAnchors.ToList()))
+            {
+                Debug.LogError("SpatialAnchorsExample failed to create new anchors from query.");
+            }
         }
-
-        PublishedAnchor newPublishedAnchor;
-        newPublishedAnchor.AnchorId = anchorId;
-        newPublishedAnchor.AnchorMapPositionId = anchorMapPositionId;
-
-        GameObject newAnchor = Instantiate(anchorPrefab, pose.position, pose.rotation);
-
-        ARAnchor newAnchorComponent = newAnchor.AddComponent<ARAnchor>();
-
-        newPublishedAnchor.AnchorObject = newAnchorComponent;
-
-        publishedAnchors.Add(newPublishedAnchor);
     }
 
     public void PublishAnchors()
     {
-        foreach (ARAnchor anchor in localAnchors)
-            pendingPublishedAnchors.Add(anchor);
+        List<ARAnchor> pendingPublish = new List<ARAnchor>();
 
-        localAnchors.Clear();
+        foreach (ARAnchor anchor in localAnchors)
+        {
+            if (anchor.trackingState == TrackingState.Tracking)
+            {
+                pendingPublish.Add(anchor);
+            }
+        }            
+
+        storageFeature.PublishSpatialAnchorsToStorage(pendingPublish, 0);
     }
 
     public void LocalizeMap()
@@ -253,15 +192,13 @@ public class SpatialAnchorsExample : MonoBehaviour
         }
 
         //On map change, we need to clear up present published anchors and query new ones
-        foreach (PublishedAnchor obj in publishedAnchors)
-            Destroy(obj.AnchorObject.gameObject);
-        publishedAnchors.Clear();
+        foreach (ARAnchor obj in storedAnchors)
+            Destroy(obj.gameObject);
+        storedAnchors.Clear();
 
         foreach (ARAnchor anchor in localAnchors)
             Destroy(anchor.gameObject);
         localAnchors.Clear();
-
-        activeAnchors.Clear();
     }
 
     public void ExportMap()
@@ -313,36 +250,17 @@ public class SpatialAnchorsExample : MonoBehaviour
     {
         if (permissionGranted)
         {
-            if (pendingPublishedAnchors.Count > 0)
-            {
-                for (int i = pendingPublishedAnchors.Count - 1; i >= 0; i--)
-                {
-                    if (pendingPublishedAnchors[i].trackingState == TrackingState.Tracking)
-                    {
-                        ulong anchorId = activeSubsystem.GetAnchorId(pendingPublishedAnchors[i]);
-                        if (!storageFeature.PublishSpatialAnchorsToStorage(new List<ulong>() { anchorId }, 0))
-                        {
-                            Debug.LogError($"Failed to publish anchor {anchorId} at position {pendingPublishedAnchors[i].gameObject.transform.position} to storage");
-                        }
-                        else
-                        {
-                            pendingPublishedAnchors.RemoveAt(i);
-                        }
-                    }
-                }
-            }
-
             if (localizationMapFeature != null)
             {
-                localizationMapFeature.GetLatestLocalizationMapData(out MagicLeapLocalizationMapFeature.LocalizationEventData mapData);
-                string localizationInfo = string.Format("Localization info:\nState:{0}\nConfidence:{1}", mapData.State, mapData.Confidence);
-                if (mapData.State == MagicLeapLocalizationMapFeature.LocalizationMapState.Localized)
+                localizationMapFeature.GetLatestLocalizationMapData(out LocalizationEventData mapData);
+                string localizationInfo = string.Format("Localization info: State:{0} Confidence:{1}", mapData.State, mapData.Confidence);
+                if (mapData.State == LocalizationMapState.Localized)
                 {
-                    localizationInfo += string.Format("\nName:{0}\nUUID:{1}\nType:{2}\nErrors:{3}",
+                    localizationInfo += string.Format("Name:{0} UUID:{1} Type:{2} Errors:{3}",
                         mapData.Map.Name, mapData.Map.MapUUID, mapData.Map.MapType, (mapData.Errors.Length > 0) ? string.Join(",", mapData.Errors) : "None");
                 }
                 localizationText.text = localizationInfo;
-                publishButton.interactable = mapData.State == MagicLeapLocalizationMapFeature.LocalizationMapState.Localized;
+                publishButton.interactable = mapData.State == LocalizationMapState.Localized;
             }
             else
             {
@@ -359,12 +277,44 @@ public class SpatialAnchorsExample : MonoBehaviour
         {
             return;
         }
-        foreach (var anchor in publishedAnchors)
+        foreach (var anchor in storedAnchors)
         {
-            var anchorObject = anchor.AnchorObject.gameObject;
-            var pose = activeSubsystem.GetAnchorPoseFromID(anchor.AnchorId);
+            var anchorObject = anchor.gameObject;
+            var pose = activeSubsystem.GetAnchorPose(anchor);
             anchorObject.transform.position = pose.position;
             anchorObject.transform.rotation = pose.rotation;
+        }
+    }
+
+    private void OnAnchorsChanged(ARAnchorsChangedEventArgs anchorsChanged)
+    {
+        // Check for newly added Stored Anchors this Script may not yet know about.
+        foreach (ARAnchor anchor in anchorsChanged.added)
+        {
+            if (activeSubsystem.IsStoredAnchor(anchor))
+            {
+                storedAnchors.Add(anchor);
+            }
+        }
+
+        // Check for Local Anchors that were published to update the visuals.
+        foreach (ARAnchor anchor in anchorsChanged.updated)
+        {
+            if (activeSubsystem.IsStoredAnchor(anchor) && localAnchors.Contains(anchor))
+            {
+                anchor.GetComponent<MeshRenderer>().material.color = Color.white;
+                storedAnchors.Add(anchor);
+                localAnchors.Remove(anchor);
+            }
+        }
+
+        // Check if we are tracking a deleted anchor.
+        foreach (ARAnchor anchor in anchorsChanged.removed)
+        {
+            if (storedAnchors.Contains(anchor))
+            {
+                storedAnchors.Remove(anchor);
+            }
         }
     }
 
@@ -378,15 +328,10 @@ public class SpatialAnchorsExample : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (inputActions != null && controllerMap != null)
-        {
-            controllerMap.FindAction("Bumper").performed -= OnBumper;
-            controllerMap.FindAction("MenuButton").performed -= OnMenu;
-        }
-
-        storageFeature.OnCreationCompleteFromStorage -= OnCreateFromStorageComplete;
-        storageFeature.OnPublishComplete -= OnPublishComplete;
+        MagicLeapController.Instance.BumperPressed -= OnBumper;
+        MagicLeapController.Instance.MenuPressed -= OnMenu;
         storageFeature.OnQueryComplete -= OnQueryComplete;
-        storageFeature.OnDeletedComplete -= OnDeletedComplete;
+
+        anchorManager.anchorsChanged -= OnAnchorsChanged;
     }
 }

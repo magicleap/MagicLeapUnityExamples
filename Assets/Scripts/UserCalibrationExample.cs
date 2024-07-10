@@ -1,10 +1,20 @@
+// %BANNER_BEGIN%
+// ---------------------------------------------------------------------
+// %COPYRIGHT_BEGIN%
+// Copyright (c) (2024) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
+// %COPYRIGHT_END%
+// ---------------------------------------------------------------------
+// %BANNER_END%
+using MagicLeap.Examples;
 using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR.OpenXR;
-using UnityEngine.XR.OpenXR.Features.MagicLeapSupport;
+using MagicLeap.OpenXR.Features.UserCalibration;
 
 public class UserCalibrationExample : MonoBehaviour
 {
@@ -14,8 +24,9 @@ public class UserCalibrationExample : MonoBehaviour
     private readonly StringBuilder userCalibrationText = new();
     private readonly Color fieldTitleColor = Color.red;
     private readonly Color fieldValueColor = Color.white;
-    private MagicLeapInput mlInputs;
     private bool userCalibrationEnabled;
+
+    private MagicLeapController Controller => MagicLeapController.Instance;
     
     void Start()
     {
@@ -27,9 +38,7 @@ public class UserCalibrationExample : MonoBehaviour
             return;
         }
 
-        mlInputs = new();
-        mlInputs.Enable();
-        mlInputs.Controller.Bumper.performed += BumperHandler;
+        Controller.BumperPressed += BumperHandler;
     }
 
     private void BumperHandler(InputAction.CallbackContext _)
@@ -70,11 +79,6 @@ public class UserCalibrationExample : MonoBehaviour
             userCalibrationFeature.EnableUserCalibrationEvents(false);
         }
 
-        if (mlInputs == null)
-        {
-            return;
-        }
-        mlInputs.Controller.Bumper.performed -= BumperHandler;
-        mlInputs.Dispose();
+        Controller.BumperPressed -= BumperHandler;
     }
 }

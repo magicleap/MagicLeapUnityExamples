@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028377, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -549,14 +549,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
+      propertyPath: title
+      value: Facial Expressions [Experimental Feature]
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
+        type: 3}
       propertyPath: overview
       value: 'This example scene detects the user''s facial expressions and outputs
         the strength of the facial blend shapes as a percentage. If the expression
         is not valid or is not tracked, it will not output a percentage for it.
 
 
-        <color=#B7B7B8><b>Mandatory
-        permission required by this feature:</b></color>
+        Facial
+        Expressions make use of one or more OpenXR Extensions not yet part of the
+        OpenXR Specification.
+
+
+        <color=#B7B7B8><b>Mandatory permission required
+        by this feature:</b></color>
 
         com.magicleap.permission.FACIAL_EXPRESSION'
       objectReference: {fileID: 0}

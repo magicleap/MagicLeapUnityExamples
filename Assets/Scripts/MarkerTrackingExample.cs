@@ -1,10 +1,19 @@
+// %BANNER_BEGIN%
+// ---------------------------------------------------------------------
+// %COPYRIGHT_BEGIN%
+// Copyright (c) (2024) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
+// %COPYRIGHT_END%
+// ---------------------------------------------------------------------
+// %BANNER_END%
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.OpenXR;
-using UnityEngine.XR.OpenXR.Features.MagicLeapSupport;
+using MagicLeap.OpenXR.Features.MarkerUnderstanding;
 
 namespace MagicLeap.Examples
 {
@@ -61,18 +70,15 @@ namespace MagicLeap.Examples
         [SerializeField]
         private Button destroyAllButton;
 
-        [SerializeField]
-        private float updateIntervalSec = 0.5f;
-
-        private Dictionary<MagicLeapMarkerUnderstandingFeature.MarkerDetector, HashSet<MarkerVisualizer>> markerVisuals = new();
+        private Dictionary<MarkerDetector, HashSet<MarkerVisualizer>> markerVisuals = new();
         private MagicLeapMarkerUnderstandingFeature markerFeature;
-        private MagicLeapMarkerUnderstandingFeature.MarkerDetectorSettings markerDetectorSettings;
+        private MarkerDetectorSettings markerDetectorSettings;
 
         void Start()
         {
             markerFeature = OpenXRSettings.Instance.GetFeature<MagicLeapMarkerUnderstandingFeature>();
             markerDetectorTypeDropdown.onValueChanged.AddListener(OnMarkerDetectorDropdownChanged);
-            markerVisuals = new Dictionary<MagicLeapMarkerUnderstandingFeature.MarkerDetector, HashSet<MarkerVisualizer>>();
+            markerVisuals = new Dictionary<MarkerDetector, HashSet<MarkerVisualizer>>();
             destroyAllButton.onClick.AddListener(DestroyMarkerTrackers);
             destroyAllButton.interactable = false;
         }
@@ -129,7 +135,7 @@ namespace MagicLeap.Examples
                     }
                     sb.AppendLine($"<b>Marker {i}</b>");
 
-                    if (markerDetector.Settings.MarkerType == MagicLeapMarkerUnderstandingFeature.MarkerType.Aruco || markerDetector.Settings.MarkerType == MagicLeapMarkerUnderstandingFeature.MarkerType.AprilTag)
+                    if (markerDetector.Settings.MarkerType == MarkerType.Aruco || markerDetector.Settings.MarkerType == MarkerType.AprilTag)
                     {
                         sb.AppendLine($"Data: {markerDetector.Data[i].MarkerNumber}");
                     }
@@ -140,7 +146,7 @@ namespace MagicLeap.Examples
 
                     sb.AppendLine($"Length: {markerDetector.Data[i].MarkerLength}");
 
-                    if (markerDetector.Settings.MarkerType == MagicLeapMarkerUnderstandingFeature.MarkerType.QR)
+                    if (markerDetector.Settings.MarkerType == MarkerType.QR)
                     {
                         sb.AppendLine($"Reprojection Error: {markerDetector.Data[i].ReprojectionErrorMeters}");
                     }
@@ -166,14 +172,14 @@ namespace MagicLeap.Examples
 
         public void OnMarkerDetectorDropdownChanged(int idx)
         {
-            switch ((MagicLeapMarkerUnderstandingFeature.MarkerType)idx)
+            switch ((MarkerType)idx)
             {
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.Aruco:
+                case MarkerType.Aruco:
                     markerTypeText.text = "ArUco:";
                     aprilTagTypeDropdown.gameObject.SetActive(false);
                     arucoTypeDropdown.gameObject.SetActive(true);
                     break;
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.AprilTag:
+                case MarkerType.AprilTag:
                     markerTypeText.text = "April Tag:";
                     arucoTypeDropdown.gameObject.SetActive(false);
                     aprilTagTypeDropdown.gameObject.SetActive(true);
@@ -188,7 +194,7 @@ namespace MagicLeap.Examples
 
         public void OnMarkerProfileChanged(int idx)
         {
-            bool active = (MagicLeapMarkerUnderstandingFeature.MarkerDetectorProfile)idx == MagicLeapMarkerUnderstandingFeature.MarkerDetectorProfile.Custom;
+            bool active = (MarkerDetectorProfile)idx == MarkerDetectorProfile.Custom;
             FPSHintDropdown.gameObject.SetActive(active);
             resolutionHintDropdown.gameObject.SetActive(active);
             cameraHintDropdown.gameObject.SetActive(active);
@@ -199,33 +205,33 @@ namespace MagicLeap.Examples
 
         public void OnCreateMarkerDetector()
         {
-            markerDetectorSettings.MarkerDetectorProfile = (MagicLeapMarkerUnderstandingFeature.MarkerDetectorProfile)profileDropdown.value;
-            markerDetectorSettings.MarkerType = (MagicLeapMarkerUnderstandingFeature.MarkerType)markerDetectorTypeDropdown.value;
+            markerDetectorSettings.MarkerDetectorProfile = (MarkerDetectorProfile)profileDropdown.value;
+            markerDetectorSettings.MarkerType = (MarkerType)markerDetectorTypeDropdown.value;
 
-            if (markerDetectorSettings.MarkerDetectorProfile == MagicLeapMarkerUnderstandingFeature.MarkerDetectorProfile.Custom)
+            if (markerDetectorSettings.MarkerDetectorProfile == MarkerDetectorProfile.Custom)
             {
                 // set custom settings
-                markerDetectorSettings.CustomProfileSettings.FPSHint = (MagicLeapMarkerUnderstandingFeature.MarkerDetectorFPS)FPSHintDropdown.value;
-                markerDetectorSettings.CustomProfileSettings.ResolutionHint = (MagicLeapMarkerUnderstandingFeature.MarkerDetectorResolution)resolutionHintDropdown.value;
-                markerDetectorSettings.CustomProfileSettings.CameraHint = (MagicLeapMarkerUnderstandingFeature.MarkerDetectorCamera)cameraHintDropdown.value;
-                markerDetectorSettings.CustomProfileSettings.CornerRefinement = (MagicLeapMarkerUnderstandingFeature.MarkerDetectorCornerRefineMethod)cornerRefinementDropdown.value;
-                markerDetectorSettings.CustomProfileSettings.AnalysisInterval = (MagicLeapMarkerUnderstandingFeature.MarkerDetectorFullAnalysisInterval)analysisIntervalDropdown.value;
+                markerDetectorSettings.CustomProfileSettings.FPSHint = (MarkerDetectorFPS)FPSHintDropdown.value;
+                markerDetectorSettings.CustomProfileSettings.ResolutionHint = (MarkerDetectorResolution)resolutionHintDropdown.value;
+                markerDetectorSettings.CustomProfileSettings.CameraHint = (MarkerDetectorCamera)cameraHintDropdown.value;
+                markerDetectorSettings.CustomProfileSettings.CornerRefinement = (MarkerDetectorCornerRefineMethod)cornerRefinementDropdown.value;
+                markerDetectorSettings.CustomProfileSettings.AnalysisInterval = (MarkerDetectorFullAnalysisInterval)analysisIntervalDropdown.value;
                 markerDetectorSettings.CustomProfileSettings.UseEdgeRefinement = useEdgeRefinement.isOn;
             }
 
-            switch ((MagicLeapMarkerUnderstandingFeature.MarkerType)markerDetectorTypeDropdown.value)
+            switch ((MarkerType)markerDetectorTypeDropdown.value)
             {
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.Aruco:
-                    markerDetectorSettings.ArucoSettings.ArucoType = (MagicLeapMarkerUnderstandingFeature.ArucoType)arucoTypeDropdown.value;
+                case MarkerType.Aruco:
+                    markerDetectorSettings.ArucoSettings.ArucoType = (ArucoType)arucoTypeDropdown.value;
                     markerDetectorSettings.ArucoSettings.ArucoLength = markerLength.value / 1000f;
                     markerDetectorSettings.ArucoSettings.EstimateArucoLength = estimateLength.isOn;
                     break;
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.AprilTag:
-                    markerDetectorSettings.AprilTagSettings.AprilTagType = (MagicLeapMarkerUnderstandingFeature.AprilTagType)aprilTagTypeDropdown.value;
+                case MarkerType.AprilTag:
+                    markerDetectorSettings.AprilTagSettings.AprilTagType = (AprilTagType)aprilTagTypeDropdown.value;
                     markerDetectorSettings.AprilTagSettings.AprilTagLength = markerLength.value / 1000f;
                     markerDetectorSettings.AprilTagSettings.EstimateAprilTagLength = estimateLength.isOn;
                     break;
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.QR:
+                case MarkerType.QR:
                     markerDetectorSettings.QRSettings.QRLength = markerLength.value / 1000f;
                     markerDetectorSettings.QRSettings.EstimateQRLength = estimateLength.isOn;
                     break;
@@ -236,18 +242,18 @@ namespace MagicLeap.Examples
 
         private void DestroyMarkerTrackers()
         {
-            foreach(var markerDetector in markerFeature.MarkerDetectors)
+            foreach (var markerDetector in markerFeature.MarkerDetectors)
             {
                 if (markerVisuals.TryGetValue(markerDetector, out var visuals))
                 {
-                    foreach(var visual in visuals)
+                    foreach (var visual in visuals)
                     {
                         Destroy(visual.gameObject);
                     }
                     visuals.Clear();
                 }
             }
-            markerVisuals.Clear(); 
+            markerVisuals.Clear();
             markerFeature.DestroyAllMarkerDetectors();
         }
     }

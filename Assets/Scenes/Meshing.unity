@@ -608,6 +608,10 @@ PrefabInstance:
         drives parameters of the meshing API through the MeshingSubsystemComponent.
 
 
+        Spatial
+        Anchors makes use of OpenXR Extensions not yet part of the OpenXR Specification.
+
+
         This
         example provides a use case of the MapEvents functionality, clearing all
         fragments and refreshing the mesh when a new map is detected.
@@ -660,6 +664,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
+      propertyPath: title
+      value: World Meshing [Experimental Feature]
+      objectReference: {fileID: 0}
+    - target: {fileID: 4611675272600868204, guid: e11acd7e824adcc43a4715c4f5daa2ba,
+        type: 3}
       propertyPath: controls
       value: '- Use Trigger to shoot a ball to demonstrate physics.
 
@@ -676,28 +685,32 @@ PrefabInstance:
         drives parameters of the meshing API through the MeshingSubsystemComponent.
 
 
-        This
-        example provides a use case of the MapEvents functionality, clearing all
-        fragments and refreshing the mesh when a new map is detected.
-
-        It
-        uses Unity''s default ARMeshManager to drive the meshing subsystem.
+        World
+        Meshing makes use of one or more OpenXR Extensions not yet part of the OpenXR
+        Specification.
 
 
-        The
-        scene provides several examples of changing the way rendering and physics
-        interact with the meshing results. You can:
+        This example provides a use case of the MapEvents
+        functionality, clearing all fragments and refreshing the mesh when a new
+        map is detected.
 
-        - Visualize the mesh
-        results. Each setting demonstrates the different parameters used for tweaking
-        the mesh detector
-
-        - Shoot prefab spheres into the scene for physics
-        interaction.
+        It uses Unity''s default ARMeshManager to drive
+        the meshing subsystem.
 
 
-        <color=#B7B7B8><b>Mandatory permissions required by
-        this feature</b></color>
+        The scene provides several examples of changing
+        the way rendering and physics interact with the meshing results. You can:
+
+        -
+        Visualize the mesh results. Each setting demonstrates the different parameters
+        used for tweaking the mesh detector
+
+        - Shoot prefab spheres into
+        the scene for physics interaction.
+
+
+        <color=#B7B7B8><b>Mandatory
+        permissions required by this feature</b></color>
 
         - SpatialMapping'
       objectReference: {fileID: 0}

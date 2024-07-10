@@ -1,6 +1,6 @@
 using System.Text;
 using UnityEngine;
-using UnityEngine.XR.OpenXR.Features.MagicLeapSupport;
+using MagicLeap.OpenXR.Features.MarkerUnderstanding;
 
 namespace MagicLeap.Examples
 {
@@ -11,7 +11,7 @@ namespace MagicLeap.Examples
 
         private StringBuilder stringBuilder = new StringBuilder();
 
-        public void Set(MagicLeapMarkerUnderstandingFeature.MarkerData markerData, MagicLeapMarkerUnderstandingFeature.MarkerType currentMarkerType)
+        public void Set(MarkerData markerData, MarkerType currentMarkerType)
         {
             stringBuilder.Clear();
 
@@ -19,10 +19,10 @@ namespace MagicLeap.Examples
 
             switch (currentMarkerType)
             {
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.QR:
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.Code128:
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.EAN13:
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.UPCA:
+                case MarkerType.QR:
+                case MarkerType.Code128:
+                case MarkerType.EAN13:
+                case MarkerType.UPCA:
                     stringBuilder.Append($"MarkerString: {markerData.MarkerString}\n");
                     break;
                 default:
@@ -33,9 +33,9 @@ namespace MagicLeap.Examples
 
             switch (currentMarkerType)
             {
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.Aruco:
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.QR:
-                case MagicLeapMarkerUnderstandingFeature.MarkerType.AprilTag:
+                case MarkerType.Aruco:
+                case MarkerType.QR:
+                case MarkerType.AprilTag:
                     stringBuilder.Append($"Position: {markerData.MarkerPose?.position}\n");
                     stringBuilder.Append($"Rotation: {markerData.MarkerPose?.rotation}");
                     break;

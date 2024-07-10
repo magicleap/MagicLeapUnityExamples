@@ -1,17 +1,18 @@
 {
   "dependencies": {
     "com.magicleap.unitysdk": {
-      "version": "2.2.0",
+      "version": "2.3.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.xr.openxr": "1.10.0",
-        "com.unity.xr.arfoundation": "5.0.0-pre.12",
-        "com.unity.xr.interaction.toolkit": "2.1.0-pre.1",
-        "com.unity.inputsystem": "1.3.0",
+        "com.unity.xr.openxr": "1.11.0",
+        "com.unity.xr.arfoundation": "5.1.0",
+        "com.unity.xr.interaction.toolkit": "2.1.0",
+        "com.unity.inputsystem": "1.8.2",
         "com.unity.modules.androidjni": "1.0.0",
         "com.unity.xr.interactionsubsystems": "2.0.0",
-        "com.unity.collections": "2.2.1"
+        "com.unity.collections": "2.2.1",
+        "com.unity.burst": "1.8.9"
       },
       "url": "https://registry.npmjs.org"
     },
@@ -58,7 +59,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.25",
+      "version": "3.0.28",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -67,7 +68,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.21",
+      "version": "2.0.22",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -83,8 +84,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.8.0-pre.2",
-      "depth": 0,
+      "version": "1.8.2",
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.modules.uielements": "1.0.0"
@@ -165,23 +166,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "3.0.6",
+      "version": "3.0.8",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.ugui": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.timeline": {
-      "version": "1.7.5",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.director": "1.0.0",
-        "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.audio": "1.0.0",
-        "com.unity.modules.particlesystem": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -193,16 +182,6 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
-    },
-    "com.unity.visualscripting": {
-      "version": "1.9.1",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
     },
     "com.unity.xr.arfoundation": {
       "version": "5.1.0",
@@ -232,7 +211,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.xr.hands": {
-      "version": "1.4.0-pre.1",
+      "version": "1.4.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -292,7 +271,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.xr.openxr": {
-      "version": "1.10.0",
+      "version": "1.11.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {

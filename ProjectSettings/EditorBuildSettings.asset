@@ -39,11 +39,13 @@ EditorBuildSettings:
     path: Assets/Scenes/FacialExpression.unity
     guid: 88695a78fb9151d438b3bf640299d816
   m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: bb4daeceea261404d9e9069323220d1b,
+      type: 3}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: e3e2ec0a2d235bf4e88abaa1456abb78,
       type: 2}
     com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: 6e20867dde86cc2438d1330d6afd1b3a,
       type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 583a29f9e3f74304d869096f91238eb6,
       type: 2}
-    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: e4ae437abe86a174ea3ff1b10ccf223a,
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: a782bb31a8a1ac64eb575277bdfdecfe,
       type: 2}

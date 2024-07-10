@@ -1,10 +1,18 @@
+// %BANNER_BEGIN%
+// ---------------------------------------------------------------------
+// %COPYRIGHT_BEGIN%
+// Copyright (c) (2024) Magic Leap, Inc. All Rights Reserved.
+// Use of this file is governed by the Software License Agreement, located here: https://www.magicleap.com/software-license-agreement-ml2
+// Terms and conditions applicable to third-party materials accompanying this distribution may also be found in the top-level NOTICE file appearing herein.
+// %COPYRIGHT_END%
+// ---------------------------------------------------------------------
+// %BANNER_END%
 using MagicLeap.Android;
 using MagicLeap.Examples;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.XR;
-using UnityEngine.XR.MagicLeap;
 using UnityEngine.XR.OpenXR.Features.Interactions;
 
 public class GazeTrackingExample : MonoBehaviour
@@ -23,7 +31,7 @@ public class GazeTrackingExample : MonoBehaviour
 
     private void Awake()
     {
-        Permissions.RequestPermission(MLPermission.EyeTracking, OnPermissionGranted, OnPermissionDenied);
+        Permissions.RequestPermission(Permissions.EyeTracking, OnPermissionGranted, OnPermissionDenied);
     }
 
     void Update()
