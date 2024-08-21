@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028377, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -314,6 +314,232 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ad7d02c3ee2a447abc9de300646685d, type: 3}
+--- !u!1001 &578289452
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8973278035256293378, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_DirtyAABB
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_AABB.m_Center.x
+      value: 0.004472412
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: -0.037727356
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: -0.013502561
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_AABB.m_Extent.x
+      value: 0.14527076
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: 0.17536865
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: 0.13692838
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[0]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[1]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[2]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[3]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[4]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[5]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[6]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[7]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[8]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[19]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[28]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[29]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[30]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[40]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[41]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      propertyPath: m_Name
+      value: Face
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 946701387}
+  m_SourcePrefab: {fileID: 100100000, guid: a6c9f8b9746768c4cadc850b2f2f985e, type: 3}
+--- !u!137 &578289453 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -571509726265776639, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+    type: 3}
+  m_PrefabInstance: {fileID: 578289452}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &946701384 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a6c9f8b9746768c4cadc850b2f2f985e,
+    type: 3}
+  m_PrefabInstance: {fileID: 578289452}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &946701387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946701384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea05a203896b48146ab21000fc478d4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _distance: 0.75
+  _heightOffset: 0
+  _lateralOffset: -0.375
+  _positionSmoothTime: 0.1
+  _rotationSmoothTime: 0.1
+  _lookDirection: 1
+  _placeOnAwake: 1
+  _placeOnUpdate: 0
+  _lockZRotation: 1
+  _lockXRotation: 1
+  _lockToXZPlane: 1
+  _useThreshold: 0
+  _movementThreshold: {x: 10, y: 5}
+  _distanceThreshold: 0.15
+  _useLocalSpace: 0
 --- !u!1 &970505997
 GameObject:
   m_ObjectHideFlags: 0
@@ -344,6 +570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statusDescription: {fileID: 1499706520}
+  faceRenderer: {fileID: 578289453}
 --- !u!4 &970505999
 Transform:
   m_ObjectHideFlags: 0
@@ -375,12 +602,12 @@ PrefabInstance:
     - target: {fileID: 807815668010459630, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 807815668010459630, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1703842671016579965, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
@@ -435,7 +662,7 @@ PrefabInstance:
     - target: {fileID: 2577321838026604676, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
       propertyPath: m_Text
-      value: Facial Expression
+      value: Facial Expressions [Experimental Feature]
       objectReference: {fileID: 0}
     - target: {fileID: 2643513138343310103, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
@@ -445,12 +672,12 @@ PrefabInstance:
     - target: {fileID: 2824090336219949919, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2824090336219949919, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3062218150148249415, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
@@ -517,6 +744,24 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3638083915130247541, guid: e11acd7e824adcc43a4715c4f5daa2ba,
+        type: 3}
+      propertyPath: m_Text
+      value: 'This example scene detects the user''s facial expressions and outputs
+        the strength of the facial blend shapes as a percentage. If the expression
+        is not valid or is not tracked, it will not output a percentage for it.
+
+
+        Facial
+        Expressions make use of one or more OpenXR Extensions not yet part of the
+        OpenXR Specification.
+
+
+        <color=#B7B7B8><b>Mandatory permission required
+        by this feature:</b></color>
+
+        com.magicleap.permission.FACIAL_EXPRESSION'
+      objectReference: {fileID: 0}
     - target: {fileID: 3981727701387534120, guid: e11acd7e824adcc43a4715c4f5daa2ba,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -560,13 +805,17 @@ PrefabInstance:
         is not valid or is not tracked, it will not output a percentage for it.
 
 
-        Facial
-        Expressions make use of one or more OpenXR Extensions not yet part of the
-        OpenXR Specification.
+        The
+        face model mirrors facial expressions of the user from the currently supported
+        expressions.
 
 
-        <color=#B7B7B8><b>Mandatory permission required
-        by this feature:</b></color>
+        Facial Expressions make use of one or more OpenXR
+        Extensions not yet part of the OpenXR Specification.
+
+
+        <color=#B7B7B8><b>Mandatory
+        permission required by this feature:</b></color>
 
         com.magicleap.permission.FACIAL_EXPRESSION'
       objectReference: {fileID: 0}
@@ -783,5 +1032,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 970505999}
   - {fileID: 203844589}
+  - {fileID: 578289452}
   - {fileID: 401676249}
   - {fileID: 1499706519}

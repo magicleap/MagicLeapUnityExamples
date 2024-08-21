@@ -21,6 +21,9 @@ public class FacialExpressionExample : MonoBehaviour
 {
     [SerializeField]
     private Text statusDescription;
+    
+    [SerializeField]
+    private SkinnedMeshRenderer faceRenderer;
 
     private MagicLeapFacialExpressionFeature facialExpressionFeature;
     private BlendShapeProperties[] blendShapeProperties;
@@ -67,6 +70,8 @@ public class FacialExpressionExample : MonoBehaviour
         }
 
         statusDescription.text = strBuilder.ToString();
+
+        ApplyBlendShapesToModel();
     }
 
     private void Init()
@@ -98,5 +103,43 @@ public class FacialExpressionExample : MonoBehaviour
     private void OnPermissionGranted(string permission)
     {
         permissionGranted = true;
+    }
+
+    private void ApplyBlendShapesToModel()
+    {
+        for (int i = 0; i < faceRenderer.sharedMesh.blendShapeCount; i++)
+        {
+            int blendShapeIndex = FacialExpressionUtil.FacialModelBlendShapes[i];
+            float blendWeight;
+            
+            // average the values for edge cases where there is no left or right, otherwise set weight normally
+            if (blendShapeIndex == FacialExpressionUtil.LipSuckB)
+            {
+                float leftWeight = blendShapeProperties[(int)FacialBlendShape.LipSuckLB].Weight;
+                float rightWeight = blendShapeProperties[(int)FacialBlendShape.LipSuckLB].Weight;
+                
+                blendWeight = 0.5f * (leftWeight + rightWeight);
+            }
+            else if (blendShapeIndex == FacialExpressionUtil.LipSuckT)
+            {
+                float leftWeight = blendShapeProperties[(int)FacialBlendShape.LipSuckLT].Weight;
+                float rightWeight = blendShapeProperties[(int)FacialBlendShape.LipSuckRT].Weight;
+                
+                blendWeight = 0.5f * (leftWeight + rightWeight);
+            }
+            else if (blendShapeIndex == FacialExpressionUtil.LipTightener)
+            {
+                float leftWeight = blendShapeProperties[(int)FacialBlendShape.LipTightenerL].Weight;
+                float rightWeight = blendShapeProperties[(int)FacialBlendShape.LipTightenerR].Weight;
+                
+                blendWeight = 0.5f * (leftWeight + rightWeight);
+            }
+            else
+            {
+                blendWeight = blendShapeProperties[blendShapeIndex].Weight;
+            }
+            
+            faceRenderer.SetBlendShapeWeight(i, blendWeight * 100);
+        }
     }
 }

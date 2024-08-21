@@ -10,80 +10,285 @@
 using MagicLeap.Android;
 using MagicLeap.Examples;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
+using MagicLeap.OpenXR.Features.EyeTracker;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.XR;
+using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features.Interactions;
 
 public class GazeTrackingExample : MonoBehaviour
 {
+    public enum GazeTrackingExampleGazeType { EyeGazeExt, EyeGazeML, VergenceML }
+    
     [SerializeField, Tooltip("UserInterface for displaying issues")]
     private UserInterface userInterface;
 
-    [SerializeField]
-    private GazeVisualizer visualizer;
+    [SerializeField] 
+    private Transform fixationPointTransform;
+    
+    [SerializeField] 
+    private MeshRenderer[] sphereRenderers;
+
+    [SerializeField] 
+    private Material blueMaterial;
+    
+    [SerializeField] 
+    private Material redMaterial;
+
+    [SerializeField] 
+    private Text statusText;
+
+    [SerializeField] 
+    private float movementThreshold = 0.01f;
 
     private List<InputDevice> InputDeviceList = new();
-    private InputDevice eyeTracking;
+    private InputDevice eyeTrackingDevice;
     private Camera mainCamera;
+    private MagicLeapEyeTrackerFeature eyeTrackerFeature;
 
-    private bool permissionGranted;
+    private bool eyeTrackPermission;
+    private bool pupilSizePermission;
+    private bool isInitialized;
+    private bool isPupilTrackingEnabled;
+    private bool isDeviceVerified;
+    private GazeTrackingExampleGazeType currentGazeType;
+    private PupilData[] currentPupilData;
+    private GeometricData[] currentGeometricData;
+    private StringBuilder statusStringBuilder;
 
     private void Awake()
     {
-        Permissions.RequestPermission(Permissions.EyeTracking, OnPermissionGranted, OnPermissionDenied);
+        Permissions.RequestPermissions(new string[] { Permissions.EyeTracking, Permissions.PupilSize }, OnPermissionGranted, OnPermissionDenied, OnPermissionDenied);
+
+        mainCamera = Camera.main;
+        isPupilTrackingEnabled = true;
+
+        statusStringBuilder = new StringBuilder();
     }
 
-    void Update()
+    private void Update()
     {
-        if (!permissionGranted)
+        if (!ArePermissionsGranted())
             return;
 
-        if (!eyeTracking.isValid)
+        if (!isInitialized)
         {
-            InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.EyeTracking, InputDeviceList);
-            eyeTracking = InputDeviceList.FirstOrDefault();
+            Initialize();
+            return;
+        }
 
-            if (!eyeTracking.isValid)
+        if (IsEyeTrackingDeviceValid())
+        {
+            ShowEyeTrackingVisualization();
+
+            if (isPupilTrackingEnabled)
             {
-                userInterface.AddIssue("Unable to acquire eye tracking device. Have permissions been granted?");
-                return;
+                DisplayPupilSizeOutput();
             }
-        }
-        
-        bool hasData = eyeTracking.TryGetFeatureValue(CommonUsages.isTracked, out bool isTracked);
-        hasData &= eyeTracking.TryGetFeatureValue(EyeTrackingUsages.gazePosition, out Vector3 position);
-        hasData &= eyeTracking.TryGetFeatureValue(EyeTrackingUsages.gazeRotation, out Quaternion rotation);
-
-        if(isTracked && hasData)
-        {
-            transform.SetLocalPositionAndRotation(position + (rotation * Vector3.forward), rotation);
-        }
-
-        var ray = new Ray(mainCamera.transform.position, visualizer.gameObject.transform.position - mainCamera.transform.position);
-        if(Physics.Raycast(ray, out RaycastHit info))
-        {
-            visualizer.Show(info.transform.position);
+            else
+            {
+                statusText.text = "";
+            }
         }
         else
         {
-            visualizer.Hide();
+            statusText.text = "";
         }
     }
 
-    void OnPermissionGranted(string permission) 
+    public void SelectGazeType(int gazeTypeNum)
     {
-        permissionGranted = true;
-        mainCamera = Camera.main;
+        currentGazeType = (GazeTrackingExampleGazeType)gazeTypeNum;
+        isDeviceVerified = false;
     }
 
-    void OnPermissionDenied(string permission)
+    public void TogglePupilSizeTracking(bool isOn)
     {
-        userInterface.AddIssue($"{permission} denied, example won't function");
+        isPupilTrackingEnabled = isOn;
+    }
+    
+    private void Initialize()
+    {
+        eyeTrackerFeature = OpenXRSettings.Instance.GetFeature<MagicLeapEyeTrackerFeature>();
+        eyeTrackerFeature.CreateEyeTracker();
+        isInitialized = true;
+    }
+
+    private void OnPermissionGranted(string permission)
+    {
+        if (permission == Permissions.EyeTracking)
+            eyeTrackPermission = true;
+
+        if (permission == Permissions.PupilSize)
+            pupilSizePermission = true;
+    }
+
+    private void OnPermissionDenied(string permission)
+    {
+        if (permission == Permissions.EyeTracking || permission == Permissions.PupilSize)
+            userInterface.AddIssue($"{permission} denied, example won't function");
     }
 
     private void Reset()
     {
         userInterface = GameObject.Find("UserInterface").GetComponent<UserInterface>();
+    }
+    
+    private bool ArePermissionsGranted()
+    {
+        if (!eyeTrackPermission)
+        {
+            userInterface.AddIssue($"waiting on permission {Permissions.EyeTracking} to be granted");
+        }
+
+        if (!pupilSizePermission)
+        {
+            userInterface.AddIssue($"waiting on permission {Permissions.PupilSize} to be granted");
+        }
+
+        return eyeTrackPermission && pupilSizePermission;
+    }
+    
+    private bool IsEyeTrackingDeviceValid()
+    {
+        if (!eyeTrackingDevice.isValid || !isDeviceVerified)
+        {
+            InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.EyeTracking, InputDeviceList);
+
+            eyeTrackingDevice = InputDeviceList.Find(device => currentGazeType == GazeTrackingExampleGazeType.EyeGazeExt
+                ? device.name == "Eye Tracking OpenXR"
+                : device.name == MagicLeapEyeTrackerFeature.DeviceLocalizedName);
+
+            if (!eyeTrackingDevice.isValid)
+            {
+                userInterface.AddIssue("Unable to acquire eye tracking device. Have permissions been granted?");
+                return false;
+            }
+        }
+
+        isDeviceVerified = true;
+        return true;
+    }
+    
+    private void ShowEyeTrackingVisualization()
+    {
+        bool hasData;
+        Vector3 gazePosition;
+        Quaternion gazeRotation;
+        Vector3 offsetFromFace;
+
+        if (currentGazeType == GazeTrackingExampleGazeType.EyeGazeExt)
+        {
+            hasData = eyeTrackingDevice.TryGetFeatureValue(CommonUsages.isTracked, out bool isTracked) & 
+                      eyeTrackingDevice.TryGetFeatureValue(EyeTrackingUsages.gazePosition, out gazePosition) &
+                      eyeTrackingDevice.TryGetFeatureValue(EyeTrackingUsages.gazeRotation, out gazeRotation);
+
+            offsetFromFace = gazeRotation * Vector3.forward;
+        }
+        else if (currentGazeType == GazeTrackingExampleGazeType.EyeGazeML)
+        {
+            hasData = eyeTrackingDevice.TryGetFeatureValue(EyeTrackerUsages.gazePosition, out gazePosition) &
+                      eyeTrackingDevice.TryGetFeatureValue(EyeTrackerUsages.gazeRotation, out gazeRotation);
+            
+            offsetFromFace = gazeRotation * Vector3.forward;
+        }
+        else if (currentGazeType == GazeTrackingExampleGazeType.VergenceML)
+        {
+            hasData = eyeTrackingDevice.TryGetFeatureValue(EyeTrackerUsages.vergencePosition, out Vector3 vergencePosition) &
+                      eyeTrackingDevice.TryGetFeatureValue(EyeTrackerUsages.vergenceRotation, out Quaternion vergenceRotation);
+
+            gazePosition = vergencePosition;
+            gazeRotation = vergenceRotation;
+            
+            offsetFromFace = Vector3.zero;
+        }
+        else
+        {
+            return;
+        }
+
+        Vector3 targetGazePosition = gazePosition + offsetFromFace;
+
+        if(hasData)
+        {
+            if (Vector3.Distance(fixationPointTransform.position, targetGazePosition) >= movementThreshold)
+            {
+                fixationPointTransform.SetLocalPositionAndRotation(targetGazePosition, gazeRotation);
+            }
+        }
+
+        var ray = new Ray(mainCamera.transform.position, fixationPointTransform.position - mainCamera.transform.position);
+        if(Physics.Raycast(ray, out RaycastHit info))
+        {
+            foreach (var sphere in sphereRenderers)
+            {
+                if (info.transform.gameObject == sphere.gameObject)
+                {
+                    sphere.sharedMaterial = redMaterial;
+                }
+                else
+                {
+                    sphere.sharedMaterial = blueMaterial;
+                }
+            }
+        }
+        else
+        {
+            foreach (var sphere in sphereRenderers)
+            {
+                sphere.sharedMaterial = blueMaterial;
+            }
+        }
+    }
+
+    private void DisplayPupilSizeOutput()
+    {
+        currentPupilData = eyeTrackerFeature.GetEyeTrackerData().PupilData;
+        currentGeometricData = eyeTrackerFeature.GetEyeTrackerData().GeometricData;
+
+        float leftPupilDiameter = 0;
+        float rightPupilDiameter = 0;
+        float leftEyeOpenness = 0;
+        float rightEyeOpenness = 0;
+
+        foreach (var pupilData in currentPupilData)
+        {
+            if (pupilData.Eye == Eye.Left)
+            {
+                leftPupilDiameter = pupilData.PupilDiameter;
+            }
+            else if (pupilData.Eye == Eye.Right)
+            {
+                rightPupilDiameter = pupilData.PupilDiameter;
+            }
+        }
+
+        foreach (var geometricData in currentGeometricData)
+        {
+            if (geometricData.Eye == Eye.Left)
+            {
+                leftEyeOpenness = geometricData.EyeOpenness;
+            }
+            else if (geometricData.Eye == Eye.Right)
+            {
+                rightEyeOpenness = geometricData.EyeOpenness;
+            }
+        }
+
+        statusStringBuilder.Clear();
+        
+        statusStringBuilder.AppendLine("Pupil Data:");
+        statusStringBuilder.AppendLine();
+        statusStringBuilder.AppendLine($"Left Eye Diameter: { leftPupilDiameter }");
+        statusStringBuilder.AppendLine($"Right Eye Diameter: { rightPupilDiameter}");
+        statusStringBuilder.AppendLine();
+        statusStringBuilder.AppendLine("Eye Openness:");
+        statusStringBuilder.AppendLine();
+        statusStringBuilder.AppendLine($"Left Eye Openness: { leftEyeOpenness }");
+        statusStringBuilder.AppendLine($"Right Eye Openness: { rightEyeOpenness }");
+
+        statusText.text = statusStringBuilder.ToString(); 
     }
 }

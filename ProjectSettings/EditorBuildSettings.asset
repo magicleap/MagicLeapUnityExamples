@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Control.unity
     guid: 62f5da9d93d5d42789547f2c2367679b
   - enabled: 1
-    path: Assets/Scenes/EyeGaze.unity
+    path: Assets/Scenes/EyeTracking.unity
     guid: be0730d8152f07243a6419a17374987b
   - enabled: 1
     path: Assets/Scenes/Hands.unity
@@ -38,6 +38,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FacialExpression.unity
     guid: 88695a78fb9151d438b3bf640299d816
+  - enabled: 1
+    path: Assets/Scenes/Occlusion.unity
+    guid: bb285d8496b784f4895522b719e513fb
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: bb4daeceea261404d9e9069323220d1b,
       type: 3}

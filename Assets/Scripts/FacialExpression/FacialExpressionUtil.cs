@@ -15,6 +15,58 @@ using MagicLeap.OpenXR.Features.FacialExpressions;
 
 public class FacialExpressionUtil
 {
+    public const int LipSuckB = -1;
+    public const int LipSuckT = -2;
+    public const int LipTightener = -3;
+    
+    public static readonly Dictionary<int, int> FacialModelBlendShapes
+        = new Dictionary<int, int>()
+    {
+        // swap original L and R values to allow mirroring effect when looking at model
+        { 0, (int)FacialBlendShape.BrowLowererR },
+        { 1, (int)FacialBlendShape.BrowLowererL },
+        { 2, (int)FacialBlendShape.CheekRaiserR },
+        { 3, (int)FacialBlendShape.CheekRaiserL },
+        { 4, (int)FacialBlendShape.ChinRaiser },
+        { 5, (int)FacialBlendShape.DimplerR },
+        { 6, (int)FacialBlendShape.DimplerL },
+        { 7, (int)FacialBlendShape.EyesClosedR },
+        { 8, (int)FacialBlendShape.EyesClosedL },
+        { 9, (int)FacialBlendShape.InnerBrowRaiserR },
+        { 10, (int)FacialBlendShape.InnerBrowRaiserL },
+        { 11, (int)FacialBlendShape.JawDrop },
+        { 12, (int)FacialBlendShape.LidTightenerR },
+        { 13, (int)FacialBlendShape.LidTightenerL },
+        { 14, (int)FacialBlendShape.LipCornerDepressorR },
+        { 15, (int)FacialBlendShape.LipCornerDepressorL },
+        { 16, (int)FacialBlendShape.LipCornerPullerR },
+        { 17, (int)FacialBlendShape.LipCornerPullerL },
+        { 18, (int)FacialBlendShape.LipFunnelerRB },
+        { 19, (int)FacialBlendShape.LipFunnelerRT },
+        { 20, (int)FacialBlendShape.LipFunnelerLB },
+        { 21, (int)FacialBlendShape.LipFunnelerLT },
+        { 22, (int)FacialBlendShape.LipPressorR },
+        { 23, (int)FacialBlendShape.LipPressorL },
+        { 24, (int)FacialBlendShape.LipPuckerR },
+        { 25, (int)FacialBlendShape.LipPuckerL },
+        { 26, (int)FacialBlendShape.LipStretcherR },
+        { 27, (int)FacialBlendShape.LipStretcherL },
+        { 28, LipSuckB },
+        { 29, LipSuckT },
+        { 30, LipTightener },
+        { 31, (int)FacialBlendShape.LipsToward },
+        { 32, (int)FacialBlendShape.LowerLipDepressorR },
+        { 33, (int)FacialBlendShape.LowerLipDepressorL },
+        { 34, (int)FacialBlendShape.NoseWrinklerR },
+        { 35, (int)FacialBlendShape.NoseWrinklerL },
+        { 36, (int)FacialBlendShape.OuterBrowRaiserR },
+        { 37, (int)FacialBlendShape.OuterBrowRaiserL },
+        { 38, (int)FacialBlendShape.UpperLidRaiserR },
+        { 39, (int)FacialBlendShape.UpperLidRaiserL },
+        { 40, (int)FacialBlendShape.UpperLipRaiserR },
+        { 41, (int)FacialBlendShape.UpperLipRaiserL },
+    };
+    
     public static readonly Dictionary<FacialBlendShape, string> FacialBlendShapes
         = new Dictionary<FacialBlendShape, string>()
     {
