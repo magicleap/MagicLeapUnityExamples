@@ -1161,7 +1161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0898445048444aca849c32d97d461dbf, type: 3}
   m_Name: MagicLeapPixelSensorFeature Android
   m_EditorClassIdentifier: 
-  m_enabled: 0
+  m_enabled: 1
   nameUi: Magic Leap 2 Pixel Sensor
   version: 1.0.0
   featureIdInternal: com.magicleap.openxr.feature.ml2_pixel_sensor
@@ -1213,6 +1213,7 @@ MonoBehaviour:
   - {fileID: 5013343755804998949}
   - {fileID: -5707055637357470290}
   - {fileID: -8911340539589898463}
+  - {fileID: 4045065300540995666}
   - {fileID: 5075050513101074765}
   - {fileID: -5522769486837610066}
   - {fileID: -1584466044205909178}
@@ -1303,6 +1304,26 @@ MonoBehaviour:
   openxrExtensionStrings: XR_EXT_plane_detection
   company: Magic Leap
   priority: -2
+  required: 0
+--- !u!114 &4045065300540995666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78dd111ab9872144c9ea2d30e138bec4, type: 3}
+  m_Name: MagicLeapEyeTrackerFeature Standalone
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Magic Leap 2 Eye Tracker
+  version: 1.0.0
+  featureIdInternal: com.magicleap.openxr.feature.ml2_eyetracker
+  openxrExtensionStrings: XR_ML_eye_tracker
+  company: Magic Leap
+  priority: -1
   required: 0
 --- !u!114 &4177985735400597538
 MonoBehaviour:

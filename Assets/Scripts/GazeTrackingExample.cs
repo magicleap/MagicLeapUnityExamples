@@ -17,10 +17,11 @@ using UnityEngine.UI;
 using UnityEngine.XR;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features.Interactions;
+using UnityEngine.XR.OpenXR.NativeTypes;
 
 public class GazeTrackingExample : MonoBehaviour
 {
-    public enum GazeTrackingExampleGazeType { EyeGazeExt, EyeGazeML, VergenceML }
+    public enum GazeTrackingExampleGazeType { EyeGazeExt, EyeGazeML, Fixation }
     
     [SerializeField, Tooltip("UserInterface for displaying issues")]
     private UserInterface userInterface;
@@ -57,6 +58,7 @@ public class GazeTrackingExample : MonoBehaviour
     private PupilData[] currentPupilData;
     private GeometricData[] currentGeometricData;
     private StringBuilder statusStringBuilder;
+    private EyeTrackerData eyeTrackerData;
 
     private void Awake()
     {
@@ -153,15 +155,25 @@ public class GazeTrackingExample : MonoBehaviour
     
     private bool IsEyeTrackingDeviceValid()
     {
-        if (!eyeTrackingDevice.isValid || !isDeviceVerified)
+        if (currentGazeType == GazeTrackingExampleGazeType.EyeGazeExt && (!eyeTrackingDevice.isValid || !isDeviceVerified))
         {
             InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.EyeTracking, InputDeviceList);
 
-            eyeTrackingDevice = InputDeviceList.Find(device => currentGazeType == GazeTrackingExampleGazeType.EyeGazeExt
-                ? device.name == "Eye Tracking OpenXR"
-                : device.name == MagicLeapEyeTrackerFeature.DeviceLocalizedName);
+            eyeTrackingDevice = InputDeviceList.Find(device => device.name == "Eye Tracking OpenXR");
 
-            if (!eyeTrackingDevice.isValid)
+            if (eyeTrackingDevice == null || !eyeTrackingDevice.isValid)
+            {
+                userInterface.AddIssue("Unable to acquire eye tracking device. Have permissions been granted?");
+                return false;
+            }
+        }
+        else if ((currentGazeType == GazeTrackingExampleGazeType.EyeGazeML ||
+                  currentGazeType == GazeTrackingExampleGazeType.Fixation) &&
+                 (!eyeTrackingDevice.isValid || !isDeviceVerified))
+        {
+            eyeTrackerData = eyeTrackerFeature.GetEyeTrackerData();
+
+            if (eyeTrackerData.PosesData.Result != XrResult.Success)
             {
                 userInterface.AddIssue("Unable to acquire eye tracking device. Have permissions been granted?");
                 return false;
@@ -189,18 +201,23 @@ public class GazeTrackingExample : MonoBehaviour
         }
         else if (currentGazeType == GazeTrackingExampleGazeType.EyeGazeML)
         {
-            hasData = eyeTrackingDevice.TryGetFeatureValue(EyeTrackerUsages.gazePosition, out gazePosition) &
-                      eyeTrackingDevice.TryGetFeatureValue(EyeTrackerUsages.gazeRotation, out gazeRotation);
+            eyeTrackerData = eyeTrackerFeature.GetEyeTrackerData();
+
+            hasData = eyeTrackerData.PosesData.Result == XrResult.Success;
+
+            gazePosition = eyeTrackerData.PosesData.GazePose.Pose.position;
+            gazeRotation = eyeTrackerData.PosesData.GazePose.Pose.rotation;
             
             offsetFromFace = gazeRotation * Vector3.forward;
         }
-        else if (currentGazeType == GazeTrackingExampleGazeType.VergenceML)
+        else if (currentGazeType == GazeTrackingExampleGazeType.Fixation)
         {
-            hasData = eyeTrackingDevice.TryGetFeatureValue(EyeTrackerUsages.vergencePosition, out Vector3 vergencePosition) &
-                      eyeTrackingDevice.TryGetFeatureValue(EyeTrackerUsages.vergenceRotation, out Quaternion vergenceRotation);
+            eyeTrackerData = eyeTrackerFeature.GetEyeTrackerData();
+            
+            hasData = eyeTrackerData.PosesData.Result == XrResult.Success;
 
-            gazePosition = vergencePosition;
-            gazeRotation = vergenceRotation;
+            gazePosition = eyeTrackerData.PosesData.FixationPose.Pose.position;
+            gazeRotation = eyeTrackerData.PosesData.FixationPose.Pose.rotation;
             
             offsetFromFace = Vector3.zero;
         }
@@ -245,8 +262,8 @@ public class GazeTrackingExample : MonoBehaviour
 
     private void DisplayPupilSizeOutput()
     {
-        currentPupilData = eyeTrackerFeature.GetEyeTrackerData().PupilData;
-        currentGeometricData = eyeTrackerFeature.GetEyeTrackerData().GeometricData;
+        currentPupilData = eyeTrackerData.PupilData;
+        currentGeometricData = eyeTrackerData.GeometricData;
 
         float leftPupilDiameter = 0;
         float rightPupilDiameter = 0;

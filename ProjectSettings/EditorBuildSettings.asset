@@ -41,6 +41,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Occlusion.unity
     guid: bb285d8496b784f4895522b719e513fb
+  - enabled: 1
+    path: Assets/Scenes/PixelSensors.unity
+    guid: 193a3e11ac86f7640a8418aac27d2eb4
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: bb4daeceea261404d9e9069323220d1b,
       type: 3}
